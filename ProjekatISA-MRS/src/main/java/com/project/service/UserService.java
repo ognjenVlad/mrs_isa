@@ -1,7 +1,8 @@
 package com.project.service;
 
-import com.project.DTO.UserDTO;
+import com.project.domain.User;
 
 public interface UserService {
-	UserDTO login(String email, String password);
+	User login(String email, String password);
+	User register(User u);
 }

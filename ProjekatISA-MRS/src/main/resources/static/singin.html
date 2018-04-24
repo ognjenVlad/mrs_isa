@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+	$("#submitButton").click(function(event){
+		event.preventDefault();
+		var d = JSON.stringify({email:$("#email").val(),password:$("#password").val()})
+		console.log(d);
+		$.post({
+			url:"http://localhost:8080/login",
+			data: d,
+            success:function(data){
+				console.log(data);
+                alert(data)
+            }
+		});
+	});
+});
+</script>
+
+<div>
+		<form method = "post">
+			<label>Email</label>
+			<input type="text" id = "email">
+			<label>Password</label>
+			<input type="text" id = "password">
+			<button id="submitButton">Log in</button>
+		</form>
+		 
+</div>
+</html>
