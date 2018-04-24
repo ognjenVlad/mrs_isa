@@ -5,7 +5,7 @@
 $(document).ready(function() {
 	$("#registerButton").click(function(event){
 		event.preventDefault();
-		var d = JSON.stringify({email:$("#email").val(),password:$("#password").val(),name:$("#name").val(),surname:$("#surname").val()})
+		var d = JSON.stringify({email:$("#email").val(),password:$("#password").val(),name:$("#name").val(),surname:$("#surname").val(),surname:$("#profilePic").val()})
 		console.log(d);
 		$.post({
 			url:"http://localhost:8080/register",
@@ -16,19 +16,33 @@ $(document).ready(function() {
             }
 		});
 	});
+	function readURL(input){
+		var reader = new FileReader();
+
+        reader.onload = function (e) {
+            document.getElementById('profilePic').src =  e.target.result;
+        }
+
+        reader.readAsDataURL(input.files[0]);
+	};
+	$("#file").change(function(){
+        readURL(this);
+    });
 });
 </script>
 <div>
 		<form method = "post">
 			<label>Email</label>
-			<input type="text" id = "email">
+			<input type="text" id = "email" required>
 			<label>Password</label>
-			<input type="password" id = "password">
+			<input type="password" id = "password" required>
 			<label>Name</label>
-			<input type="text" id = "name">
+			<input type="text" id = "name" required>
 			<label>Surname</label>
-			<input type="text" id = "surname">
-			
-			<button id="registerButton" name = "registerButton">Register</button>
+			<input type="text" id = "surname" required>
+			<input type="file" id="file" required/>
+			Preview:
+			<img src="" height="50" width="50" id="profilePic"/>
+			<button id="registerButton">Register</button>
 		</form>
 </div></html>
