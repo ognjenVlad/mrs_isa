@@ -1,0 +1,49 @@
+<html>
+
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link href="resources/css/popup_windows.css" rel="stylesheet" />
+<script type="text/javascript" src="resources/js/popup_control.js"></script>
+<script type="text/javascript" src="resources/js/adminct.js"></script>
+
+<title>Tim12 Cogi</title>
+
+</head>
+
+<body>
+	<div class="main_page">
+		<button type="button" onclick="displayCinemaAdd()">Add new Cinema/Theater</button>
+
+
+		<div id="popup_cinema_add">
+			<table>
+				<tr>
+					<td>Naziv:</td>
+					<td><input type="text" name="place" id="cinema_name" /></td>
+				</tr>
+				<tr>
+					<td>Adresa:</td>
+					<td><input type="text" name="region" id="cinema_address" /></td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td><input type="text" name="description" id="cinema_description" />
+					</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" name="is_cinema" id="cinema_is_cinema">Is
+						cinema</td>
+				<tr>
+					<td>
+						<button type="button" id="create_cinema" onclick="checkCinemaAdd()">Add</button>
+					</td>
+					<td><button type="button" onclick="closePopups()">Cancel</button></td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+</body>
+
+</html>
