@@ -23,13 +23,12 @@ function checkCinemaAdd(){
 	
 	$.ajax({
 		type : 'POST',
-		url : 'https://localhost:8080/adminct/add_cinema',
+		url : 'http://localhost:8080/adminct/add_cinema',
 		contentType : 'application/json',
 		dataType : "json",
 		data : json_data,
 		success: function(data){
 			alert("Cinema added");
 		},
-		error : alert("Failed")
 	});
 }

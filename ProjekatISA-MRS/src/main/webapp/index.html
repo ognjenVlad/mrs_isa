@@ -10,7 +10,31 @@
 <title>Tim12 Cogi</title>
 
 </head>
+<script type="text/javascript">
 
+function renderCinemaTheaters(data) {
+	// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
+	var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
+	cinemas = list;
+	$.each(list, function(index, cinema) {
+        $('#cinemas').append("<p><b style=\"color:blue;\">"+cinema.name+"</b></p>");
+	});
+	
+}
+
+
+function getCinemas() {
+    console.log( "ready!" );
+    $.ajax({
+    	type : 'GET',
+		url : 'http://localhost:8080/load_cinemas',
+		dataType : "json", // data type of response
+		success : renderCinemaTheaters,
+	});
+}
+
+getCinemas();
+</script>
 <body>
 	<div class="main_page">
 		<button type="button" onclick="displayCinemaAdd()">Add new Cinema/Theater</button>
@@ -43,6 +67,14 @@
 			</table>
 		</div>
 
+	</div>
+	
+	<p>Welcome!</p>
+	<p><a href="reg.html">Registracija</a></p>
+	<p><a href="singin.html">Log in</a>
+	
+	<div id="cinemas">
+		
 	</div>
 </body>
 

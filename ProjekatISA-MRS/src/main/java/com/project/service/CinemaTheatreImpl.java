@@ -1,5 +1,7 @@
 package com.project.service;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,11 @@ public class CinemaTheatreImpl implements CinemaTheatreService{
 		if(ctRepository.findByAddress(ct.getAddress()) == null)
 			System.out.println(ct.getAddress());
 			ctRepository.save(ct);
+	}
+	
+	@Override
+	public ArrayList<CinemaTheatre> findAll(){
+		return ctRepository.findAll();
 	}
 
 }
