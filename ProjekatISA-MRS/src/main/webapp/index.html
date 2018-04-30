@@ -1,0 +1,81 @@
+<html>
+
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link href="resources/css/popup_windows.css" rel="stylesheet" />
+<script type="text/javascript" src="resources/js/popup_control.js"></script>
+<script type="text/javascript" src="resources/js/adminct.js"></script>
+
+<title>Tim12 Cogi</title>
+
+</head>
+<script type="text/javascript">
+
+function renderCinemaTheaters(data) {
+	// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
+	var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
+	cinemas = list;
+	$.each(list, function(index, cinema) {
+        $('#cinemas').append("<p><b style=\"color:blue;\">"+cinema.name+"</b></p>");
+	});
+	
+}
+
+
+function getCinemas() {
+    console.log( "ready!" );
+    $.ajax({
+    	type : 'GET',
+		url : 'http://localhost:8080/load_cinemas',
+		dataType : "json", // data type of response
+		success : renderCinemaTheaters,
+	});
+}
+
+getCinemas();
+</script>
+<body>
+	<div class="main_page">
+		<button type="button" onclick="displayCinemaAdd()">Add new Cinema/Theater</button>
+
+
+		<div id="popup_cinema_add">
+			<table>
+				<tr>
+					<td>Naziv:</td>
+					<td><input type="text" name="place" id="cinema_name" /></td>
+				</tr>
+				<tr>
+					<td>Adresa:</td>
+					<td><input type="text" name="region" id="cinema_address" /></td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td><input type="text" name="description" id="cinema_description" />
+					</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" name="is_cinema" id="cinema_is_cinema">Is
+						cinema</td>
+				<tr>
+					<td>
+						<button type="button" id="create_cinema" onclick="checkCinemaAdd()">Add</button>
+					</td>
+					<td><button type="button" onclick="closePopups()">Cancel</button></td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+	
+	<p>Welcome!</p>
+	<p><a href="reg.html">Registracija</a></p>
+	<p><a href="singin.html">Log in</a>
+	
+	<div id="cinemas">
+		
+	</div>
+</body>
+
+</html>

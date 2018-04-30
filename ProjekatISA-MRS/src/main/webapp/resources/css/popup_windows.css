@@ -1,0 +1,15 @@
+#popup_cinema_add{
+	height: 40%;
+	width:30%;
+	position: fixed;
+	top: 25%;
+	left:35%;
+    margin-left: auto;
+    margin-right: auto;
+	border:2px solid;
+	padding:10px;
+	background:#FFFFFF;
+	border-radius:9px;
+	z-index: 3;
+	display:none;
+}
