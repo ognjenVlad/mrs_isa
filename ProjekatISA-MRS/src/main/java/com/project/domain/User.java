@@ -31,7 +31,9 @@ public class User implements Serializable{
 	
 	@Column
 	private String picture;
-
+	
+	@Column
+	private boolean activated = false;
 	
 	public User() {
 		super();
@@ -97,6 +99,14 @@ public class User implements Serializable{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public boolean isActivated() {
+		return activated;
+	}
+
+	public void setActivated(boolean activated) {
+		this.activated = activated;
 	}
 
 }
