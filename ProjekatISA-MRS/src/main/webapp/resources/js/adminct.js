@@ -25,7 +25,7 @@ function checkCinemaAdd(){
 		type : 'POST',
 		url : 'http://localhost:8080/adminct/add_cinema',
 		contentType : 'application/json',
-		dataType : "json",
+		dataType : "text",
 		data : json_data,
 		success: function(data){
 			alert("Cinema added");

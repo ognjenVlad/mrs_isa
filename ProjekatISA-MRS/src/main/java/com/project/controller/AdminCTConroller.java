@@ -17,8 +17,8 @@ public class AdminCTConroller {
 	private CinemaTheatreImpl ctService;
 	
 	@RequestMapping(value = "/add_cinema",method = RequestMethod.POST)
-	public String login(@RequestBody CinemaTheatre ct){
-		System.out.println(ct.getAddress());
+	public String addCinema(@RequestBody CinemaTheatre ct){
+		System.out.println(ct.getName() + "  " + ct.getIsCinema() + "\n\n");
 		ctService.addCinemaTheatre(ct);
 		return "success";
 		

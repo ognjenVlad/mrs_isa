@@ -74,11 +74,11 @@ public class CinemaTheatre implements Serializable{
 		this.description = description;
 	}
 
-	public boolean isCinema() {
+	public boolean getIsCinema() {
 		return isCinema;
 	}
 
-	public void setCinema(boolean isCinema) {
+	public void setIsCinema(boolean isCinema) {
 		this.isCinema = isCinema;
 	}
 
