@@ -6,6 +6,7 @@
 <link href="resources/css/popup_windows.css" rel="stylesheet" />
 <script type="text/javascript" src="resources/js/popup_control.js"></script>
 <script type="text/javascript" src="resources/js/adminct.js"></script>
+<link rel="stylesheet" href="resources/css/startpage.css">
 
 <title>Tim12 Cogi</title>
 
@@ -17,7 +18,12 @@ function renderCinemaTheaters(data) {
 	var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
 	cinemas = list;
 	$.each(list, function(index, cinema) {
-        $('#cinemas').append("<p><b style=\"color:blue;\">"+cinema.name+"</b></p>");
+		if(cinema.isCinema == true){
+			$('#cinemas').append("<a class=\"cinthe_list\" href=\"javascript:showDetails();\">"+cinema.name+"</a>");
+		}else{
+			$('#theatres').append("<a class=\"cinthe_list\" href=\"javascript:showDetails();\">"+cinema.name+"</a>");
+		}
+        
 	});
 	
 }
@@ -33,9 +39,36 @@ function getCinemas() {
 	});
 }
 
+function showCinemaList(){
+	$('#cinemas')[0].style.display = "block";
+}
+
+function showTheatreList(){
+	$('#theatres')[0].style.display = "block";
+}
+
+function closeList(event){
+	var cinthe_list = $('.cinthe_list');
+	var cinthe_details = $('.cinthe_details');
+	if ($.inArray(event.target, cinthe_list) == -1) {
+		$('#cinemas')[0].style.display = "none";
+    	$('#theatres')[0].style.display = "none";
+    }
+	if ($.inArray(event.target, cinthe_details) == -1) {
+		$('.cinthe_details')[0].style.display = "none";
+	}
+}
+
+function showDetails(){
+	$('.cinthe_details').empty();
+	$('.cinthe_details').append("<p>Cinema/Theatre</p>");
+	$('.cinthe_details')[0].style.display = "block";
+}
+
+
 getCinemas();
 </script>
-<body>
+<body onclick="closeList(event);">
 	<div class="main_page">
 		<button type="button" onclick="displayCinemaAdd()">Add new Cinema/Theater</button>
 
@@ -69,12 +102,40 @@ getCinemas();
 
 	</div>
 	
-	<p>Welcome!</p>
-	<p><a href="reg.html">Registracija</a></p>
-	<p><a href="singin.html">Log in</a>
-	
-	<div id="cinemas">
+	<div class="header">
+		<a href="" class="logo">Movies and Shows</a>
+		<div class="header-right">
+    		<a href="reg.html">Registracija</a>
+    		<a href="signin.html">Log in</a>
+  		</div>
 		
+	</div>
+	
+	<div id="cinthe">
+		<a class="cinthe" href="javascript:showCinemaList();">
+			<div class="cinthe">
+				<img class="cinthe" src="resources/images/cinema.jpg">
+		    	<p>CINEMAS</p>
+			</div>
+		</a>
+		<a class="cinthe" href="javascript:showTheatreList();">
+			<div class="cinthe">
+				<img class="cinthe" src="resources/images/theatre.jpg">
+		    	<p>THEATRES</p>
+			</div>
+		</a>
+	</div>
+	
+	<div class="cinthe_list" id="cinemas">
+		
+	</div>
+	
+	<div class="cinthe_list" id="theatres">
+		
+	</div>
+	
+	<div class="cinthe_details">
+	
 	</div>
 </body>
 
