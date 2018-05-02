@@ -54,14 +54,18 @@ public class UserServiceImpl implements UserService{
 
 		System.out.println("Email poslat!");
 	}
-	public User register(User u){
+	public User register(User u, String loginType){
 		User old_user = userRepository.findByEmail(u.getEmail());
 		
-		if(old_user != null){
-			
+		if(old_user != null && loginType.equals("regular")){
 			return null;
 		}else{
-			u.setActivated(false);
+			if(loginType == "regular"){
+				u.setActivated(false);
+			}else{
+				u.setActivated(true);
+			}
+			
 			userRepository.save(u);
 			return u;
 		}

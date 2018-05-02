@@ -35,6 +35,12 @@ public class User implements Serializable{
 	@Column
 	private boolean activated = false;
 	
+	@Column
+	private String city;
+	
+	@Column
+	private String phone;
+	
 	public User() {
 		super();
 	}
@@ -48,6 +54,23 @@ public class User implements Serializable{
 		this.password = password;
 		this.picture = picture;
 	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
 
 	public Long getId() {
 		return id;

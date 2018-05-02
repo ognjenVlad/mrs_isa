@@ -63,9 +63,21 @@ public class UserController {
 			}
 			System.out.println("poslat mail");
 		
-		User uu = userService.register(u);
+		User uu = userService.register(u,"regular");
 		System.out.println(uu);
 		return uu;
-		//return userService.login("Admin", "Admin");
+		
+	}
+	@RequestMapping(value = "/loginGmail",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public User loginGmail(@RequestBody User u){
+		System.out.println(u);
+		User u1 = userService.login(u.getEmail(),u.getPassword());
+		if (u1==null) {
+			return userService.register(u,"gmail");
+		}else{
+			return u1;
+		}
 	}
 }
