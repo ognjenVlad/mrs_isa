@@ -6,6 +6,6 @@ import com.project.domain.User;
 
 public interface UserService {
 	User login(String email, String password);
-	User register(User u);
+	User register(User u, String loginType);
 	List<User> getCTadmins();
 }
