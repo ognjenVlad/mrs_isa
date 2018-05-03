@@ -1,5 +1,8 @@
 package com.project.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
@@ -77,5 +80,14 @@ public class UserServiceImpl implements UserService{
 			userRepository.save(old_user);
 			return old_user;
 		}
+	}
+	
+	public List<User> getCTadmins(){
+		List<User> admins = new ArrayList<User>();
+		List<User> users = userRepository.findAll();
+		for (User user : users) {
+			admins.add(user);
+		}
+		return admins;
 	}
 }

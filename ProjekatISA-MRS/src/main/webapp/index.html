@@ -4,6 +4,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link href="resources/css/popup_windows.css" rel="stylesheet" />
+<link href="resources/css/styles.css" rel="stylesheet" />
 <script type="text/javascript" src="resources/js/popup_control.js"></script>
 <script type="text/javascript" src="resources/js/adminct.js"></script>
 <link rel="stylesheet" href="resources/css/startpage.css">
@@ -71,16 +72,17 @@ getCinemas();
 <body onclick="closeList(event);">
 	<div class="main_page">
 		<button type="button" onclick="displayCinemaAdd()">Add new Cinema/Theater</button>
+		<button type="button" onclick="displayAdminAdd()">Add admin</button>
 
 
 		<div id="popup_cinema_add">
 			<table>
 				<tr>
-					<td>Naziv:</td>
+					<td>Name:</td>
 					<td><input type="text" name="place" id="cinema_name" /></td>
 				</tr>
 				<tr>
-					<td>Adresa:</td>
+					<td>Address:</td>
 					<td><input type="text" name="region" id="cinema_address" /></td>
 				</tr>
 				<tr>
@@ -91,9 +93,63 @@ getCinemas();
 				<tr>
 					<td><input type="checkbox" name="is_cinema" id="cinema_is_cinema">Is
 						cinema</td>
+				</tr>
+				<tr>
+					<td><button type = "button" id="add_hall" onclick="displayHallAdd()">Add hall</button></td>
+				</tr>
+				<tr>
+					<td> <ul id = "cinema_halls"> </ul></td>
+				</tr>
 				<tr>
 					<td>
 						<button type="button" id="create_cinema" onclick="checkCinemaAdd()">Add</button>
+					</td>
+					<td><button type="button" onclick="closePopups()">Cancel</button></td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id = "popup_add_hall">
+			<table>
+				<tr>
+					<td>Number of rows:</td>
+					<td><input type="text" name="hall_row" id="hall_row_num" /></td>
+				</tr>
+				<tr>
+					<td>Number of columns:</td>
+					<td><input type="text" name="hall_column" id="hall_column_num" /></td>
+				</tr>
+				<tr>
+					<td>
+						<button type="button" onclick="cinemaHallAdd()">Add</button>
+					</td>
+					<td><button type="button" onclick="displayCinemaAdd()">Cancel</button></td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="popup_admin_add">
+			<table>
+				<tr>
+					<td>Username:</td>
+					<td><input type="text" name="username" id="admin_username" /></td>
+				</tr>
+				<tr>
+					<td>Password:</td>
+					<td><input type="password" name="passowrd" id="admin_password" /></td>
+				</tr>
+				<tr>
+					<td>
+						<form action="" id= "admin_type_input">
+						  <input type="radio" name="admin_type" value="system">System<br>
+						  <input type="radio" name="admin_type" value="cinema_theater">Cinema/Theater<br>
+						  <input type="radio" name="admin_type" value="fan_zone"> Fan Zone
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<button type="button" id="create_cinema" onclick="">Add</button>
 					</td>
 					<td><button type="button" onclick="closePopups()">Cancel</button></td>
 				</tr>

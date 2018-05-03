@@ -1,0 +1,26 @@
+#cinema_halls {
+  overflow: scroll;
+  height: 100px;
+  
+  border: 2px solid #ccc;
+  
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  
+  // Again, this is where the magic happens
+  -webkit-overflow-scrolling: touch;
+}
+
+#cinema_hall{
+  padding: 10px 20px;
+  
+  border-bottom: 1px solid #ccc;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:nth-child(even) {
+    background: #f8f8f8;
+  }
+}

@@ -1,3 +1,12 @@
+function cinemaHallAdd(){
+	var rows = $("#hall_row_num").val();
+	var columns = $("#hall_column_num").val();
+	var length = 1;
+	$("#cinema_halls").append('<li class = \"cinema_hall\">Hall'+ length + " " + rows +" - " + columns+ '</li>');
+	
+	displayCinemaAdd();
+}
+
 
 function checkCinemaAdd(){
 	var name = $("#cinema_name").val();
@@ -31,4 +40,21 @@ function checkCinemaAdd(){
 			alert("Cinema added");
 		},
 	});
+}
+
+function updateAdminsField(){
+	$.ajax({
+		type : 'GET',
+		url : 'http://localhost:8080/adminct/get_admins',
+		dataType : 'json',
+		success : function(data){
+			var possibilities = $("<select name=\"territory\" class=\"reg_ter\"></select>");
+			$.each(data,function(index,value){
+				possibilities.append("<option>"+ value.name +"</option>");
+			})
+			$(".territory_select").empty();
+			$(".territory_select").append(possibilities);
+			},
+		error : displayError
+	});	
 }

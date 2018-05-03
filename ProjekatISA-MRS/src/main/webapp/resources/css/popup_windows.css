@@ -13,3 +13,34 @@
 	z-index: 3;
 	display:none;
 }
+
+#popup_admin_add{
+	height: 40%;
+	width:30%;
+	position: fixed;
+	top: 25%;
+	left:35%;
+    margin-left: auto;
+    margin-right: auto;
+	border:2px solid;
+	padding:10px;
+	background:#FFFFFF;
+	border-radius:9px;
+	z-index: 3;
+	display:none;
+}
+#popup_add_hall{
+	height: 15%;
+	width:27%;
+	position: fixed;
+	top: 29%;
+	left:37%;
+    margin-left: auto;
+    margin-right: auto;
+	border:2px solid;
+	padding:10px;
+	background:#FFFFFF;
+	border-radius:9px;
+	z-index: 4;
+	display:none;
+}
