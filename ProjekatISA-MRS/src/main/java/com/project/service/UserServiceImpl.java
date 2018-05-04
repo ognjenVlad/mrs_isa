@@ -85,6 +85,12 @@ public class UserServiceImpl implements UserService{
 			return old_user;
 		}
 	}
+	public User changeUser(User u){
+		User old_user = userRepository.findByEmail(u.getEmail());
+		userRepository.delete(old_user);
+		userRepository.save(u);
+		return u;
+	}
 	
 	public List<User> getCTadmins(){
 		List<User> admins = new ArrayList<User>();

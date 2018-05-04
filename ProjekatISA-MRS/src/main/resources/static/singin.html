@@ -13,36 +13,7 @@
 <link rel="stylesheet" href="/css/login.css">	
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 
-<script>
-$(document).ready(function() {
-
-$("#log").click(
-	function(event) {
-			event.preventDefault();
-			var d = JSON.stringify({
-				email : $("#email").val(),
-				password : $("#password").val()
-			})
-
-			$.post({
-				url : "http://localhost:8080/api/login",
-				data : d,
-				contentType : "application/json",
-				success : function(data) {
-					if (data == "") {
-						$('#message').html('Wrong username/password').css(
-										'color',
-										'red');
-					} else {
-						$('#message').html('');
-					}
-					localStorage.setItem('user',data);
-					alert(data)
-				}
-			});
-		});
-					});
-</script>
+<script src = "js/singin.js"></script>
 </head>
 <body>
 	<div class="container">
@@ -57,34 +28,37 @@ $("#log").click(
 										
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="g-signin2" click="onSignIn" data-theme="dark">
+						
 							<button class="btn btn-lg btn-info btn-block" id="google">Google</button>
 						</div>
-						<script>
-							function onSignIn(googleUser) {
-								var profile = googleUser.getBasicProfile();
+						<script>function onSignIn(googleUser) {
+							var profile = googleUser.getBasicProfile();
 
-								var d = JSON.stringify({
-									email : profile.getEmail(),
-									password : "",
-									name : profile.getGivenName(),
-									surname : profile.getFamilyName(),
-									picture : profile.getImageUrl(),
-									city : "",
-									phone: ""
-								})
-								$.post({
-									url : "http://localhost:8080/api/loginGmail",
-									data : d,
-									contentType : "application/json",
-									success : function(data) {
-										localStorage.setItem('user',data);
-										//window.location.replace("http://localhost:8080/reg.html")
-										
-									}
-								});
-							};
-						</script>
+							var d = JSON.stringify({
+								email : profile.getEmail(),
+								password : "",
+								name : profile.getGivenName(),
+								surname : profile.getFamilyName(),
+								picture : profile.getImageUrl(),
+								city : "",
+								phone: ""
+							})
+							onsole.log(d);
+							$.post({
+								url : "http://localhost:8080/api/loginGmail",
+								data : d,
+								contentType : "application/json",
+								success : function(data) {
+									console.log("AAAA");
+									localStorage.setItem('user',data);
+									window.location.replace("http://localhost:8080/userProfile.html");
+									//window.location.replace("http://localhost:8080/reg.html")
+									
+								}
+							});
+						};</script>
 					</div>
+					
 			</div>
 		
 		<div class="login-or">

@@ -80,4 +80,13 @@ public class UserController {
 			return u1;
 		}
 	}
+	
+	@RequestMapping(value = "/changeUser",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public User changeUser(@RequestBody User u){
+		System.out.println(u);
+		return userService.changeUser(u);
+		
+	}
 }
