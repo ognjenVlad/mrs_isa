@@ -2,7 +2,12 @@
 
 <head>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link href="resources/css/popup_windows.css" rel="stylesheet" />
 <link href="resources/css/styles.css" rel="stylesheet" />
 <script type="text/javascript" src="resources/js/popup_control.js"></script>
@@ -13,103 +18,127 @@
 
 </head>
 <script type="text/javascript">
+	function renderCinemaTheaters(data) {
+		// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
+		var list = data == null ? []
+				: (data instanceof Array ? data : [ data ]);
+		cinemas = list;
+		$.each(list, function(index, cinema) {
+			if (cinema.isCinema == true) {
+				$('#cinemas').append(
+						"<a class=\"cinthe_list\" href=\"javascript:showDetails();\">"
+								+ cinema.name + "</a>");
+			} else {
+				$('#theatres').append(
+						"<a class=\"cinthe_list\" href=\"javascript:showDetails();\">"
+								+ cinema.name + "</a>");
+			}
 
-function renderCinemaTheaters(data) {
-	// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
-	var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
-	cinemas = list;
-	$.each(list, function(index, cinema) {
-		if(cinema.isCinema == true){
-			$('#cinemas').append("<a class=\"cinthe_list\" href=\"javascript:showDetails();\">"+cinema.name+"</a>");
-		}else{
-			$('#theatres').append("<a class=\"cinthe_list\" href=\"javascript:showDetails();\">"+cinema.name+"</a>");
-		}
-        
-	});
-	
-}
+		});
 
-
-function getCinemas() {
-    console.log( "ready!" );
-    $.ajax({
-    	type : 'GET',
-		url : 'http://localhost:8080/load_cinemas',
-		dataType : "json", // data type of response
-		success : renderCinemaTheaters,
-	});
-}
-
-function showCinemaList(){
-	$('#cinemas')[0].style.display = "block";
-}
-
-function showTheatreList(){
-	$('#theatres')[0].style.display = "block";
-}
-
-function closeList(event){
-	var cinthe_list = $('.cinthe_list');
-	var cinthe_details = $('.cinthe_details');
-	if ($.inArray(event.target, cinthe_list) == -1) {
-		$('#cinemas')[0].style.display = "none";
-    	$('#theatres')[0].style.display = "none";
-    }
-	if ($.inArray(event.target, cinthe_details) == -1) {
-		$('.cinthe_details')[0].style.display = "none";
 	}
-}
 
-function showDetails(){
-	$('.cinthe_details').empty();
-	$('.cinthe_details').append("<p>Cinema/Theatre</p>");
-	$('.cinthe_details')[0].style.display = "block";
-}
+	function getCinemas() {
+		console.log("ready!");
+		$.ajax({
+			type : 'GET',
+			url : 'http://localhost:8080/load_cinemas',
+			dataType : "json", // data type of response
+			success : renderCinemaTheaters,
+		});
+	}
 
+	function showCinemaList() {
+		$('#cinemas')[0].style.display = "block";
+	}
 
-getCinemas();
+	function showTheatreList() {
+		$('#theatres')[0].style.display = "block";
+	}
+
+	function closeList(event) {
+		var cinthe_list = $('.cinthe_list');
+		var cinthe_details = $('.cinthe_details');
+		if ($.inArray(event.target, cinthe_list) == -1) {
+			$('#cinemas')[0].style.display = "none";
+			$('#theatres')[0].style.display = "none";
+		}
+		if ($.inArray(event.target, cinthe_details) == -1) {
+			$('.cinthe_details')[0].style.display = "none";
+		}
+	}
+
+	function showDetails() {
+		$('.cinthe_details').empty();
+		$('.cinthe_details').append("<p>Cinema/Theatre</p>");
+		$('.cinthe_details')[0].style.display = "block";
+	}
+
+	getCinemas();
 </script>
 <body onclick="closeList(event);">
-	<div class="main_page">
-		<button type="button" onclick="displayCinemaAdd()">Add new Cinema/Theater</button>
+	<div class="container">
+		<button type="button" class="btn " data-toggle="modal"
+			data-target="#myModal">Add Cinema/Theatre</button>
 		<button type="button" onclick="displayAdminAdd()">Add admin</button>
 
+		<div id="myModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
 
-		<div id="popup_cinema_add">
-			<table>
-				<tr>
-					<td>Name:</td>
-					<td><input type="text" name="place" id="cinema_name" /></td>
-				</tr>
-				<tr>
-					<td>Address:</td>
-					<td><input type="text" name="region" id="cinema_address" /></td>
-				</tr>
-				<tr>
-					<td>Description:</td>
-					<td><input type="text" name="description" id="cinema_description" />
-					</td>
-				</tr>
-				<tr>
-					<td><input type="checkbox" name="is_cinema" id="cinema_is_cinema">Is
-						cinema</td>
-				</tr>
-				<tr>
-					<td><button type = "button" id="add_hall" onclick="displayHallAdd()">Add hall</button></td>
-				</tr>
-				<tr>
-					<td> <ul id = "cinema_halls"> </ul></td>
-				</tr>
-				<tr>
-					<td>
-						<button type="button" id="create_cinema" onclick="checkCinemaAdd()">Add</button>
-					</td>
-					<td><button type="button" onclick="closePopups()">Cancel</button></td>
-				</tr>
-			</table>
+				<div class="modal-content">
+					<div class="modal-body">
+						<h3>Add Cinema/Theatre</h3>
+						<div class="form-group">
+							<label for="cinema_name">Name</label> <input type="text"
+								class="form-control" id="cinema_name" />
+						</div>
+						<div class="form-group">
+							<label for="cinema_address">Address</label> <input type="text"
+								class="form-control" id="cinema_address" />
+						</div>
+						<div class="form-group">
+							<label for="cinema_description">Description</label>
+							<textarea class="form-control" rows="3" id="cinema_description"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="is_cinema_radio">Type</label>
+							<div class="radio">
+								<label><input type="radio" name="is_cinema_radio"
+									value="true">Cinema</label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="is_cinema_radio"
+									value="false">Theater</label>
+							</div>
+						</div>
+						<button class="btn btn-primary" id="cinema_hall_add"
+							onclick="cinemaHallAdd()">Add hall</button>
+						<div class="form-group">
+							<table class="table" id="cinema_halls">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Rows</th>
+										<th>Columns</th>
+									</tr>
+								</thead>
+								<tbody id="cinema_hall_body">
+								</tbody>
+							</table>
+						</div>
+						<button class="btn btn-primary" id="cinema_add"
+							onclick="checkCinemaAdd()">Add</button>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+
+			</div>
 		</div>
-		
-		<div id = "popup_add_hall">
+
+
+		<div id="popup_add_hall">
 			<table>
 				<tr>
 					<td>Number of rows:</td>
@@ -127,7 +156,7 @@ getCinemas();
 				</tr>
 			</table>
 		</div>
-		
+
 		<div id="popup_admin_add">
 			<table>
 				<tr>
@@ -140,10 +169,11 @@ getCinemas();
 				</tr>
 				<tr>
 					<td>
-						<form action="" id= "admin_type_input">
-						  <input type="radio" name="admin_type" value="system">System<br>
-						  <input type="radio" name="admin_type" value="cinema_theater">Cinema/Theater<br>
-						  <input type="radio" name="admin_type" value="fan_zone"> Fan Zone
+						<form action="" id="admin_type_input">
+							<input type="radio" name="admin_type" value="system">System<br>
+							<input type="radio" name="admin_type" value="cinema_theater">Cinema/Theater<br>
+							<input type="radio" name="admin_type" value="fan_zone">
+							Fan Zone
 						</form>
 					</td>
 				</tr>
@@ -156,42 +186,33 @@ getCinemas();
 			</table>
 		</div>
 
-	</div>
-	
-	<div class="header">
-		<a href="" class="logo">Movies and Shows</a>
-		<div class="header-right">
-    		<a href="reg.html">Registracija</a>
-    		<a href="signin.html">Log in</a>
-  		</div>
-		
-	</div>
-	
-	<div id="cinthe">
-		<a class="cinthe" href="javascript:showCinemaList();">
-			<div class="cinthe">
-				<img class="cinthe" src="resources/images/cinema.jpg">
-		    	<p>CINEMAS</p>
+		<div class="header">
+			<a href="" class="logo">Movies and Shows</a>
+			<div class="header-right">
+				<a href="reg.html">Registracija</a> <a href="signin.html">Log in</a>
 			</div>
-		</a>
-		<a class="cinthe" href="javascript:showTheatreList();">
-			<div class="cinthe">
-				<img class="cinthe" src="resources/images/theatre.jpg">
-		    	<p>THEATRES</p>
-			</div>
-		</a>
-	</div>
-	
-	<div class="cinthe_list" id="cinemas">
-		
-	</div>
-	
-	<div class="cinthe_list" id="theatres">
-		
-	</div>
-	
-	<div class="cinthe_details">
-	
+
+		</div>
+
+		<div id="cinthe">
+			<a class="cinthe" href="javascript:showCinemaList();">
+				<div class="cinthe">
+					<img class="cinthe" src="resources/images/cinema.jpg">
+					<p>CINEMAS</p>
+				</div>
+			</a> <a class="cinthe" href="javascript:showTheatreList();">
+				<div class="cinthe">
+					<img class="cinthe" src="resources/images/theatre.jpg">
+					<p>THEATRES</p>
+				</div>
+			</a>
+		</div>
+
+		<div class="cinthe_list" id="cinemas"></div>
+
+		<div class="cinthe_list" id="theatres"></div>
+
+		<div class="cinthe_details"></div>
 	</div>
 </body>
 
