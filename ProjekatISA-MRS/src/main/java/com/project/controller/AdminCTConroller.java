@@ -41,4 +41,13 @@ public class AdminCTConroller {
 	public List<AdminUser> getAdmins(){
 		return aService.getAdmins("ct");
 	}
+	
+	@RequestMapping(value = "/get_cinemas",method = RequestMethod.GET)
+	public List<CinemaTheatre> getCinemas(){
+		return ctService.getCinemas();
+	}
+	@RequestMapping(value = "/get_theatres",method = RequestMethod.GET)
+	public List<CinemaTheatre> getTheatres(){
+		return ctService.getTheatres();
+	}
 }
