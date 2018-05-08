@@ -73,6 +73,7 @@ public class UserServiceImpl implements UserService{
 			return u;
 		}
 	}
+	
 	public User activate(String u){
 		User old_user = userRepository.findByEmail(u);
 		

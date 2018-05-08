@@ -41,18 +41,23 @@ public class User implements Serializable{
 	@Column
 	private String phone;
 	
+	@Column
+	private String user_type;
+	
 	public User() {
 		super();
 	}
 
-	public User(Long id, String name, String surname, String email, String password, String picture) {
+	public User(Long id, String name, String surname, String email, String password, String picture,String phone,String user_type) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
 		this.password = password;
+		this.phone = phone;
 		this.picture = picture;
+		this.user_type = user_type;
 	}
 
 	public String getCity() {
@@ -130,6 +135,14 @@ public class User implements Serializable{
 
 	public void setActivated(boolean activated) {
 		this.activated = activated;
+	}
+
+	public String getUser_type() {
+		return user_type;
+	}
+
+	public void setUser_type(String user_type) {
+		this.user_type = user_type; // user , sys , ct , fan
 	}
 
 }

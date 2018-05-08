@@ -79,82 +79,151 @@
 <body onclick="closeList(event);">
 	<div class="container">
 		<button type="button" class="btn " data-toggle="modal"
-			data-target="#myModal">Add Cinema/Theatre</button>
-		<button type="button" onclick="displayAdminAdd()">Add admin</button>
+			data-target="#modal_add_cinema">Add Cinema/Theatre</button>
+		<button type="button" class="btn " data-toggle="modal"
+			data-target="#modal_add_admin">Add admin</button>
 
-		<div id="myModal" class="modal fade" role="dialog">
+		<div id="modal_add_cinema" class="modal fade" role="dialog">
 			<div class="modal-dialog">
 
 				<div class="modal-content">
 					<div class="modal-body">
 						<h3>Add Cinema/Theatre</h3>
-						<div class="form-group">
-							<label for="cinema_name">Name</label> <input type="text"
-								class="form-control" id="cinema_name" />
-						</div>
-						<div class="form-group">
-							<label for="cinema_address">Address</label> <input type="text"
-								class="form-control" id="cinema_address" />
-						</div>
-						<div class="form-group">
-							<label for="cinema_description">Description</label>
-							<textarea class="form-control" rows="3" id="cinema_description"></textarea>
-						</div>
-						<div class="form-group">
-							<label for="is_cinema_radio">Type</label>
-							<div class="radio">
-								<label><input type="radio" name="is_cinema_radio"
-									value="true">Cinema</label>
+						<form role="form" id="add_cinema_form" method="POST">
+							<div class="form-group">
+								<label for="cinema_name">Name</label> <input type="text"
+									class="form-control" id="cinema_name" required />
 							</div>
-							<div class="radio">
-								<label><input type="radio" name="is_cinema_radio"
-									value="false">Theater</label>
+							<div class="form-group">
+								<label for="cinema_address">Address</label> <input type="text"
+									class="form-control" id="cinema_address" required />
 							</div>
+							<div class="form-group">
+								<label for="cinema_description">Description</label>
+								<textarea class="form-control" rows="3" id="cinema_description"
+									required></textarea>
+							</div>
+							<div class="form-group">
+								<label for="is_cinema_radio">Type</label>
+								<div class="radio">
+									<label><input type="radio" name="is_cinema_radio"
+										value="true" checked="checked">Cinema</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="is_cinema_radio"
+										value="false">Theater</label>
+								</div>
+							</div>
+							<h4>Add Hall</h4>
+							<div class="form-group">
+								<label for="cinema_rows">Number of rows</label> <input
+									type="number" class="form-control" id="cinema_rows" />
+							</div>
+							<div class="form-group">
+								<label for="cinema_columns">Number of columns</label> <input
+									type="number" class="form-control" id="cinema_columns" />
+							</div>
+							<button type="button" class="btn btn-primary"
+								id="cinema_hall_add" onclick="cinemaHallAdd()">Add hall</button>
+							<div class="form-group">
+								<table class="table" id="cinema_halls">
+									<thead>
+										<tr>
+											<th>Rows</th>
+											<th>Columns</th>
+											<th><br></th>
+										</tr>
+									</thead>
+									<tbody id="cinema_hall_body">
+									</tbody>
+								</table>
+							</div>
+							<button class="btn btn-primary" id="cinema_add">Add</button>
+						</form>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Close</button>
 						</div>
-						<button class="btn btn-primary" id="cinema_hall_add"
-							onclick="cinemaHallAdd()">Add hall</button>
-						<div class="form-group">
-							<table class="table" id="cinema_halls">
-								<thead>
-									<tr>
-										<th>Name</th>
-										<th>Rows</th>
-										<th>Columns</th>
-									</tr>
-								</thead>
-								<tbody id="cinema_hall_body">
-								</tbody>
-							</table>
-						</div>
-						<button class="btn btn-primary" id="cinema_add"
-							onclick="checkCinemaAdd()">Add</button>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					</div>
 				</div>
-
 			</div>
 		</div>
 
+		<div id="modal_add_admin" class="modal fade" role="dialog">
+			<div class="modal-dialog">
 
-		<div id="popup_add_hall">
-			<table>
-				<tr>
-					<td>Number of rows:</td>
-					<td><input type="text" name="hall_row" id="hall_row_num" /></td>
-				</tr>
-				<tr>
-					<td>Number of columns:</td>
-					<td><input type="text" name="hall_column" id="hall_column_num" /></td>
-				</tr>
-				<tr>
-					<td>
-						<button type="button" onclick="cinemaHallAdd()">Add</button>
-					</td>
-					<td><button type="button" onclick="displayCinemaAdd()">Cancel</button></td>
-				</tr>
-			</table>
+				<div class="modal-content">
+					<div class="modal-body">
+						<img class="profile-img" id="add_admin_profile-img"
+							src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120"
+							alt="">
+						<h3>Add Admin</h3>
+						<form role="form" id="form_add_admin" method="POST">
+							<div class="form-group">
+								<label for="add_admin_email">Email</label> <input type="email"
+									class="form-control" id="add_admin_email" required />
+								<p id="add_admin_message-email"></p>
+							</div>
+							<div class="form-group">
+								<!--<a class="pull-right" href="#">Forgot password?</a>!-->
+								<label for="add_admin_password">Password</label> <input
+									type="password" class="form-control" id="add_admin_password"
+									required />
+							</div>
+							<div class="form-group">
+								<!--<a class="pull-right" href="#">Forgot password?</a>!-->
+								<label for="add_admin_r-password">Repeat password</label> <input
+									type="password" class="form-control" id="add_admin_r-password"
+									required />
+								<p id="add_admin_message"></p>
+							</div>
+							<div class="form-group">
+								<label for="add_admin_name">Name</label> <input type="text"
+									class="form-control" id="add_admin_name" required />
+							</div>
+							<div class="form-group">
+								<label for="add_admin_surname">Surname</label> <input
+									type="text" class="form-control" id="add_admin_surname"
+									required />
+							</div>
+							<div class="form-group">
+								<label for="add_admin_city">City</label> <input type="text"
+									class="form-control" id="add_admin_city" required />
+							</div>
+							<div class="form-group">
+								<label for="add_admin_phone">Phone</label> <input type="text"
+									class="form-control" id="add_admin_phone" required />
+							</div>
+							<div class="form-group">
+								<label for="profile-picture">Profile picture</label> <input
+									type="file" class="form-control-file" id="add_admin_file">
+							</div>
+							<div class="form-group">
+								<label for="is_cinema_radio">Admin type</label>
+								<div class="radio">
+									<label><input type="radio" name="admin_type_radio"
+										value="sys" checked="checked">System</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="admin_type_radio"
+										value="ct">Theater/Cinema</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="admin_type_radio"
+										value="fan">Fan zone</label>
+								</div>
+							</div>
+							<button type="submit" class="btn btn btn-primary"
+								id="add_admin_register">Add admin</button>
+						</form>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div id="popup_admin_add">

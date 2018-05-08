@@ -89,4 +89,14 @@ public class UserController {
 		return userService.changeUser(u);
 		
 	}
+
+	@RequestMapping(value = "/add_admin",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public User add_admin(@RequestBody User u){
+		User uu = userService.register(u,"iregular");
+		System.out.println(u.isActivated());
+		return uu;
+		
+	}
 }

@@ -1,6 +1,7 @@
 package com.project.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,16 +30,33 @@ public class CinemaTheatre implements Serializable{
 	@Column(nullable = false)
 	private boolean isCinema;
 
+	@Column
+	private ArrayList<Hall> halls;
+	
 	public CinemaTheatre() {
 		
 	}
-	
-	public CinemaTheatre(Long id, String name, String address, String description, boolean isCinema) {
+
+	public CinemaTheatre(Long id, String name, String address, String description, boolean isCinema,
+			ArrayList<Hall> halls) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.address = address;
 		this.description = description;
+		this.isCinema = isCinema;
+		this.halls = halls;
+	}
+
+	public ArrayList<Hall> getHalls() {
+		return halls;
+	}
+
+	public void setHalls(ArrayList<Hall> halls) {
+		this.halls = halls;
+	}
+
+	public void setCinema(boolean isCinema) {
 		this.isCinema = isCinema;
 	}
 

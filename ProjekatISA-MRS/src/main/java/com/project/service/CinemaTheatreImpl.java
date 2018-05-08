@@ -17,7 +17,7 @@ public class CinemaTheatreImpl implements CinemaTheatreService{
 	@Override
 	public void addCinemaTheatre(CinemaTheatre ct) {
 		if(ctRepository.findByAddress(ct.getAddress()) == null)
-			//System.out.println(ct.getName() + "  " + ct.getIsCinema() + "\n\n");
+			System.out.println(ct.getHalls().get(0).getHall_id() +"\n\n");
 			ctRepository.save(ct);
 	}
 	
