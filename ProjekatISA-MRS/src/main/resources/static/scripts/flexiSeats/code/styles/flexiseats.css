@@ -1,0 +1,65 @@
+/* Custom */
+.legends {
+  font-family: Arial;
+  font-size: 11px;
+  margin: 10px 0;
+  color: #666;
+}
+
+.methods{
+    margin: 10px 0;
+}
+
+.row {
+  line-height: 12px;
+}
+
+.row .seat.bg{
+    background: #ff6a00;
+}
+
+.row span.row-label {
+    font-size: 11px;
+    display: inline-block;
+    width: 15px;
+    padding-right: 5px;
+    text-align: right;
+}
+
+.row span.col-label {
+    font-size: 11px;
+    display: inline-block;
+    width: 14.3px;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+input[type=checkbox] { display:none; } /* to hide the checkbox itself */
+input[type=checkbox] + label:before {
+  font-family: FontAwesome;
+  font-size: 12px;
+  display: inline-block;
+  margin: 0 2px;
+  line-height: 17px;
+}
+
+input[type=checkbox] + label:before { 
+  content: "\f111"; 
+  color: #ddd; 
+  cursor: pointer; 
+}
+
+input[type=checkbox]:checked + label:before { 
+  content: "\f111"; 
+  color: #2980b9; 
+}
+
+input[type=checkbox]:disabled[data-status=booked] + label:before{
+  content: "\f111";
+  color: #27ae60;
+}
+
+input[type=checkbox]:disabled[data-status=notavailable] + label:before{
+  content: "\f111";
+  color: #999;
+}

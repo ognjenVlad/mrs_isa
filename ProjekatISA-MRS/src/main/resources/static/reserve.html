@@ -1,0 +1,107 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+<script src = "js/reserve.js"></script>
+<script src="scripts/flexiSeats/code/scripts/flexiseats.js"></script>
+<link href="scripts/flexiSeats/code/styles/flexiseats.css" rel="stylesheet">
+
+
+</head>
+<body>
+<div class="container">
+      <div class="row">
+      <div class="col-md-5  toppad  pull-right col-md-offset-3 ">
+      <br>
+      </div>
+      <div class="col-md-6 col-lg-6 col-md-offset-3 col-lg-offset-3 toppad" >
+      <div class="panel panel-primary">
+      <div class="panel-heading">
+      		<h3 class="panel-title">Make reservation</h3>
+      </div>
+      <div class="panel-body">
+     <div class="row">
+     <div class="col-md-6 col-lg-6 " >
+     		<form role="form" method="POST" id='form'>
+<!--      		<div class="form-group" > -->
+<!-- 				<label for="pplace-select">City:</label> -->
+<!-- 				<select class="selectpicker" data-live-search="true" id="projection-select"  title = "Choose one of the following..." required> -->
+<!-- 				</select> -->
+<!-- 			</div> -->
+     		<div class="form-group" style="margin-top:5px">
+				
+				<label for="cinema-select">Select cinema:</label>
+				<select class="selectpicker" data-live-search="true" id="cinema-select" title = "Choose one of the following..." required>
+				</select>
+				
+			</div>
+			
+			<div class="form-group" style="margin-top:5px">
+				<label for="projection-select">Projection:</label>
+				<select class="selectpicker" data-live-search="true" id="projection-select"  title = "Choose one of the following..." required>
+				</select>
+			</div>
+			
+			<div class="form-group">
+				<label style="margin-top:5px" for="d">Date:</label>
+		        <input class="form-control" id="date" name="date" placeholder="DD/MM/YYYY" type="text" required/>
+		    	
+		    </div>
+			<div class="form-group" style="margin-top:5px">
+				<label for="time">Select time:</label>
+				<select class="selectpicker" data-live-search="true" id="time"  title="Choose one of the following..." required></select>
+			</div>
+			<div class="form-group" style="margin-top:5px">
+				<label for="hall">Hall:</label>
+				<select class="selectpicker" data-live-search="true" id="hall"  title="Choose one of the following..." required></select>
+			</div>
+	
+		<div style="margin-left:40px" id="seats">
+		</div>
+		<div class="legends" id="legends" style="visibility: hidden">
+		  <input id="legAvailable" type="checkbox" disabled />
+		  <label for="legAvailable"> Available</label>
+		  <input id="legBooked" type="checkbox" data-status="booked" checked disabled />
+		  <label for="legBooked"> Booked</label>
+		  <input id="legBooked" type="checkbox" checked disabled />
+		  <label for="legBooked"> Selected</label>
+		</div>
+		<div class="form-group" style="margin-top:20px">
+				<label for="friends">Invite friends:</label>
+				<div class="input-group">
+	
+					<select class="selectpicker" data-live-search="true" id="friends"  title="Choose one of the following..."></select>
+					<button id="invite-button" type="button" class="btn btn-default">Invite</button>	
+				</div>
+		</div>
+		<div style="margin-top:10px">
+			<table class="table" id='friends-table'>
+			  <thead>
+			   
+			      <th scope="col">Invited friends</th>
+			   
+			  </thead>
+			  <tbody>
+			  </tbody>
+		 </table>
+		</div>
+		<button style="margin-top:10px"type="submit" class="btn btn btn-primary" id="make-reservation">
+				Make reservation</button>
+		</form>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

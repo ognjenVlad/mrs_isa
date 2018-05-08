@@ -20,4 +20,13 @@ public class AdminCTConroller {
 		ctService.addCinemaTheatre(ct);
 		return "success";
 	}
+	
+	@RequestMapping(value = "/get_cinemas",method = RequestMethod.GET)
+	public List<CinemaTheatre> getCinemas(){
+		return ctService.getCinemas();
+	}
+	@RequestMapping(value = "/get_theatres",method = RequestMethod.GET)
+	public List<CinemaTheatre> getTheatres(){
+		return ctService.getTheatres();
+	}
 }

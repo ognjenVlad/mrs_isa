@@ -24,7 +24,7 @@ $("#log").click(
 					localStorage.setItem('user',JSON.stringify(data));
 				
 					alert(data)
-					window.location.replace("http://localhost:8080/userProfile.html");
+					window.location.replace("http://localhost:8080/reserve.html");
 				}
 			});
 		});

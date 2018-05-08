@@ -30,5 +30,30 @@ public class CinemaTheatreImpl implements CinemaTheatreService{
 	public ArrayList<CinemaTheatre> findAll(){
 		return ctRepository.findAll();
 	}
-
+	
+	@Override
+	public ArrayList<CinemaTheatre> getCinemas(){
+		ArrayList<CinemaTheatre> l1 = ctRepository.findAll();
+		ArrayList<CinemaTheatre> cinemas = new ArrayList<CinemaTheatre>();
+		for (CinemaTheatre cinemaTheatre : l1) {
+			System.out.println(cinemaTheatre);
+			if(cinemaTheatre.getIsCinema()){
+				cinemas.add(cinemaTheatre);
+			}
+		}
+		return cinemas;
+	}
+	@Override
+	public ArrayList<CinemaTheatre> getTheatres(){
+		ArrayList<CinemaTheatre> l1 = ctRepository.findAll();
+		
+		ArrayList<CinemaTheatre> theatres = new ArrayList<CinemaTheatre>();
+		for (CinemaTheatre cinemaTheatre : l1) {
+			if(!cinemaTheatre.getIsCinema()){
+				theatres.add(cinemaTheatre);
+			}
+		}
+		return theatres;
+	}
+	
 }

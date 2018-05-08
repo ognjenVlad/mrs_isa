@@ -11,4 +11,8 @@ public interface CinemaTheatreService {
 	public ArrayList<CinemaTheatre> findAll();
 	
 	public CinemaTheatre findById(Long id);
+	
+	public ArrayList<CinemaTheatre> getTheatres();
+	
+	public ArrayList<CinemaTheatre> getCinemas();
 }
