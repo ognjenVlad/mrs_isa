@@ -8,6 +8,7 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing&key=AIzaSyAro0psoaV4dA4AkTSUm7TXt_bO9Nf1sB4"></script>
 <link href="resources/css/popup_windows.css" rel="stylesheet" />
 <link href="resources/css/styles.css" rel="stylesheet" />
 <script type="text/javascript" src="resources/js/popup_control.js"></script>
@@ -20,22 +21,25 @@
 <script type="text/javascript">
 	function renderCinemaTheaters(data) {
 		// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
-		var list = data == null ? []
-				: (data instanceof Array ? data : [ data ]);
+		var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
 		cinemas = list;
 		$.each(list, function(index, cinema) {
-			if (cinema.isCinema == true) {
-				$('#cinemas').append(
-						"<a class=\"cinthe_list\" href=\"javascript:showDetails();\">"
-								+ cinema.name + "</a>");
-			} else {
-				$('#theatres').append(
-						"<a class=\"cinthe_list\" href=\"javascript:showDetails();\">"
-								+ cinema.name + "</a>");
+			var ind = index + 1;
+			var html_string = '<div class="panel panel-default"><div class="panel-heading">'+
+						'<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+ind+'">'+cinema.name+
+						'</a></h4></div><div id="collapse'+ind+'" class="panel-collapse collapse"><div class="panel-body">'+cinema.description+
+						'</div></div></div>'
+				
+			if(cinema.isCinema == true){
+				$('#cinemas_list').append(html_string);
+			}else{
+				$('#theatres_list').append(html_string);
 			}
-
+	        
 		});
-
+		
+		
+		
 	}
 
 	function getCinemas() {
@@ -48,40 +52,78 @@
 		});
 	}
 
-	function showCinemaList() {
-		$('#cinemas')[0].style.display = "block";
+	function showCinemaList(){
+		$('#cinemas').modal('show');
 	}
 
-	function showTheatreList() {
-		$('#theatres')[0].style.display = "block";
+	function showTheatreList(){
+		$('#theatres').modal('show');
 	}
 
-	function closeList(event) {
-		var cinthe_list = $('.cinthe_list');
-		var cinthe_details = $('.cinthe_details');
-		if ($.inArray(event.target, cinthe_list) == -1) {
-			$('#cinemas')[0].style.display = "none";
-			$('#theatres')[0].style.display = "none";
-		}
-		if ($.inArray(event.target, cinthe_details) == -1) {
-			$('.cinthe_details')[0].style.display = "none";
-		}
-	}
 
-	function showDetails() {
-		$('.cinthe_details').empty();
-		$('.cinthe_details').append("<p>Cinema/Theatre</p>");
-		$('.cinthe_details')[0].style.display = "block";
-	}
+// 	function closeList(event) {
+// 		var cinthe_list = $('.cinthe_list');
+// 		var cinthe_details = $('.cinthe_details');
+// 		if ($.inArray(event.target, cinthe_list) == -1) {
+// 			$('#cinemas')[0].style.display = "none";
+// 			$('#theatres')[0].style.display = "none";
+// 		}
+// 		if ($.inArray(event.target, cinthe_details) == -1) {
+// 			$('.cinthe_details')[0].style.display = "none";
+// 		}
+// 	}
+
+// 	function showDetails() {
+// 		$('.cinthe_details').empty();
+// 		$('.cinthe_details').append("<p>Cinema/Theatre</p>");
+// 		$('.cinthe_details')[0].style.display = "block";
+// 	}
 
 	getCinemas();
 </script>
-<body onclick="closeList(event);">
+<body>
 	<div class="container">
 		<button type="button" class="btn " data-toggle="modal"
 			data-target="#modal_add_cinema">Add Cinema/Theatre</button>
 		<button type="button" class="btn " data-toggle="modal"
 			data-target="#modal_add_admin">Add admin</button>
+		<a href="fan_page.html">Fan page</a>
+		<nav class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="#">Movies and cinemas</a>
+		    </div>
+		    <ul class="nav navbar-nav navbar-right">
+		      <li><a href="reg.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+		      <li><a href="signin.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		    </ul>
+		  </div>
+		</nav>
+		
+		<div class="row">
+			<div class="col-md-4">
+		    <div class="thumbnail">
+			  <a href="javascript:showCinemaList();">
+			    <img src="resources/images/cinema.jpg" alt="Cinema" style="width:100%; height: 240px">
+			    <div class="caption">
+			      <p>List of cinemas</p>
+			    </div>
+			  </a>
+			</div>
+		  </div>
+		  <div class="col-md-4">
+		    <div class="thumbnail">
+			  <a href="javascript:showTheatreList();">
+			    <img src="resources/images/theatre.jpg" alt="Theatre" style="width:100%; height: 240px">
+			    <div class="caption">
+			      <p>List of theatres</p>
+			    </div>
+			  </a>
+			</div>
+		  </div>
+			
+		
+		</div>
 
 		<div id="modal_add_cinema" class="modal fade" role="dialog">
 			<div class="modal-dialog">
@@ -225,36 +267,49 @@
 				</div>
 			</div>
 		</div>
+		
 
-		<a href="fan_page.html">Fan page</a>
 
-		<div class="header">
-			<a href="" class="logo">Movies and Shows</a>
-			<div class="header-right">
-				<a href="reg.html">Registracija</a> <a href="signin.html">Log in</a>
-			</div>
-
-		</div>
-
-		<div id="cinthe">
-			<a class="cinthe" href="javascript:showCinemaList();">
-				<div class="cinthe">
-					<img class="cinthe" src="resources/images/cinema.jpg">
-					<p>CINEMAS</p>
+	<div class="modal fade" id="cinemas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Cinema list</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+				<div class="panel-group" id="cinemas_list">
 				</div>
-			</a> <a class="cinthe" href="javascript:showTheatreList();">
-				<div class="cinthe">
-					<img class="cinthe" src="resources/images/theatre.jpg">
-					<p>THEATRES</p>
-				</div>
-			</a>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
 		</div>
+	</div>
+	
+	<div class="modal fade" id="theatres" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Theatre list</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <div class="panel-group" id="theatres_list">
+		        </div>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+		</div>
+	</div>
 
-		<div class="cinthe_list" id="cinemas"></div>
-
-		<div class="cinthe_list" id="theatres"></div>
-
-		<div class="cinthe_details"></div>
 	</div>
 </body>
 
