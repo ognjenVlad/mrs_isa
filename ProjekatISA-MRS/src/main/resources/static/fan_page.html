@@ -1,0 +1,58 @@
+<html>
+
+<head>
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="resources/css/popup_windows.css" rel="stylesheet" />
+<script type="text/javascript" src="js/fan_page.js"></script>
+
+<title>Fan Page</title>
+
+</head>
+<body>
+	<div class="container">
+		<button type="button" class="btn" data-toggle="modal"
+			data-target="#modal_send_ad">Create ad</button>
+
+		<div id="modal_send_ad" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<div class="modal-content">
+					<div class="modal-body">
+						<h3>Create ad</h3>
+						<form role="form" id="form_create_ad" method="POST">
+							<div class="form-group row">
+								<label for="ad_title">Title</label> <input type="text"
+									class="form-control" id="ad_title" required />
+							</div>
+							<div class="form-group row">
+								<label for="ad_description">Description</label>
+								<textarea class="form-control" rows="3" id="ad_description"
+									required></textarea>
+							</div>
+							<div class="form-group row">
+								<label class="ad_exp_date" for="date">Expire date</label> <input
+									class="form-control" id="ad_exp_date" type="date" />
+							</div>
+							<div class="form-group">
+								<label for="profile-picture">Profile picture</label> <input
+									type="file" class="form-control-file" id="ad_file">
+							</div>
+							<button type="submit" class="btn btn btn-primary"
+								id="ad_create">Create ad</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
