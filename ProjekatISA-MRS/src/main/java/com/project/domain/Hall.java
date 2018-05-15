@@ -21,18 +21,18 @@ public class Hall implements Serializable{
 	private String hall_id;
 	
 	@Column(nullable = false)
-	private int rows;
+	private int rows1;
 	
 	@Column(nullable = false)
-	private int columns;
+	private int columns1;
 
 	public Hall() {};
 	public Hall(Long id, String hall_id, int rows, int columns) {
 		super();
 		this.id = id;
 		this.hall_id = hall_id;
-		this.rows = rows;
-		this.columns = columns;
+		this.rows1 = rows;
+		this.columns1 = columns;
 	}
 
 	public Long getId() {
@@ -52,19 +52,19 @@ public class Hall implements Serializable{
 	}
 
 	public int getRows() {
-		return rows;
+		return rows1;
 	}
 
 	public void setRows(int rows) {
-		this.rows = rows;
+		this.rows1 = rows;
 	}
 
 	public int getColumns() {
-		return columns;
+		return columns1;
 	}
 
 	public void setColumns(int columns) {
-		this.columns = columns;
+		this.columns1 = columns;
 	}
 
 	public static long getSerialversionuid() {

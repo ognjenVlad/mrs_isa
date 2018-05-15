@@ -34,6 +34,7 @@ public class CinemaTheatreImpl implements CinemaTheatreService{
 	@Override
 	public ArrayList<CinemaTheatre> getCinemas(){
 		ArrayList<CinemaTheatre> l1 = ctRepository.findAll();
+		System.out.println(l1);
 		ArrayList<CinemaTheatre> cinemas = new ArrayList<CinemaTheatre>();
 		for (CinemaTheatre cinemaTheatre : l1) {
 			System.out.println(cinemaTheatre);

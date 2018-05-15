@@ -11,13 +11,19 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.project.DTO.FriendsDTO;
+import com.project.domain.Friends;
 import com.project.domain.User;
+import com.project.repository.FriendsRepository;
 import com.project.repository.UserRepository;
 @Service
 public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private FriendsRepository friendsRepository;
 	
 	@Autowired
 	private JavaMailSender javaMailSender;
@@ -86,9 +92,24 @@ public class UserServiceImpl implements UserService{
 			return old_user;
 		}
 	}
+	
+	public List<User> getUsers(){
+		List<User> users = userRepository.findAll();
+		ArrayList<User> ret = new ArrayList<User>();
+		for(User u : users){
+			u.setPassword("");
+			ret.add(u);
+		}
+		return ret;
+	}
 	public User changeUser(User u){
 		User old_user = userRepository.findByEmail(u.getEmail());
-		userRepository.delete(old_user);
+		old_user.setCity(u.getCity());
+		old_user.setName(u.getName());
+		old_user.setPhone(u.getPhone());
+		old_user.setPicture(u.getPicture());
+		old_user.setSurname(u.getSurname());
+		old_user.setPassword(u.getPassword());
 		userRepository.save(u);
 		return u;
 	}
@@ -100,5 +121,66 @@ public class UserServiceImpl implements UserService{
 			admins.add(user);
 		}
 		return admins;
+	}
+	
+	public ArrayList<User> getFriends(User u){
+
+		User user = userRepository.findByEmail(u.getEmail());
+
+		ArrayList<Friends> friends = friendsRepository.findByUserAndAccepted(user,true);
+
+		ArrayList<User> ret = new ArrayList<User>();
+		for (Friends friend : friends) {
+			ret.add(friend.getFriend());
+		}
+		return ret;
+	}
+	
+	public boolean addFriend(FriendsDTO u){
+		User user = userRepository.findByEmail(u.getUser().getEmail());
+		User friend = userRepository.findByEmail(u.getFriend().getEmail());
+		Friends f = new Friends();
+		f.setFriend(friend);
+		f.setUser(user);
+		f.setAccepted(false);
+		friendsRepository.save(f);
+		return true;
+	}
+	
+	public ArrayList<User> acceptRequest(FriendsDTO u){
+		User user = userRepository.findByEmail(u.getUser().getEmail());
+		User friend = userRepository.findByEmail(u.getFriend().getEmail());
+		Friends f = friendsRepository.findByUserAndFriend(user,friend);
+		f.setAccepted(true);
+		friendsRepository.save(f);
+		friendsRepository.flush();
+		return getFriends(user);
+	}
+	
+
+	public boolean deleteFriend(FriendsDTO u){
+		User user = userRepository.findByEmail(u.getUser().getEmail());
+		User friend = userRepository.findByEmail(u.getFriend().getEmail());
+		Friends f = friendsRepository.findByUserAndFriend(user,friend);
+		friendsRepository.delete(f);
+		return true;
+	}
+	public ArrayList<User> getFriendRequest(User u){
+
+		ArrayList<Friends> friends = friendsRepository.findByUserAndAccepted(userRepository.findByEmail(u.getEmail()),false);
+		ArrayList<User> ret = new ArrayList<User>();
+		for (Friends friend : friends) {
+			ret.add(friend.getFriend());
+		}
+		return ret;
+	}
+
+	@Override
+	public boolean declineRequest(FriendsDTO u) {
+		User user = userRepository.findByEmail(u.getUser().getEmail());
+		User friend = userRepository.findByEmail(u.getFriend().getEmail());
+		Friends f = friendsRepository.findByUserAndFriend(user,friend);
+		friendsRepository.delete(f);
+		return true;
 	}
 }
