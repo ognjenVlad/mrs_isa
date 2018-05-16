@@ -139,11 +139,12 @@ public class UserController {
 		return userService.getFriendRequest(u);
 		
 	}
-	@RequestMapping(value = "/getUsers",method = RequestMethod.GET,
+	@RequestMapping(value = "/getUsers",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<User> getUsers(){
+	public List<User> getUsers(@RequestBody User u){
 
-		return userService.getUsers();
+		return userService.getUsers(u);
 		
 	}
 

@@ -23,13 +23,17 @@ $("#log").click(
 					}
 					localStorage.setItem('user',JSON.stringify(data));
 				
-					alert(data)
-					window.location.replace("http://localhost:8080/reserve.html");
+					
+					window.location.replace("http://localhost:8080/userProfile.html");
 				}
 			});
 		});
 
-
+$("#signout").on('click',function()
+		{
+		localStorage.removeItem('user');
+		window.location.replace("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080/signin.html");
+});
 
 	
 });

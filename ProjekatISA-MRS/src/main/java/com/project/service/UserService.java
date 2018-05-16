@@ -11,7 +11,7 @@ public interface UserService {
 	User register(User u, String loginType);
 	User changeUser(User u);
 	List<User> getCTadmins();
-	List<User> getUsers();
+	List<User> getUsers(User u);
 	ArrayList<User> getFriends(User u);
 
 	ArrayList<User> getFriendRequest(User u);
