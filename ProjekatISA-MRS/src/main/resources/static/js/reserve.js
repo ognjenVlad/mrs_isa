@@ -1,23 +1,28 @@
 $(document).ready(function() {
 	var items;
-	$.get({
-		url:"http://localhost:8080/adminct/get_cinemas"
-		,success:function(data){
-			
-			items = data;
-			console.log(items);
-			$.each(items, function (i, item) {
-				console.log(items);
-			    $('#cinema-select').append($('<option>', { 
-			        value: item.name,
-			        text : item.name 
-			    }));
-			});
-			$('#cinema-select').selectpicker('refresh');
+//	$.get({
+//		url:"http://localhost:8080/adminct/get_cinemas"
+//		,success:function(data){
+//			
+//			items = data;
+//			console.log(items);
+//			$.each(items, function (i, item) {
+//				console.log(items);
+//			    $('#cinema-select').append($('<option>', { 
+//			        value: item.name,
+//			        text : item.name 
+//			    }));
+//			});
+//			$('#cinema-select').selectpicker('refresh');
+//
+//		}
+//	})
+	$('#cinema-select').append($('<option>', { 
+        value: "cine",
+        text : "cine" 
+    }));
 
-		}
-	})
-	
+	$('#cinema-select').selectpicker('refresh');
 	var date_input=$('input[name="date"]'); //our date input has the name "date"
 	
 	date_input.datepicker({
@@ -149,7 +154,15 @@ $(document).ready(function() {
 		
 	});	
 	$("#friends-table").on("click", ".ibtnDel", function (event) {
-        $(this).closest("tr").remove();       
+		$row = $(this).closest("tr");
+		$tds = $row.find("td");          
+		var user = [];
+		$.each($tds, function() {               
+		    noobs.push($(this).text()); 
+		    selectFriends();
+		});
+		$row.remove();
+         
     });
 	console.log(seats);
 	$('#form').on('submit',function(){

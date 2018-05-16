@@ -1,0 +1,39 @@
+
+.badge-notify{
+   background:red;
+   position:relative;
+   top: -5px;
+   left: -15px;
+   font-size:12px;
+}
+.navbar.navbar-default {
+    background-color: white;
+    border: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.navbar.navbar-default .navbar-collapse {
+    border: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.navbar.navbar-default .navbar-nav {
+    color: red;
+}
+.navbar.navbar-default .navbar-nav a{
+    color: #428bca; 
+    font-size: 15px ;
+}
+
+.navbar.navbar-default .navbar-nav > .active > a {
+    color: white;
+    background-color:#428bca;
+}
+   hr {
+height: 0.5px;
+color: #428bca;
+background-color: #428bca;
+border: none;
+}
+.user-image img { clear: both; margin: auto; position: relative;}

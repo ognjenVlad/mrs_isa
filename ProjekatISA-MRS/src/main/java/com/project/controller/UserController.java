@@ -1,6 +1,8 @@
 package com.project.controller;
 
 import java.security.Key;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.project.DTO.FriendsDTO;
 import com.project.DTO.UserDTO;
 import com.project.domain.User;
 import com.project.service.UserServiceImpl;
@@ -53,8 +56,7 @@ public class UserController {
         JwtBuilder builder = Jwts.builder()
                 .setSubject(gson.toJson(dto))
                 .signWith(signatureAlgorithm, signingKey);
-        System.out.println("AAAAAA");
-		
+       
 			try {
 				userService.sendMail(u,builder.compact());
 			} catch (MailException | InterruptedException e) {
@@ -85,8 +87,63 @@ public class UserController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public User changeUser(@RequestBody User u){
-		System.out.println(u);
+
 		return userService.changeUser(u);
+		
+	}
+	@RequestMapping(value = "/getFriends",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<User> getFriends(@RequestBody User u){
+
+		return userService.getFriends(u);
+		
+	}
+	@RequestMapping(value = "/addFriend",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public boolean addFriend(@RequestBody FriendsDTO u){
+
+		return userService.addFriend(u);
+		
+	}
+	@RequestMapping(value = "/acceptRequest",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<User> acceptRequest(@RequestBody FriendsDTO u){
+
+		return userService.acceptRequest(u);
+		
+	}
+	@RequestMapping(value = "/deleteFriend",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public boolean deleteFriend(@RequestBody FriendsDTO u){
+
+		return userService.deleteFriend(u);
+		
+	}
+	@RequestMapping(value = "/declineRequest",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public boolean declineRequest(@RequestBody FriendsDTO u){
+
+		return userService.declineRequest(u);
+		
+	}
+	@RequestMapping(value = "/getRequests",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<User> getRequests(@RequestBody User u){
+
+		return userService.getFriendRequest(u);
+		
+	}
+	@RequestMapping(value = "/getUsers",method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<User> getUsers(){
+
+		return userService.getUsers();
 		
 	}
 
