@@ -18,6 +18,8 @@ import com.project.service.ProjectionImpl;
 public class AdminCTConroller {
 	@Autowired
 	private CinemaTheatreImpl ctService;
+	
+	@Autowired
 	private ProjectionImpl prService;
 		
 	@RequestMapping(value = "/add_cinema",method = RequestMethod.POST)
@@ -36,8 +38,10 @@ public class AdminCTConroller {
 	}
 	
 	@RequestMapping(value = "/add_projection", method = RequestMethod.POST)
-	public String addPRojection(@RequestBody Projection pr){
+	public String addProjection(@RequestBody Projection pr){
+		System.out.println(pr.getHalls().size() +" halls size \n\n");
 		prService.addProjection(pr);
 		return "success";
 	}
+
 }
