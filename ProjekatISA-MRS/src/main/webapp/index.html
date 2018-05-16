@@ -17,68 +17,30 @@
 <title>Tim12 Cogi</title>
 
 </head>
+<script src="js/user_types.js"></script>
+
 <script type="text/javascript">
-	function fill_map(div_id, lat, lng) {
-		var mapCanvas = document.getElementById(div_id);
-		var mapOptions = {
-			center : new google.maps.LatLng(lat, lng),
-			zoom : 15
-		};
-		var map = new google.maps.Map(mapCanvas, mapOptions);
-	}
-
-	function getMap(div_id, loc) {
-
-		$.ajax({
-			type : 'GET',
-			url : 'https://maps.googleapis.com/maps/api/geocode/json?address='
-					+ loc,
-
-			success : function(data) {
-
-				var lat = data.results[0].geometry.location.lat;
-				var lng = data.results[0].geometry.location.lng;
-
-				fill_map(div_id, lat, lng);
-			},
-			error : function(XMLHttpRequest, textStatus, errorThrown) {
-				alert("AJAX ERROR: " + errorThrown);
-			}
-		});
-	}
-
 	function renderCinemaTheaters(data) {
 		// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
 		var list = data == null ? []
 				: (data instanceof Array ? data : [ data ]);
 		cinemas = list;
-		$
-				.each(
-						list,
-						function(index, cinema) {
-							var ind = index + 1;
-							var html_string = '<div class="panel panel-default"><div class="panel-heading">'
-									+ '<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+ind+'">'
-									+ cinema.name
-									+ '</a></h4></div><div id="collapse'+ind+'" class="panel-collapse collapse"><div class="panel-body">'
-									+ cinema.description;
-
-							if (cinema.isCinema == true) {
-								html_string += '<br/><div id="map_cinema_'
-										+ ind
-										+ '" style="width:100%;height:400px;"></div></div></div></div>';
-								$('#cinemas_list').append(html_string);
-								getMap("map_cinema_" + ind, cinema.address);
-							} else {
-								html_string += '<br/><div id="map_theatre_'
-										+ ind
-										+ '" style="width:100%;height:400px;"></div></div></div></div>';
-								$('#theatres_list').append(html_string);
-								getMap("map_theatre_" + ind, cinema.address);
-							}
-
-						});
-
+		$.each(list, function(index, cinema) {
+			var ind = index + 1;
+			var html_string = '<div class="panel panel-default"><div class="panel-heading">'+
+						'<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+ind+'">'+cinema.name+
+						'</a></h4></div><div id="collapse'+ind+'" class="panel-collapse collapse"><div class="panel-body">'+
+						'<a href="cinema_profile.html?'+cinema.id+'" style="float:right">Visit profile</a>'+cinema.description+
+						'<br/>'+cinema.address;
+				
+			if(cinema.isCinema == true){
+				$('#cinemas_list').append(html_string);
+			}else{
+				$('#theatres_list').append(html_string);
+			}
+	        
+		});
+		
 	}
 
 	function getCinemas() {
@@ -98,24 +60,6 @@
 	function showTheatreList() {
 		$('#theatres').modal('show');
 	}
-
-	// 	function closeList(event) {
-	// 		var cinthe_list = $('.cinthe_list');
-	// 		var cinthe_details = $('.cinthe_details');
-	// 		if ($.inArray(event.target, cinthe_list) == -1) {
-	// 			$('#cinemas')[0].style.display = "none";
-	// 			$('#theatres')[0].style.display = "none";
-	// 		}
-	// 		if ($.inArray(event.target, cinthe_details) == -1) {
-	// 			$('.cinthe_details')[0].style.display = "none";
-	// 		}
-	// 	}
-
-	// 	function showDetails() {
-	// 		$('.cinthe_details').empty();
-	// 		$('.cinthe_details').append("<p>Cinema/Theatre</p>");
-	// 		$('.cinthe_details')[0].style.display = "block";
-	// 	}
 
 	getCinemas();
 </script>
@@ -353,5 +297,7 @@
 
 	</div>
 </body>
-
+<script type="text/javascript">
+	check_user();
+</script>
 </html>
