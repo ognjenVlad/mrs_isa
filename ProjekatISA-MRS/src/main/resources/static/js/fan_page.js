@@ -1,6 +1,5 @@
 display_ads();
 display_props();
-update_logging();
 var ad_img_src = "https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120";
 var prop_img_src = "https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120";
 var current_ad;
@@ -35,7 +34,7 @@ $(document).ready(function() {
 		var d = JSON.stringify({
 			"title" : $("#ad_title").val(),
 			"description" : $("#ad_description").val(),
-			"exp_date" : date_val,
+			"exp_date" : date_val.getMonth() + "/" + date_val.getDate() +  "/" + date_val.getFullYear(),
 			"picture" : ad_img_src
 		})
 

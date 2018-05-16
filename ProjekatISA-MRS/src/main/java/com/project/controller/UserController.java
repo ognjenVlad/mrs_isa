@@ -44,6 +44,7 @@ public class UserController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public User register(@RequestBody User u){
+		u.setUser_type("user");
 		System.out.println(u.getEmail());
 		Gson gson = new Gson();
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;

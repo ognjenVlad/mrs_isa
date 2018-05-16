@@ -11,44 +11,27 @@
 <link href="resources/css/styles.css" rel="stylesheet" />
 <link href="css/login.css" rel="stylesheet" />
 <link href="css/fan_zone.css" rel="stylesheet" />
-<script type="text/javascript" src="resources/js/site_functions.js"></script>
+<script type="text/javascript" src="js/user_types.js"></script>
 <script type="text/javascript" src="js/fan_page.js"></script>
 
 <title>Tim12 Cogi</title>
 
 </head>
 <body>
-	<div class="container">
 		<nav class="navbar navbar-inverse">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="">Fan Zone</a>
-				</div>
-				<ul class="nav navbar-nav navbar-left">
-					<li><a class="nav-link" href="index.html">Home page</a></li>
-					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#" id="navbarCreate"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false"> Create </a>
-						<div class="dropdown-menu" aria-labelledby="navbarCreate">
-							<button class="btn navbar-btn dropdown-item user" data-toggle="modal"
-								data-target="#modal_send_ad">Ad</button>
-							<button class="btn navbar-btn dropdown-item user" data-toggle="modal"
-								data-target="#modal_create_prop">Prop</button>
-						</div></li>
-					<li>
-						<button class="btn btn-link navbar-btn admin_fan" data-toggle="modal"
-							data-target="#modal_get_ad" onclick="get_ad_request()">Get pending ad</button>
-					</li>
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="reg.html"><span
-							class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-					<li><a href="signin.html"><span
-							class="glyphicon glyphicon-log-in"></span> Login</a></li>
-				</ul>
-			</div>
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="index.html">Cinemas and Theaters</a>
+		    </div>
+			<ul class="nav navbar-nav"></li></ul>
+		    <ul class="nav navbar-nav" id="navbarLeft_fan">
+		    </ul>
+		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
+		    </ul>
+		  </div>
 		</nav>
+
+	<div class="container">
 
 		<div id="modal_send_ad" class="modal fade" role="dialog">
 			<div class="modal-dialog">
@@ -151,4 +134,7 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+	check_user();
+</script>
 </html>
