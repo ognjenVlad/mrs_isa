@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing&key=AIzaSyAro0psoaV4dA4AkTSUm7TXt_bO9Nf1sB4"></script>
+
+<title>Cinema profile</title>
+</head>
+<script src="js/user_types.js"></script>
+<script src="js/projection_add.js"></script>
+<script type="text/javascript">
+
+	var halls;
+	var actors_count = 0;
+	var halls_count = 0;
+	
+	function fill_map(div_id, lat, lng){
+		var mapCanvas = document.getElementById(div_id);
+	    var mapOptions = {
+	        center: new google.maps.LatLng(lat, lng),
+	        zoom: 15
+	    };
+	    var map = new google.maps.Map(mapCanvas, mapOptions);
+	}
+	
+	function getMap(div_id, loc){
+	
+	    $.ajax({
+				type : 'GET',
+				url : 'https://maps.googleapis.com/maps/api/geocode/json?address=' + loc,
+				
+				success : function(data){
+					if(data == null){
+						var lat = 1000;
+						var lng = 1000;
+					}else{
+						
+					var lat = data.results[0].geometry.location.lat;
+					var lng = data.results[0].geometry.location.lng;
+					}
+	        	fill_map(div_id, lat, lng);
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown){
+					alert("AJAX ERROR: " + errorThrown);
+				}
+			});
+	}
+	
+	function render_cinema(cinema){
+		halls = cinema.halls;
+		$('#details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
+		if (cinema.isCinema){
+			$('#image_and_map').append('<img src="resources/images/cinema.jpg" alt="Cinema" style="width:100%; height: 240px">');
+			
+		}else{
+			$('#image_and_map').append('<img src="resources/images/theatre.jpg" alt="Theatre" style="width:100%; height: 240px">');
+			
+		}
+		var html_string = '<div id="map" style="width:100%;height:250px;"></div>';
+		$('#image_and_map').append(html_string);
+		getMap("map", cinema.address);
+		
+		$.each(cinema.halls, function(index, hall){
+			$('#sel1').append('<option>'+hall.hall_id+'</option>');
+		});
+		
+	}
+
+	function get_cinema_data(){
+		var id = window.location.search.substring(1);
+		
+		$.ajax({
+			type : 'GET',
+			url : 'http://localhost:8080/get_cinema?id=' + id,
+			
+			dataType : "json", // data type of response
+			success : render_cinema
+		});
+	}
+	
+	function render_projections(data){
+		var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
+		projections = list;
+		$.each(projections, function(index, proj){
+			$('#repertoire').append(proj.name+"<br/>")
+		});
+		
+	}
+	
+	function get_projections(){
+		$.ajax({
+			type : 'GET',
+			url : 'http://localhost:8080/get_projections',
+			dataType : "json",
+			success : render_projections,
+		});
+	}
+	
+	function actorsAdd(){
+		var actor_name = $('#actor').val();
+		$('#actors').append('<tr><td id="actor'+actors_count+'">'+actor_name+'</td></tr>');
+		actors_count++;
+	}
+	
+	function hallsAdd(){
+		var hall = $('#sel1').val();
+		$('#halls').append('<tr><td id="hall'+halls_count+'">'+hall+'</td></tr>');
+		var time_html = '<div class="form-group"><label for="time'+halls_count+'" class="col-form-label">'+
+					'Time of projection:</label><input type="time" class="form-control" id="time'+halls_count+'"></div>';
+		$('#halls').append(time_html);
+		halls_count++;
+	}
+	
+	get_cinema_data();
+	get_projections();
+</script>
+<body>
+	<nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="#">Movies and cinemas</a>
+	    </div>
+	    <ul class="nav navbar-nav navbar-right" id="navbarRight">
+	    </ul>
+	  </div>
+	</nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4" id="image_and_map"></div>
+			<div class="col-md-8">
+				<ul class="nav nav-tabs">
+				  <li class="active"><a data-toggle="pill" href="#details">Details</a></li>
+				  <li><a data-toggle="pill" href="#repertoire">Repertoire</a></li>
+				  <li><a data-toggle="pill" href="#discounts">Discounts</a></li>
+				</ul>
+				<div class="tab-content">
+				  <div class="tab-pane fade in active" id="details">
+				  </div>
+				  <div class="tab-pane fade" id="repertoire">
+				  	 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProjectionModal">Add new projection</button>
+				  </div>
+				  <div class="tab-pane fade" id="discounts">
+				  </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="addProjectionModal" tabindex="-1" role="dialog" aria-labelledby="addProjectionModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="addProjectionModalLabel">Add new projection</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <form role="form" id="add_projection_form" method="POST">
+	          <div class="form-group">
+	            <label for="name" class="col-form-label">Name:</label>
+	            <input type="text" class="form-control" id="name">
+	          </div>
+	          <div class="form-group">
+				<label for="cinema_rows">Add actor</label> 
+				<input type="text" class="form-control" id="actor">
+				<button type="button" class="btn btn-primary" id="actor_add" onclick="actorsAdd()">Add actor</button>
+				<div class="form-group">
+					<table class="table">
+					<thead><tr><th>Actors</th></tr></thead>
+					<tbody id="actors">
+					</tbody>
+					</table>
+				</div>
+	          </div>
+	          <div class="form-group">
+	            <label for="genre" class="col-form-label">Genre:</label>
+	            <input type="text" class="form-control" id="genre">
+	          </div>
+	          <div class="form-group">
+	            <label for="director" class="col-form-label">Director:</label>
+	            <input type="text" class="form-control" id="director">
+	          </div>
+	          <div class="form-group">
+	            <label for="length" class="col-form-label">Length (hours):</label>
+	            <input type="number" class="form-control" id="length">
+	          </div>
+	          <div class="form-group">
+	            <label for="poster">Projection poster</label> 
+	            <input type="file" class="form-control-file" id="poster">
+	          </div>
+	          <div class="form-group">
+	            <label for="description" class="col-form-label">Description:</label>
+	            <textarea class="form-control" id="description"></textarea>
+	          </div>
+	          <div class="form-group">
+			      <label for="sel1">Select hall (select one):</label>
+			      <select class="form-control" id="sel1">
+			      </select>
+			      <button type="button" class="btn btn-primary" id="actor_add" onclick="hallsAdd()">Add hall</button>
+				  <div class="form-group">
+					<table class="table">
+					<thead><tr><th>Halls</th></tr></thead>
+					<tbody id="halls">
+					</tbody>
+					</table>
+  				  </div>
+			  </div>
+			  <div class="form-group">
+	            <label for="price" class="col-form-label">Price (RSD):</label>
+	            <input type="number" class="form-control" id="price">
+	          </div>
+	          <button class="btn btn-primary">Confirm</button>
+	          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        </form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+</body>
+<script type="text/javascript">
+	check_user();
+</script>
+</html>
