@@ -17,6 +17,11 @@ $(document).ready(function() {
 //
 //		}
 //	})
+	$("#signout").on('click',function()
+			{
+			localStorage.removeItem('user');
+			window.location.replace("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080/signin.html");
+	});
 	$('#cinema-select').append($('<option>', { 
         value: "cine",
         text : "cine" 
@@ -47,11 +52,8 @@ $(document).ready(function() {
 //		})
 		//
 		var cars;
-		if(cinema == 'Cinaplex'){
-			cars = ["LOTR", "Maratonci", "Get hard"];
-		}else{
-			cars =["limun"];
-		}
+		
+		cars =["lemur"];
 		$.each(cars, function (i, item) {
 			
 			$('#projection-select').append($('<option>', { 
@@ -107,19 +109,40 @@ $(document).ready(function() {
 		$('#hall').selectpicker('refresh');
 	});
 	//get friends from user
-	var noobs = ["Lemur Lemuric a@aaa", "Deisan Sorgic a@aa", "the Dog a@aa"];
-	function selectFriends() {
+	var noobs = [];
+	
+	$('#hall').on('change',function(){
 		$('#friends').empty();
+
+		$.post({
+			url : "http://localhost:8080/api/getFriends",
+			data : localStorage.getItem('user'),
+			contentType : "application/json",
+			success : function(data) {
+				
+				$.each(data, function (i, item) {
+					noobs.push(item.name+" " +item.surname);
+					$('#friends').append($('<option>', { 
+				        value: item.name +" " + item.surname+" " +item.email,
+				        text : item.name +" " + item.surname +" " +item.email
+				    }));
+				});
+				$('#friends').selectpicker('refresh');
+			}
+		})
+	})
+	function selectFriends(){
+		$('#friends').empty();
+		
 		$.each(noobs, function (i, item) {
-			
+			var res = item.split(" ");
 			$('#friends').append($('<option>', { 
 		        value: item,
-		        text : item 
+		        text : res[0] +" "+ res[1] +" "+ res[2]
 		    }));
 		});
 		$('#friends').selectpicker('refresh');
 	}
-	selectFriends();
 	
 	var seats;
 	var length;
@@ -159,22 +182,23 @@ $(document).ready(function() {
 		var user = [];
 		$.each($tds, function() {               
 		    noobs.push($(this).text()); 
-		    selectFriends();
+		    
 		});
+		noobs.splice(-1,1)
+		selectFriends();
 		$row.remove();
          
     });
 	console.log(seats);
-	$('#form').on('submit',function(){
+	$('#make-reservation').on('click',function(){
 		
-		length = seats.getSelected().length
+	length = seats.getSelected().length
 		var rowCount = $('#friends-table tr').length;
-		if(length <rowCount){
+	if(length <rowCount){
 			alert("You invited more friends than you have reserved seats, please reserve more seats or delete invites!");
 			return;
 		}
-
-		var cinema = $('#cinema-select').find(":selected").text();
+	var cinema = $('#cinema-select').find(":selected").text();
 		var user = JSON.parse(localStorage.getItem('user'));
 		var time = $('#time').find(":selected").text();
 		var date = $('#date').val();
@@ -187,25 +211,21 @@ $(document).ready(function() {
 			invited.push({"email":res});
 			console.log(res);
 		});
-		var userShort = {"email":"ogauzz1@gmail.com"};
-		var data =JSON.stringify({"user":userShort,"place":cinema,"time":time,"date":date,"show":projection
+		var user = JSON.parse(localStorage.getItem('user'));
+		delete user.id;
+		var data =JSON.stringify({"user":user,"place":cinema,"time":time,"date":date,"show":projection
 			,"friends":invited,"isCinema":true});
 		console.log(data);
-		$.ajax({
-			 type:    "POST",
+		$.post({
 			url:'http://localhost:8080/api/make_reservation',
 			contentType: "application/json",
-			data: data,
-			success:function(d){
-				alert(d);
-			},
-			error:   function(jqXHR, textStatus, errorThrown) {
-		        alert("Error, status = " + textStatus + ", " +
-		              "error thrown: " + errorThrown
-		        );
-		  }
-		});
-	})
+			data: data
+			
+		})
+		
+		window.location.replace("http://localhost:8080/userProfile.html");
+		return;
+	});
 	
 	$('#hall').on('change',function(){
 		var hall_info;

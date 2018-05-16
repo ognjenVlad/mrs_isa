@@ -1,11 +1,44 @@
 $(document).ready(function() {
 	var user = JSON.parse(localStorage.getItem('user'));
+	var table = $('#friends-table').DataTable({
+		"paging":   false,
+
+        "info":     false,
+        'columnDefs'        : [    
+                                        { 
+                                            'searchable'    : false, 
+                                            'targets'       : [0,3] 
+                                        },
+                                        { 
+                                            'sortable'    : false, 
+                                            'targets'       : [0,4] 
+                                        }
+                                    ],
+                                    "aaSorting": []
+	});
+	
+	var find_table = $('#find-table').DataTable({
+		"paging":   false,
+
+        "info":     false,
+        'columnDefs'        : [    
+                                        { 
+                                            'searchable'    : false, 
+                                            'targets'       : [0,3] 
+                                        },
+                                        { 
+                                            'sortable'    : false, 
+                                            'targets'       : [0,4] 
+                                        }
+                                    ],
+                                    "aaSorting": []
+	});
 	console.log(user);
 	function fillTable(){
 		
 		var friends = [];
-		$('#friends-table').empty();
-		
+		//$('#friends-table').empty();
+		table.clear();
 		$.post({
 			url : "http://localhost:8080/api/getFriends",
 			data : localStorage.getItem('user'),
@@ -13,15 +46,20 @@ $(document).ready(function() {
 			success : function(data) {
 				
 				for(friend in data){
-					var newRow = $("<tr>");
-					var cols = "";
-					cols += '<td><img src="'+ data[friend].picture+'"/></td><td>'+data[friend].name
-					+'</td>' + '<td>'+data[friend].surname+'</td>'+'<td>'+data[friend].email+'</td>'+
-					'<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>';
-					
-					newRow.append(cols);
-					$('#friends-table').append(newRow);
+//					var newRow = $("<tr>");
+//					var cols = "";
+//					cols += '<td><img src="'+ data[friend].picture+'"/></td><td>'+data[friend].name
+//					+'</td>' + '<td>'+data[friend].surname+'</td>'+'<td>'+data[friend].email+'</td>'+
+//					'<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>';
+//					
+//					newRow.append(cols);
+//					$('#friends-table').append(newRow);
+					var pic ='<img class="profile-img" src='+data[friend].picture+'>';
+					var button = '<input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete">';
+					table.row.add([pic,data[friend].name,data[friend].surname,data[friend].email, button]);
+					table.draw();
 				}
+				
 			     
 		        
 			}})
@@ -66,7 +104,7 @@ $(document).ready(function() {
 				for(friend in data){
 					var newRow = $("<tr>");
 					var cols = "";
-					cols += '<td><img src="'+ data[friend].picture+'"/></td><td>'+data[friend].name
+					cols += '<td><img class="profile-img" src="'+ data[friend].picture+'"/></td><td>'+data[friend].name
 					+'</td>' + '<td>'+data[friend].surname+'</td>'+'<td>'+data[friend].email+'</td>'+
 					'<td><input type="button" class="accept btn btn-md btn-primary "  value="Accept"><input type="button" class="decline btn btn-md btn-default "  value="Decline"></td>';
 					
@@ -78,6 +116,25 @@ $(document).ready(function() {
 			}})
 		
 	}
+//	function searchTable() {
+//		  // Declare variables 
+//		  var input, filter, table, tr, td, i;
+//		  input = document.getElementById("search");
+//		  filter = input.value.toUpperCase();
+//		  table = document.getElementById("friends-table");
+//		  tr = table.getElementsByTagName("tr");
+//		  
+//		  for (i = 0; i < tr.length; i++) {
+//		    td = tr[i].getElementsByTagName("td")[0];
+//		    if (td) {
+//		      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+//		        tr[i].style.display = "";
+//		      } else {
+//		        tr[i].style.display = "none";
+//		      }
+//		    } 
+//		  }
+//		}
 	$("#requests-table").on("click", ".decline", function (event) {
 		$row = $(this).closest("tr");
 		$tds = $row.find("td");          
@@ -133,12 +190,23 @@ $(document).ready(function() {
         
     });
 	fillRequests();
+	
+	$("#signout").on('click',function()
+			{
+			localStorage.removeItem('user');
+			window.location.replace("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080/signin.html");
+	});
 	var users = []
 	$('#find-friends').click(function(){
 		$('#friend-select').empty();
-		$.get({
+		var u = user;
+		delete u.id;
+
+		$.post({
 			url:"http://localhost:8080/api/getUsers"
-			,success:function(data){
+			,data:JSON.stringify(u)
+			,contentType : "application/json",
+			success:function(data){
 				
 				users = data;
 				console.log(users);
@@ -154,13 +222,18 @@ $(document).ready(function() {
 			}
 		})
 	});
-	
+	$("#find").on("hidden.bs.modal", function () {
+		$('#find-info').empty();
+	});
 	$('#friend-select').on('change',function(){
 		var v = $('#friend-select').find(":selected").val();
 		var res = v.split(" ");
-		console.log(res);
-		$('#find-info').html("<tr><td>Name:</td><td>"+res[0]+"</td><tr><td>Surname:</td><td>"+res[1]+"</td>"+
-				'<tr><td><input type="button" class="accept btn btn-md btn-primary "  id ="add-user" value="Add user"></td></tr>');
+		var email = res[2];
+		var result = $.grep(users, function(e){ return e.email == email; });
+		
+		console.log(result);
+		$('#find-info').html('<img class="profile-img" src="'+result[0].picture+'">'+ "<tr><td>Name:</td><td>"+result[0].name+"</td><tr><td>Surname:</td><td>"+result[0].surname+"</td></tr>"+"<tr><td>Email:</td><td>"+result[0].email+"</td>"+
+				"</tr></td>"+"<tr><td>City:</td><td>"+result[0].city+"</td>"+'<tr><td><input type="button" class="accept btn btn-md btn-primary "  id ="add-user" value="Add user"></td></tr>');
 	
 	})	
 	$("#find-info").on("click", "tr", function(event){

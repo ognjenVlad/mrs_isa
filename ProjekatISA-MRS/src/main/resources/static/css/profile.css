@@ -12,24 +12,22 @@
     -webkit-box-shadow: none;
     box-shadow: none;
 }
-
+.nav-tabs > li > a {
+  color: #428bca;
+  font-size: 15px;
+}
 .navbar.navbar-default .navbar-collapse {
     border: 0;
     -webkit-box-shadow: none;
     box-shadow: none;
 }
-.navbar.navbar-default .navbar-nav {
-    color: red;
-}
-.navbar.navbar-default .navbar-nav a{
-    color: #428bca; 
-    font-size: 15px ;
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+    background-color: #428bca;
+    color: white;
 }
 
-.navbar.navbar-default .navbar-nav > .active > a {
-    color: white;
-    background-color:#428bca;
-}
+
    hr {
 height: 0.5px;
 color: #428bca;

@@ -3,16 +3,38 @@
       <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
       <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
       <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="js/profile.js"></script>
+      <script type="text/javascript" src ="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"</script>
+      <script type="text/javascript" src ="//cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js>"</script>
+     
+     	<script type="text/javascript" src="js/profile.js"></script>
+      
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link rel="stylesheet" href="/css/login.css">
       <link rel="stylesheet" href="/css/profile.css">
+     
+      <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
       
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
    </head>
    <body>
-      <div class="container">
+      <nav class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="/">Movies and cinemas</a>
+		    </div>
+		    <ul class="nav navbar-nav">
+		     
+		      <li><a href="reserve.html"><span class="glyphicon glyphicon-floppy-disk"></span> Make reservation</a></li>
+		 
+		    </ul>
+		    <ul class="nav navbar-nav navbar-right">
+		      
+			    <li class="active"><a href="userProfile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+			     <li><a><span class="glyphicon glyphicon-user"></span> Sing out</a></li>
+		    </ul>
+		  </div>
+		</nav>
       <div class="row">
       <div class="col-md-5 pull-right col-md-offset-3 ">
          <br>
@@ -31,7 +53,7 @@
             <div class="row">
                <nav class="navbar navbar-default">
                <div class="container-fluid">
-                  <ul class="nav navbar-nav">
+                  <ul class="nav nav-tabs nav-justified">
                   		
                      <li class="active" title="User information">
                         <a data-toggle="tab" href="#information"  class="glyphicon glyphicon-user">
@@ -58,13 +80,12 @@
                  
                   </div>
                   </nav>
-                   <hr> 
                </div>
               
                <div class="row">
                   <div class=" col-md-9 col-lg-9 col-lg-offset-2">
-                     <div class="tab-content">
-                        <div id="information" class="tab-pane active">
+                     <div class="tab-content" >
+                        <div id="information" class="tab-pane fade in active">
                         	
                            <table class="table table-user-information">
                               
@@ -93,15 +114,24 @@
                            </table>
                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edit">Edit profile info</button>
                         </div>
-                        <div id="friends" class="tab-pane">
+                        <div id="friends" class="tab-pane fade" >
                         	<button class="btn btn-md btn-primary" id="find-friends">Find friends <i class="fa fa-search"></i></button>
                         	<p><br></p>
-                           <table id = "friends-table" class="table table-hover">
-                              
+                        	<hr>
+                           <table id = "friends-table" class="table table-hover" >
+                              <thead>
+						        <tr>
+						            <th>&nbsp</th>
+						            <th>Name</th>
+						            <th>Surname</th>
+						            <th>Email</th>
+						            <th>&nbsp</th>
+						        </tr>
+						    </thead>
                               <tbody></tbody>
                            </table>
                         </div>
-                        <div id="requests" class="tab-pane">
+                        <div id="requests" class="tab-pane fade">
                            <table id = "requests-table" class="table table-hover">
                               
                               <tbody></tbody>
@@ -112,7 +142,7 @@
                </div>
             </div>
          </div>
-      </div>
+   
       <div id="edit" class="modal fade" role="dialog">
          <div class="modal-dialog">
             <!-- Modal content-->
@@ -186,7 +216,7 @@
 					<select class="selectpicker" data-live-search="true" id="friend-select" title = "Choose one of the following..." required></select>
 				</div>
 				<hr>
-				<table class="table table-user-information" >
+				<table class="table table-striped" >
 				<tbody id = "find-info">
 				</tbody>
 				</table>

@@ -93,10 +93,13 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 	
-	public List<User> getUsers(){
+	public List<User> getUsers(User user){
 		List<User> users = userRepository.findAll();
 		ArrayList<User> ret = new ArrayList<User>();
 		for(User u : users){
+			if(user.getEmail().equals(u.getEmail()) || !u.isActivated()){
+				continue;
+			}
 			u.setPassword("");
 			ret.add(u);
 		}
@@ -137,6 +140,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	public boolean addFriend(FriendsDTO u){
+	
 		User user = userRepository.findByEmail(u.getUser().getEmail());
 		User friend = userRepository.findByEmail(u.getFriend().getEmail());
 		Friends f = new Friends();

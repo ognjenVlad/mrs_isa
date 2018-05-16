@@ -36,7 +36,7 @@ public class ReservationImpl implements ReservationService {
 		r.setTime(reservation.getTime());
 		r.setPlace(reservation.getPlace());
 		r.setProjection(reservation.getShow());
-		Set<Invited> friends = new HashSet<Invited>();;
+		Set<Invited> friends = new HashSet<Invited>();
 		
 		for (User s : reservation.getFriends()) {
 			User friend = userRepository.findByEmail(s.getEmail());
