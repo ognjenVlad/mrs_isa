@@ -1,6 +1,5 @@
 package com.project.domain;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Ad implements Serializable{
+public class Prop {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -24,25 +23,27 @@ public class Ad implements Serializable{
 	private String description;
 
 	@Column(nullable = false)
-	private Date exp_date;
+	private Double price;
 
 	@Column
 	private String picture;
 	
 	@Column
-	private boolean isPublished = false;
+	private User reserved_by;
 	
-	@Column boolean isTaken = false;
-
-	Ad(){}
-
-	public Ad(Long id, String title, String description, Date exp_date, String picture) {
+	@Column
+	private boolean isDeleted = false;
+	
+	Prop(){}
+	
+	public Prop(Long id, String title, String description, Double price, String picture, User reserved_by) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.description = description;
-		this.exp_date = exp_date;
+		this.price = price;
 		this.picture = picture;
+		this.reserved_by = reserved_by;
 	}
 
 	public Long getId() {
@@ -69,12 +70,12 @@ public class Ad implements Serializable{
 		this.description = description;
 	}
 
-	public Date getExp_date() {
-		return exp_date;
+	public Double getPrice() {
+		return price;
 	}
 
-	public void setExp_date(Date exp_date) {
-		this.exp_date = exp_date;
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 
 	public String getPicture() {
@@ -85,39 +86,25 @@ public class Ad implements Serializable{
 		this.picture = picture;
 	}
 
+	public User getReserved_by() {
+		return reserved_by;
+	}
+
+	public void setReserved_by(User reserved_by) {
+		this.reserved_by = reserved_by;
+	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
-	public boolean isIsPublished() {
-		return isPublished;
+	public boolean isDeleted() {
+		return isDeleted;
 	}
 
-	public void setIsPublished(boolean isPublished) {
-		this.isPublished = isPublished;
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
-	public boolean isPublished() {
-		return isPublished;
-	}
-
-	public void setPublished(boolean isPublished) {
-		this.isPublished = isPublished;
-	}
-
-	public boolean isTaken() {
-		return isTaken;
-	}
-
-	public void setTaken(boolean isTaken) {
-		this.isTaken = isTaken;
-	}
-
-	@Override
-	public String toString() {
-		return "Ad [id=" + id + ", title=" + title + ", description=" + description + ", exp_date=" + exp_date
-				+ ", isPublished=" + isPublished + ", isTaken=" + isTaken + "]";
-	};
-	
 	
 }
