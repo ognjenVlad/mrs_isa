@@ -8,16 +8,46 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link href="resources/css/popup_windows.css" rel="stylesheet" />
+<link href="resources/css/styles.css" rel="stylesheet" />
+<link href="css/login.css" rel="stylesheet" />
 <script type="text/javascript" src="js/fan_page.js"></script>
+<script type="text/javascript" src="resources/js/site_functions.js"></script>
 
 <title>Fan Page</title>
 
 </head>
 <body>
 	<div class="container">
-		<button type="button" class="btn" data-toggle="modal"
-			data-target="#modal_send_ad">Create ad</button>
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="">Fan Zone</a>
+				</div>
+				<ul class="nav navbar-nav navbar-left">
+					<li><a class="nav-link" href="index.html">Home page</a></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarCreate"
+						role="button" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false"> Create </a>
+						<div class="dropdown-menu" aria-labelledby="navbarCreate">
+							<button class="btn navbar-btn dropdown-item user" data-toggle="modal"
+								data-target="#modal_send_ad">Ad</button>
+							<button class="btn navbar-btn dropdown-item user" data-toggle="modal"
+								data-target="#modal_create_prop">Prop</button>
+						</div></li>
+					<li>
+						<button class="btn btn-link navbar-btn admin_fan" data-toggle="modal"
+							data-target="#modal_get_ad" onclick="get_ad_request()">Get pending ad</button>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="reg.html"><span
+							class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+					<li><a href="signin.html"><span
+							class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				</ul>
+			</div>
+		</nav>
 
 		<div id="modal_send_ad" class="modal fade" role="dialog">
 			<div class="modal-dialog">
@@ -26,30 +56,93 @@
 					<div class="modal-body">
 						<h3>Create ad</h3>
 						<form role="form" id="form_create_ad" method="POST">
-							<div class="form-group row">
+							<div class="form-group">
 								<label for="ad_title">Title</label> <input type="text"
 									class="form-control" id="ad_title" required />
 							</div>
-							<div class="form-group row">
+							<div class="form-group">
 								<label for="ad_description">Description</label>
 								<textarea class="form-control" rows="3" id="ad_description"
 									required></textarea>
 							</div>
-							<div class="form-group row">
+							<div class="form-group">
 								<label class="ad_exp_date" for="date">Expire date</label> <input
 									class="form-control" id="ad_exp_date" type="date" />
 							</div>
 							<div class="form-group">
-								<label for="profile-picture">Profile picture</label> <input
+								<label for="profile-picture">Ad picture</label> <input
 									type="file" class="form-control-file" id="ad_file">
 							</div>
-							<button type="submit" class="btn btn btn-primary"
-								id="ad_create">Create ad</button>
+							<button type="submit" class="btn btn btn-primary" id="ad_create">Create
+								ad</button>
 						</form>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="modal_get_ad" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<div class="modal-content">
+					<div class="modal-body" id="get_ad_container">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="modal_create_prop" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h3>Create prop</h3>
+						<form role="form" id="form_create_prop" method="POST">
+							<div class="form-group">
+								<label for="prop_title">Title</label> <input type="text"
+									class="form-control" id="prop_title" required />
+							</div>
+							<div class="form-group">
+								<label for="prop_description">Description</label>
+								<textarea class="form-control" rows="3" id="prop_description"
+									required></textarea>
+							</div>
+							<div class="form-group">
+								<label for="prop_price">Price (USD):</label> <input
+									type="number" class="form-control" id="prop_price" />
+							</div>
+							<div class="form-group">
+								<label for="prop_file">Prop picture</label> <input
+									type="file" class="form-control-file" id="prop_file">
+							</div>
+							<button type="submit" class="btn btn btn-primary" id="prop_create">Create
+								prop</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="middle_container">
+			<ul class="nav nav-tabs nav-justified">
+				<li class="active"><a data-toggle="tab" href="#ads">Ads</a></li>
+				<li><a data-toggle="tab" href="#props">Props</a></li>
+			</ul>
+
+			<div class="tab-content">
+				<div id="ads" class="tab-pane fade in active">
+					<p>Ads.</p>
+				</div>
+				<div id="props" class="tab-pane fade">
+					<p>Props.</p>
 				</div>
 			</div>
 		</div>
