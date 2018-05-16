@@ -55,7 +55,8 @@ $(document).ready(function() {
 			data : json_data,
 			success: function(data){
 				alert("Cinema added");
-				 $('#modal_add_cinema').modal('hide')
+				$('#modal_add_cinema').modal('hide');
+				location.reload(); 
 			},
 		});
 	})

@@ -104,6 +104,4 @@ public class CinemaTheatre implements Serializable{
 		return serialVersionUID;
 	}
 	
-	
-	
 }
