@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 public class Ad implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -23,6 +25,7 @@ public class Ad implements Serializable{
 	@Column(nullable = false)
 	private String description;
 
+	@JsonFormat(pattern="MM/dd/yyyy")
 	@Column(nullable = false)
 	private Date exp_date;
 

@@ -3,32 +3,32 @@ function update_logging(){
 	if(user != null){
 		var type = user.getUser_type();
 	}else{
-		$(".admin_fan").css("display","none");
-		$(".admin_sys").css("display","none");
-		$(".admin_ct").css("display","none");
-		$(".user").css("display","none");
+		$(".admin_fan").hide();
+		$(".admin_sys").hide();
+		$(".admin_ct").hide();
+		$(".user").hide();
+		return;
 	}
 	
-	
 	if(type == "user"){
-		$(".admin_fan").css("display","none");
-		$(".admin_sys").css("display","none");
-		$(".admin_ct").css("display","none");
-		$(".user").css("display","inline");
+		$(".admin_fan").hide();
+		$(".admin_sys").hide();
+		$(".admin_ct").hide();
+		$(".user").show();
 	}else if(type == "sys"){
-		$(".admin_fan").css("display","none");
-		$(".admin_ct").css("display","none");
-		$(".user").css("display","none");
-		$(".admin_sys").css("display","inline");
+		$(".admin_fan").hide();
+		$(".admin_ct").hide();
+		$(".user").hide();
+		$(".admin_sys").show();
 	}else if(type == "ct"){
-		$(".admin_fan").css("display","none");
-		$(".admin_sys").css("display","none");
-		$(".user").css("display","none");
-		$(".admin_ct").css("display","inline");
+		$(".admin_fan").hide();
+		$(".admin_sys").hide();
+		$(".user").hide();
+		$(".admin_ct").show();
 	}else if(type =="fan"){
-		$(".admin_sys").css("display","none");
-		$(".admin_ct").css("display","none");
-		$(".user").css("display","none");
-		$(".admin_fan").css("display","inline");
+		$(".admin_sys").hide();
+		$(".admin_ct").hide();
+		$(".user").hide();
+		$(".admin_fan").show();
 	}	
 };

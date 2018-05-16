@@ -1,7 +1,8 @@
 display_ads();
 display_props();
-var ad_img_src;
-var prop_img_src;
+update_logging();
+var ad_img_src = "https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120";
+var prop_img_src = "https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120";
 var current_ad;
 
 
@@ -67,6 +68,7 @@ $(document).ready(function() {
 			contentType : "application/json",
 			success : function(data) {
 				$('#modal_create_prop').modal('hide')
+				display_props();
 			}
 		});
 	});
@@ -132,12 +134,7 @@ function update_ad(isPublished, isTaken) {
 				+ isTaken + "/" + current_ad.id,
 		dataType : "json",
 		success : function(data) {
-			console.log(data);
-			if (data.message == "Success") {
-				alert("Done!");
-			} else {
-				alert("Not done!");
-			}
+			display_ads();
 		}
 	});
 }
@@ -153,17 +150,19 @@ function display_ads() {
 			var html_code;
 			$("#post_container").empty();
 			$.each(data.obj,function(index, ad) {
-				html_code = "<article class=\"row\"><div class=\"col-md-2 col-sm-2 hidden-xs\"><figure class=\"thumbnail\">";
-				html_code += "<img class=\"img-responsive\" src=\""+ ad.picture + "\" />";
-				html_code += "<figcaption class=\"text-center\">" + "Default user"  + "</figcaption></figure></div>";
-				html_code += "<div class=\"col-md-10 col-sm-10\"><div class=\"panel panel-default arrow left\"><div class=\"panel-body\">";
-				html_code += "<header class=\"text-left\"><div class=\"comment-user\"><i class=\"fa fa-user center\"></i><b> Title: "+ ad.title + "</b></div>";
-				html_code += "</header><div class=\"comment-post\"><p>Description: "+ ad.description + "</p></div></div></div></div></article>";
-				html_code += "<input class=\"form-control\" type=\"number\"/ placeholder=\"Bid amount\"></button><button class=\"btn\" onclick=\"add_bid("+ ad.id +")\">Add bid</button>";
+				html_code = "<article><div class=\"row\"><div class=\"col-sm-6 col-md-3\"><figure>";
+				html_code += "<img src=\""+ ad.picture + "\" />";
+				html_code += "</figure></div>";
+				html_code += "<div class=\"col-md-9 col-sm-6\"><span class=\"label label-default pull-right\"><i class=\"glyphicon glyphicon-inbox\"></i> 0</span>";
+				html_code += "<h4>Title: "+ ad.title + "</h4>";
+				html_code += "<p>Description: "+ ad.description + "</p><section><i class=\"glyphicon glyphicon-user\"></i> Default User <i class=\"glyphicon glyphicon-calendar\">";
+				html_code += "</i>" + ad.exp_date + "</section></div><input type=\"number\"/ placeholder=\"Bid amount\">";
+				html_code += "</button><button class=\"btn\" onclick=\"add_bid("+ ad.id +")\">Add bid</button></div></article>";
+
 				$("#ads").append(html_code);
 				counter++;
 			})
-			
+
 			if(counter ==0){
 				$("#ads").append("<h3> No ads to display </h3>");
 			}
@@ -180,20 +179,18 @@ function display_props() {
 		dataType : "json",
 		success : function(data) {
 			var html_code;
-			$("#post_container").empty();
 			$.each(data.obj,function(index, prop) {
-				html_code = "<article class=\"row\"><div class=\"col-md-2 col-sm-2 hidden-xs\"><figure class=\"thumbnail\">";
-				html_code += "<img class=\"img-responsive\" src=\""+ prop.picture + "\" />";
-				html_code += "<figcaption class=\"text-center\">" + "Default user"  + "</figcaption></figure></div>";
-				html_code += "<div class=\"col-md-10 col-sm-10\"><div class=\"panel panel-default arrow left\"><div class=\"panel-body\">";
-				html_code += "<header class=\"text-left\"><div class=\"comment-user\"><i class=\"fa fa-user center\"></i><b> Title: "+ prop.title + "</b></div>";
-				html_code += "</header><div class=\"comment-post\"><p>Description: "+ prop.description + "</p></div></div></div></div></article>";
-				html_code += "</button><button class=\"btn\" onclick=\"reserve_prop("+ prop.id +")\">Reserve</button>";
-				html_code += "</button><button class=\"btn btn-danger\" onclick=\"remove_prop("+ prop.id +")\">Remove</button>";
+				html_code = "<article><div class=\"row\"><div class=\"col-sm-6 col-md-3\"><figure>";
+				html_code += "<img src=\""+ prop.picture + "\" />";
+				html_code += "</figure></div>";
+				html_code += "<div class=\"col-md-9 col-sm-6\"><button class=\"label label-default pull-right remove-button\" onclick=\"remove_prop("+ prop.id +")\">";
+				html_code += "Remove<span class=\"glyphicon glyphicon-trash\"></span></button><h4>Title: "+ prop.title + "</h4>";
+				html_code += "<p>Description: "+ prop.description + "</p><section><i class=\"glyphicon glyphicon-usd\"></i>" + prop.price;
+				html_code += "<button class=\"btn btn-default btn-sm pull-right\" onclick=\"reserve_prop("+ prop.id +")\">Reserve</button></section></div></div></article>";
+				html_code += "";
 				$("#props").append(html_code);
 				counter++;
 			})
-			
 			if(counter ==0){
 				$("#props").append("<h3> No props to display </h3>");
 			}

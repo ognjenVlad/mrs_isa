@@ -118,32 +118,24 @@
 	// 	}
 
 	getCinemas();
-	update_logging();
 </script>
 <body>
-	<div class="container">
+	<button type="button" class="btn " data-toggle="modal"
+			data-target="#modal_add_cinema">Add Cinema/Theatre</button>
+		<button type="button" class="btn " data-toggle="modal"
+			data-target="#modal_add_admin">Add admin</button>
+		<a href="fan_page.html">Fan page</a>
 		<nav class="navbar navbar-inverse">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="#">Home page</a>
-				</div>
-				<ul class="nav navbar-nav navbar-left">
-					<li><a class="nav-link" href="fan_page.html">Fan Zone</a></li>
-					<li><a class="nav-link admin_sys" onclick="">System
-							admin</a></li>
-				</ul>
-				<button class="btn btn-link navbar-btn admin_sys" data-toggle="modal"
-					data-target="#modal_add_cinema">Add Cinema/Theatre</button>
-				<button class="btn btn-link navbar-btn admin_sys" data-toggle="modal"
-					data-target="#modal_add_admin">Add admin</button>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="reg.html"><span
-							class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-					<li><a href="signin.html"><span
-							class="glyphicon glyphicon-log-in"></span> Login</a></li>
-				</ul>
-			</div>
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="#">Movies and cinemas</a>
+		    </div>
+		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
+		    </ul>
+		  </div>
 		</nav>
+
+	<div class="container">
 
 		<div class="row">
 			<div class="col-md-4">

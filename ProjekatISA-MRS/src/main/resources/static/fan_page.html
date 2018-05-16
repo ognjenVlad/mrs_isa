@@ -10,10 +10,11 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link href="resources/css/styles.css" rel="stylesheet" />
 <link href="css/login.css" rel="stylesheet" />
-<script type="text/javascript" src="js/fan_page.js"></script>
+<link href="css/fan_zone.css" rel="stylesheet" />
 <script type="text/javascript" src="resources/js/site_functions.js"></script>
+<script type="text/javascript" src="js/fan_page.js"></script>
 
-<title>Fan Page</title>
+<title>Tim12 Cogi</title>
 
 </head>
 <body>
@@ -67,7 +68,7 @@
 							</div>
 							<div class="form-group">
 								<label class="ad_exp_date" for="date">Expire date</label> <input
-									class="form-control" id="ad_exp_date" type="date" />
+									class="form-control" id="ad_exp_date" type="date" required/>
 							</div>
 							<div class="form-group">
 								<label for="profile-picture">Ad picture</label> <input
@@ -114,7 +115,7 @@
 							</div>
 							<div class="form-group">
 								<label for="prop_price">Price (USD):</label> <input
-									type="number" class="form-control" id="prop_price" />
+									type="number" class="form-control" id="prop_price" required/>
 							</div>
 							<div class="form-group">
 								<label for="prop_file">Prop picture</label> <input
@@ -133,16 +134,18 @@
 
 		<div class="middle_container">
 			<ul class="nav nav-tabs nav-justified">
-				<li class="active"><a data-toggle="tab" href="#ads">Ads</a></li>
-				<li><a data-toggle="tab" href="#props">Props</a></li>
+				<li class="active"><a data-toggle="tab" href="#ads_tab">Ads</a></li>
+				<li><a data-toggle="tab" href="#props_tab">Props</a></li>
 			</ul>
 
 			<div class="tab-content">
-				<div id="ads" class="tab-pane fade in active">
-					<p>Ads.</p>
+				<div id="ads_tab" class="tab-pane fade in active">
+					<div id="ads">
+					</div>
 				</div>
-				<div id="props" class="tab-pane fade">
-					<p>Props.</p>
+				<div id="props_tab" class="tab-pane fade">
+					<div id="props">
+					</div>
 				</div>
 			</div>
 		</div>
