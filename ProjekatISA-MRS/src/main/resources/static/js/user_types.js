@@ -1,3 +1,7 @@
+function log_out(){
+	localStorage.removeItem('user');
+	location.reload();
+}
 
 function check_user(){
 	var user = JSON.parse(localStorage.getItem('user'));
@@ -23,7 +27,7 @@ function check_user(){
 			$("#navbarLeft_fan").append(html_left);
 		}		
 		
-		html_to_add += "<li><a href=\"#\"><span class=\"glyphicon glyphicon-log-out\"></span> Log out</a></li>";
+		html_to_add += "<li><a href=\"javascript:log_out();\"><span class=\"glyphicon glyphicon-log-out\"></span> Log out</a></li>";
 	}
 	$('#navbarRight').append(html_to_add);
 }
