@@ -33,6 +33,7 @@ public class CinemaTheatre implements Serializable{
 	@Column
 	private ArrayList<Hall> halls;
 	
+	
 	public CinemaTheatre() {
 		
 	}
@@ -103,7 +104,5 @@ public class CinemaTheatre implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
 	
 }

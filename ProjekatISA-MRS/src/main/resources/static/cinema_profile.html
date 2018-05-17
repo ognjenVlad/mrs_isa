@@ -16,6 +16,7 @@
 <script type="text/javascript">
 
 	var halls;
+	var cin_id;
 	var actors_count = 0;
 	var halls_count = 0;
 	
@@ -53,6 +54,8 @@
 	
 	function render_cinema(cinema){
 		halls = cinema.halls;
+		cin_id = cinema.id;
+		projections = cinema.projections;
 		$('#details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
 		if (cinema.isCinema){
 			$('#image_and_map').append('<img src="resources/images/cinema.jpg" alt="Cinema" style="width:100%; height: 240px">');
@@ -85,9 +88,14 @@
 	
 	function render_projections(data){
 		var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
-		projections = list;
-		$.each(projections, function(index, proj){
-			$('#repertoire').append(proj.name+"<br/>")
+		all_projections = list;
+		$.each(all_projections, function(index, proj){
+			if (cin_id == proj.cinthe_id){
+				var proj_html = '<div id="proj_'+index+'" style="border:1px solid grey"><img src="'+proj.poster+'" alt="Projection_image" '+
+						'style="width: 100px; height: 100px">'+proj.name+'<br/>'+proj.description+'<br/>'+proj.genre+
+						', '+proj.director+'<br/>'+proj.price+'</div>'
+				$('#repertoire').append(proj_html);
+			}
 		});
 		
 	}
@@ -143,6 +151,7 @@
 				  </div>
 				  <div class="tab-pane fade" id="repertoire">
 				  	 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProjectionModal">Add new projection</button>
+				  	
 				  </div>
 				  <div class="tab-pane fade" id="discounts">
 				  </div>

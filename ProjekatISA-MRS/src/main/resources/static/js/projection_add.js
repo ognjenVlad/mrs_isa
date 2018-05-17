@@ -37,6 +37,8 @@ $(document).ready(function() {
 		
 		var price = $('#price').val();
 		
+		var cinthe_id = cin_id;
+		
 		for (var i = 0; i < halls_count; i++){
 			var hall_to_add;
 			for (var j = 0; j < halls.length; j++){
@@ -59,7 +61,8 @@ $(document).ready(function() {
 			"description":description,
 			"halls":prj_halls,
 			"time" : prj_time,
-			"price" : price
+			"price" : price,
+			"cinthe_id" : cinthe_id
 		});
 	
 		

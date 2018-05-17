@@ -51,6 +51,9 @@ public class Projection implements Serializable{
 	@Column(nullable = false)
 	private double price;
 
+	@Column(nullable = false)
+	private Long cinthe_id;
+	
 	public Projection() {
 		super();
 	}
@@ -187,6 +190,14 @@ public class Projection implements Serializable{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Long getCinthe_id() {
+		return cinthe_id;
+	}
+
+	public void setCinthe_id(Long cinthe_id) {
+		this.cinthe_id = cinthe_id;
 	}
 	
 	
