@@ -59,15 +59,27 @@ public class ReservationImpl implements ReservationService {
 		r.setPlace(reservation.getPlace());
 		r.setProjection(reservation.getShow());
 		Set<Invited> friends = new HashSet<Invited>();
-		
+		int j = 0;
 		for (User s : reservation.getFriends()) {
 			User friend = userRepository.findByEmail(s.getEmail());
 			Invited i = new Invited();
-			System.out.println(friend.getEmail());
+	
 			i.setUser(friend);
 			i.setReservation(r);
+			i.setSeat(reservation.getSeats().get(j));
+			
 			friends.add(i);
+			j++;
 			invitedRepository.save(i);
+		}
+		
+		//mora se dodati i sediste za onog koji poziva prijatelje i ona za koja nisu pozvani prijatelji
+		for(int k = j;k!= reservation.getSeats().size();k++){
+			Invited i = new Invited();
+			i.setUser(u);
+			i.setReservation(r);
+			i.setSeat(reservation.getSeats().get(k));
+			friends.add(i);
 		}
 		r.setFriends(friends);
 		resRepository.save(r);
@@ -76,32 +88,56 @@ public class ReservationImpl implements ReservationService {
 	public boolean acceptInvite(ReservationDTO r){
 		System.out.println(r.getPlace());
 		User u = userRepository.findByEmail(r.getUser().getEmail());
-		Reservation reservation = resRepository.findByDateAndPlaceAndProjectionAndTimeAndUser(r.getDate(), r.getPlace(),
+		ArrayList<Reservation> reservations = resRepository.findByDateAndPlaceAndProjectionAndTimeAndUser(r.getDate(), r.getPlace(),
 				r.getShow(),r.getTime(),u);
-		if(reservation == null){
+		if(reservations == null){
 			return false;
 		}
 		User u1 = userRepository.findByEmail(r.getFriends().get(0).getEmail());
+		for(Reservation res:reservations){
+			Invited  i = invitedRepository.findByUserAndReservation(u1,res);
+			if(i!=null){
+				i.setAccepted(true);
+				invitedRepository.save(i);
+				break;
+			}
+			
+		}
 		
-		Invited  i = invitedRepository.findByUserAndReservation(u1,reservation);
-		i.setAccepted(true);
-		invitedRepository.save(i);
+		
 		return true;
 	}
 	
 	public boolean declineInvite(ReservationDTO r){
-		System.out.println(r.getPlace());
 		User u = userRepository.findByEmail(r.getUser().getEmail());
-		Reservation reservation = resRepository.findByDateAndPlaceAndProjectionAndTimeAndUser(r.getDate(), r.getPlace(),
+		ArrayList<Reservation> reservations = resRepository.findByDateAndPlaceAndProjectionAndTimeAndUser(r.getDate(), r.getPlace(),
 				r.getShow(),r.getTime(),u);
-		if(reservation == null){
+		if(reservations == null){
 			return false;
 		}
 		User u1 = userRepository.findByEmail(r.getFriends().get(0).getEmail());
-		
-		Invited  i = invitedRepository.findByUserAndReservation(u1,reservation);
-		invitedRepository.delete(i);
+		for(Reservation res:reservations){
+			Invited  i = invitedRepository.findByUserAndReservation(u1,res);
+			if(i!=null){
+				i.setAccepted(true);
+				invitedRepository.delete(i);
+				break;
+			}
+			
+		}
 		return true;
+	}
+	
+	public ArrayList<String> findBookedSeats(String projection, String date, String time){
+		ArrayList<Reservation> tickets = resRepository.findByProjectionAndDateAndTime(projection,date,time);
+		ArrayList<String> seats = new ArrayList<String>();
+		for(Reservation r:tickets){
+			ArrayList<Invited> i = invitedRepository.findByReservation(r);
+			for (Invited invited : i) {
+				seats.add(invited.getSeat());
+			}
+		}
+		return seats;
 	}
 	@Async
 	public void sendInvitation(ReservationDTO reservation, String jwtToken) throws MailException, InterruptedException {

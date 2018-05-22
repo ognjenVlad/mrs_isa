@@ -11,4 +11,5 @@ import com.project.domain.User;
 public interface InvitedRepository extends JpaRepository<Invited, Long>{
 	Invited save(Invited r);
 	Invited findByUserAndReservation(User u, Reservation r);
+	ArrayList<Invited> findByReservation(Reservation r);
 }

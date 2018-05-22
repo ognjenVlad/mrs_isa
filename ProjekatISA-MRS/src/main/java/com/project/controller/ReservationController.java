@@ -1,6 +1,7 @@
 package com.project.controller;
 
 import java.security.Key;
+import java.util.ArrayList;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.project.DTO.ReservationDTO;
-import com.project.DTO.UserDTO;
 import com.project.service.ReservationImpl;
 
 import io.jsonwebtoken.JwtBuilder;
@@ -68,4 +68,12 @@ public class ReservationController {
 		
 		return reservationService.declineInvite(r);
 	}
+	@RequestMapping(value = "/get_seats",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<String> getSeats(@RequestBody ReservationDTO r){
+		
+		return reservationService.findBookedSeats(r.getShow(), r.getDate(), r.getTime());
+	}
+	
 }

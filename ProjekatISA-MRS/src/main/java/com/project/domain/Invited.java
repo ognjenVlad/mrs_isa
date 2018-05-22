@@ -26,6 +26,9 @@ public class Invited implements Serializable {
 	@Column(nullable = false)
 	private boolean accepted = false;
 	
+	@Column(nullable = false)
+	private String seat;
+	
 	public Invited() {
 		super();
 	}
@@ -52,5 +55,13 @@ public class Invited implements Serializable {
 
 	public void setReservation(Reservation reservation) {
 		this.reservation = reservation;
+	}
+
+	public String getSeat() {
+		return seat;
+	}
+
+	public void setSeat(String seat) {
+		this.seat = seat;
 	}
 }

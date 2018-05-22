@@ -40,7 +40,7 @@ $(document).ready(function() {
 	
 	$('#cinema-select').on('change',function(){
 		$('#projection-select').empty();
-		
+		resetSeats();
 		var cinema = $('#cinema-select').find(":selected").text();
 //		var projections;
 //		$.get({
@@ -66,6 +66,7 @@ $(document).ready(function() {
 		
 	})
 	$('#date').on('change',function(){
+		resetSeats();
 		$('#time').empty();
 		var day = $('#date');
 		console.log(day);
@@ -88,6 +89,7 @@ $(document).ready(function() {
 	});
 	
 	$('#time').on('change',function(){
+		resetSeats();
 		$('#hall').empty();
 		var time = $('#time');
 		console.log(time);
@@ -213,8 +215,13 @@ $(document).ready(function() {
 		});
 		var user = JSON.parse(localStorage.getItem('user'));
 		delete user.id;
+		var booked = [];
+		var items = seats.getSelected()
+		jQuery.each(items, function(index, item) {
+			booked.push(item.id);
+		});
 		var data =JSON.stringify({"user":user,"place":cinema,"time":time,"date":date,"show":projection
-			,"friends":invited,"isCinema":true});
+			,"friends":invited,"isCinema":true,"seats":booked});
 		console.log(data);
 		$.post({
 			url:'http://localhost:8080/api/make_reservation',
@@ -226,9 +233,12 @@ $(document).ready(function() {
 		window.location="http://localhost:8080/userProfile.html";
 		return;
 	});
-	
+
 	$('#hall').on('change',function(){
 		var hall_info;
+		var time = $('#time').find(":selected").text();
+		var date = $('#date').val();
+		var projection = $('#projection-select').find(":selected").text();
 //		$.get({
 //		url:"http://localhost:8080/adminct/get_hall_info"
 //		,data: time
@@ -236,16 +246,34 @@ $(document).ready(function() {
 //			hall_info = data;
 //		}
 	//})
-		$("#legends").css("visibility", "visible");
-		seats = $('#seats').flexiSeats({
-		    rows: 8,
-		    columns: 10,
-		    multiple: false,
-		    booked: ['0-0','5-4']
-		});
+		var data =JSON.stringify({"time":time,"date":date,"show":projection});
+		
+		$.post({
+			url : "http://localhost:8080/api/get_seats",
+			data : data,
+			contentType: "application/json",
+			success: function(data){
+				
+				$("#legends").css("visibility", "visible");
+				seats = $('#seats').flexiSeats({
+				    rows: 8,
+				    columns: 10,
+				    multiple: false,
+				    booked: data
+				});
 
+			
+			}
+		
+		})
+		
 	});
-	
-	
+	function resetSeats(){
+		$("#legends").css("visibility", "hidden");
+		seats = $('#seats').flexiSeats({
+			rows: 0,
+			columns: 0
 
+		})
+	}
 });
