@@ -37,7 +37,6 @@ public class UserController {
 	public User login(@RequestBody UserDTO u){
 		System.out.println(u);
 		return userService.login(u.getEmail(),u.getPassword());
-		//return userService.login("Admin", "Admin");
 	}
 	
 	@RequestMapping(value = "/register",method = RequestMethod.POST,

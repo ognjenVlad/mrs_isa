@@ -26,7 +26,6 @@ public class FanZoneImpl implements FanZoneService {
 	
 	@Override
 	public void addAd(Ad ad) {
-		ad.setPicture("https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120");
 		adRepository.save(ad);
 	}
 
@@ -69,7 +68,6 @@ public class FanZoneImpl implements FanZoneService {
 	
 	@Override
 	public void addProp(Prop prop) {
-		prop.setPicture("https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120");
 		propRepository.save(prop);
 	}
 

@@ -17,8 +17,8 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
    </head>
-   <body>
-      <nav class="navbar navbar-inverse">
+   <body style="padding-top:70px">
+      <nav class="navbar navbar-inverse navbar-fixed-top">
 		  <div class="container-fluid">
 		    <div class="navbar-header">
 		      <a class="navbar-brand" href="/">Movies and cinemas</a>
@@ -31,7 +31,7 @@
 		    <ul class="nav navbar-nav navbar-right">
 		      
 			    <li class="active"><a href="userProfile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-			     <li><a><span class="glyphicon glyphicon-user"></span> Sing out</a></li>
+			     <li><a href="javascript:log_out();"><span class="glyphicon glyphicon-user"></span>Log out</a></li>
 		    </ul>
 		  </div>
 		</nav>
@@ -213,7 +213,7 @@
                </div>
                <div class="modal-body">
                	<div>
-					<select class="selectpicker" data-live-search="true" id="friend-select" title = "Choose one of the following..." required></select>
+					<select class="selectpicker" data-live-search="true" id="friend-select" title = "Search.." required></select>
 				</div>
 				<hr>
 				<table class="table table-striped" >

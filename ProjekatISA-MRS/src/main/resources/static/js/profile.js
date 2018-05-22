@@ -1,3 +1,7 @@
+function log_out(){
+		localStorage.removeItem('user');
+		location.replace("http://localhost:8080/");
+	}
 $(document).ready(function() {
 	var user = JSON.parse(localStorage.getItem('user'));
 	var table = $('#friends-table').DataTable({
@@ -55,7 +59,7 @@ $(document).ready(function() {
 //					newRow.append(cols);
 //					$('#friends-table').append(newRow);
 					var pic ='<img class="profile-img" src='+data[friend].picture+'>';
-					var button = '<input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete">';
+					var button = '<input type="button" class="ibtnDel btn btn-md btn-default"  value="Delete">';
 					table.row.add([pic,data[friend].name,data[friend].surname,data[friend].email, button]);
 					table.draw();
 				}
@@ -100,7 +104,7 @@ $(document).ready(function() {
 			data : localStorage.getItem('user'),
 			contentType : "application/json",
 			success : function(data) {
-				
+				console.log(data);
 				for(friend in data){
 					var newRow = $("<tr>");
 					var cols = "";
