@@ -20,11 +20,11 @@ $(document).ready(function() {
 	$("#signout").on('click',function()
 			{
 			localStorage.removeItem('user');
-			window.location.replace("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080/signin.html");
+			window.location = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080/signin.html";
 	});
 	$('#cinema-select').append($('<option>', { 
-        value: "cine",
-        text : "cine" 
+        value: "cinema",
+        text : "cinema" 
     }));
 
 	$('#cinema-select').selectpicker('refresh');
@@ -53,7 +53,7 @@ $(document).ready(function() {
 		//
 		var cars;
 		
-		cars =["lemur"];
+		cars =["movie1,movie2"];
 		$.each(cars, function (i, item) {
 			
 			$('#projection-select').append($('<option>', { 
@@ -207,8 +207,8 @@ $(document).ready(function() {
 		var invited = [];
 		$('#friends-table > tbody > tr').each(function() {
 			var c = $(this).text();
-			var res = c.split(" ")[2];
-			invited.push({"email":res});
+			var res = c.split(" ");
+			invited.push({"email":res[2],"name":res[0],"surname":res[1]});
 			console.log(res);
 		});
 		var user = JSON.parse(localStorage.getItem('user'));
@@ -223,7 +223,7 @@ $(document).ready(function() {
 			
 		})
 		
-		window.location.replace("http://localhost:8080/userProfile.html");
+		window.location="http://localhost:8080/userProfile.html";
 		return;
 	});
 	

@@ -52,7 +52,6 @@ public class UserServiceImpl implements UserService{
 	@Async
 	public void sendMail(User user, String jwtToken) throws MailException, InterruptedException {
 
-		//Simulacija duze aktivnosti da bi se uocila razlika
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(user.getEmail());
 		mail.setFrom(env.getProperty("spring.mail.username"));
@@ -131,10 +130,13 @@ public class UserServiceImpl implements UserService{
 		User user = userRepository.findByEmail(u.getEmail());
 
 		ArrayList<Friends> friends = friendsRepository.findByUserAndAccepted(user,true);
-
+		ArrayList<Friends> friends2 = friendsRepository.findByFriendAndAccepted(user,true);
 		ArrayList<User> ret = new ArrayList<User>();
 		for (Friends friend : friends) {
 			ret.add(friend.getFriend());
+		}
+		for (Friends friend : friends2) {
+			ret.add(friend.getUser());
 		}
 		return ret;
 	}
@@ -154,7 +156,9 @@ public class UserServiceImpl implements UserService{
 	public ArrayList<User> acceptRequest(FriendsDTO u){
 		User user = userRepository.findByEmail(u.getUser().getEmail());
 		User friend = userRepository.findByEmail(u.getFriend().getEmail());
-		Friends f = friendsRepository.findByUserAndFriend(user,friend);
+		Friends f = friendsRepository.findByUserAndFriend(friend,user);
+		System.out.println(user.getEmail());
+		System.out.println(friend.getEmail());
 		f.setAccepted(true);
 		friendsRepository.save(f);
 		friendsRepository.flush();
@@ -170,11 +174,13 @@ public class UserServiceImpl implements UserService{
 		return true;
 	}
 	public ArrayList<User> getFriendRequest(User u){
-
-		ArrayList<Friends> friends = friendsRepository.findByUserAndAccepted(userRepository.findByEmail(u.getEmail()),false);
+		System.out.println(u.getEmail());
+		ArrayList<Friends> friends = friendsRepository.findByFriendAndAccepted(userRepository.findByEmail(u.getEmail()),false);
 		ArrayList<User> ret = new ArrayList<User>();
+		System.out.println("AAA "+ friends.size());
 		for (Friends friend : friends) {
-			ret.add(friend.getFriend());
+			System.out.println(friend.getFriend().getEmail());
+			ret.add(friend.getUser());
 		}
 		return ret;
 	}
@@ -183,7 +189,7 @@ public class UserServiceImpl implements UserService{
 	public boolean declineRequest(FriendsDTO u) {
 		User user = userRepository.findByEmail(u.getUser().getEmail());
 		User friend = userRepository.findByEmail(u.getFriend().getEmail());
-		Friends f = friendsRepository.findByUserAndFriend(user,friend);
+		Friends f = friendsRepository.findByUserAndFriend(friend,user);
 		friendsRepository.delete(f);
 		return true;
 	}

@@ -29,7 +29,7 @@ public class GuestController {
 	
 	@RequestMapping(value = "/confirm",
             method = RequestMethod.GET)
-    public User registerInDB(@RequestParam String token) {
+    public String registerInDB(@RequestParam String token) {
 
         Claims claims = Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary("login"))
@@ -43,6 +43,6 @@ public class GuestController {
         }
 
         System.out.println("User successfully created");
-        return retuser;
+        return "redirect:/sigin.html";
     }
 }

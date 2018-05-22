@@ -3,6 +3,7 @@ package com.project.domain;
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,12 +19,23 @@ public class Invited implements Serializable {
 	
 	@ManyToOne(optional = false)
 	private User user;
-
+	
 	@ManyToOne(cascade = CascadeType.ALL,optional = false)
 	private Reservation reservation;
 	
+	@Column(nullable = false)
+	private boolean accepted = false;
+	
 	public Invited() {
 		super();
+	}
+
+	public boolean isAccepted() {
+		return accepted;
+	}
+
+	public void setAccepted(boolean accepted) {
+		this.accepted = accepted;
 	}
 
 	public User getUser() {
