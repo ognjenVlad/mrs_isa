@@ -56,6 +56,7 @@ $(document).ready(function() {
 			"title" : $("#prop_title").val(),
 			"description" : $("#prop_description").val(),
 			"price" : $("#prop_price").val(),
+			"amount" : $("#prop_amount").val(),
 			"picture" : prop_img_src
 		})
 
@@ -67,6 +68,30 @@ $(document).ready(function() {
 			contentType : "application/json",
 			success : function(data) {
 				$('#modal_create_prop').modal('hide')
+				display_props();
+			}
+		});
+	});
+
+	$("#form_edit_prop").submit(function(event) {
+		event.preventDefault();
+		var d = JSON.stringify({
+			"title" : $("#prop_title_edit").val(),
+			"description" : $("#prop_description_edit").val(),
+			"price" : $("#prop_price_edit").val(),
+			"amount" : $("#prop_amount_edit").val(),
+			"id" : $("#prop_id_edit").val(),
+			"picture" : $("#prop_picture_edit").val()
+		})
+
+		console.log(d);
+
+		$.post({
+			url : "http://localhost:8080/admin_fan/add_prop",
+			data : d,
+			contentType : "application/json",
+			success : function(data) {
+				$('#modal_edit_prop').modal('hide')
 				display_props();
 			}
 		});
@@ -138,6 +163,27 @@ function update_ad(isPublished, isTaken) {
 	});
 }
 
+function add_bid(ad_id){
+
+	var d = JSON.stringify({
+		"value" : $("#ad_amount_" + ad_id).val(),
+		"user" : "Default_user", // localStorage.getItem('user').email
+	})
+	
+	console.log(d);
+	
+	$.ajax({
+		type : 'POST',
+		url : "http://localhost:8080/admin_fan/add_ad_bid/" + ad_id,
+		dataType : "json",
+		data : d,
+		contentType : "application/json",
+		success : function(data) {
+			alert(data.message);
+		}
+	});
+}
+
 function display_ads() {
 	$("#ads").empty();
 	var counter = 0;
@@ -149,15 +195,23 @@ function display_ads() {
 			var html_code;
 			$("#post_container").empty();
 			$.each(data.obj,function(index, ad) {
-				html_code = "<article><div class=\"row\"><div class=\"col-sm-6 col-md-3\"><figure>";
+				html_code = "<div><article><div class=\"row\"><div class=\"col-sm-6 col-md-3\"><figure>";
 				html_code += "<img src=\""+ ad.picture + "\" />";
 				html_code += "</figure></div>";
 				html_code += "<div class=\"col-md-9 col-sm-6\"><span class=\"label label-default pull-right\"><i class=\"glyphicon glyphicon-inbox\"></i> 0</span>";
 				html_code += "<h4>Title: "+ ad.title + "</h4>";
 				html_code += "<p>Description: "+ ad.description + "</p><section><i class=\"glyphicon glyphicon-user\"></i> Default User <i class=\"glyphicon glyphicon-calendar\">";
-				html_code += "</i>" + ad.exp_date + "</section></div><input type=\"number\"/ placeholder=\"Bid amount\">";
-				html_code += "</button><button class=\"btn\" onclick=\"add_bid("+ ad.id +")\">Add bid</button></div></article>";
-
+				html_code += "</i>" + ad.exp_date + "<button class=\"btn pull-right\" data-toggle=\"collapse\" data-target=\"#ad_bids_"+ ad.id + "\" aria-expanded=\"false\"";
+				html_code += "aria-controls=\"ad_bids_" + ad.id + "\"> Show/Hide bids </button></section></div></div></article>";
+				html_code += "<div class=\"collapse\" id=\"ad_bids_"+ ad.id +"\"><div class=\"card card-body\">";
+				console.log(ad);
+				$.each(ad.bids,function(index2, bid){
+					html_code += "<p>User &lt"+ bid.user + "&gt offered:"+ bid.value +" </p>"
+				})
+				html_code += "</div></div><div class=\"input-group\"><input class= \"form-control width100\" id=\"ad_amount_" + ad.id +"\" type=\"number\"/ placeholder=\"Bid amount\">";
+				html_code += "<span class=\"input-group-btn\"><button class=\"btn\" onclick=\"add_bid("+ ad.id +")\">Add bid</button></span></div></div>";
+				
+				
 				$("#ads").append(html_code);
 				counter++;
 			})
@@ -165,6 +219,22 @@ function display_ads() {
 			if(counter ==0){
 				$("#ads").append("<h3> No ads to display </h3>");
 			}
+		}
+	});
+}
+
+function fill_prop_window(id){
+	$.ajax({
+		type : "GET",
+		url : "http://localhost:8080/admin_fan/get_prop/" + id,
+		dataType : "json",
+		success : function(data) {
+			$("#prop_title_edit").val(data.obj.title);
+			$("#prop_id_edit").val(id);
+			$("#prop_description_edit").val(data.obj.description);
+			$("#prop_price_edit").val(data.obj.price);
+			$("#prop_amount_edit").val(data.obj.amount);
+			$("#prop_picture_edit").val(data.obj.picture);
 		}
 	});
 }
@@ -182,10 +252,13 @@ function display_props() {
 				html_code = "<article><div class=\"row\"><div class=\"col-sm-6 col-md-3\"><figure>";
 				html_code += "<img src=\""+ prop.picture + "\" />";
 				html_code += "</figure></div>";
-				html_code += "<div class=\"col-md-9 col-sm-6\"><button class=\"label label-default pull-right remove-button\" onclick=\"remove_prop("+ prop.id +")\">";
-				html_code += "Remove<span class=\"glyphicon glyphicon-trash\"></span></button><h4>Title: "+ prop.title + "</h4>";
+				html_code += "<div class=\"col-md-9 col-sm-6\"><button class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#modal_edit_prop\" onclick=\"fill_prop_window("+ prop.id +")\">";
+				html_code += "Edit <i class=\"glyphicon glyphicon-pencil\"></i></button>";
+				html_code += "<button class=\"btn pull-right\" onclick=\"remove_prop("+ prop.id +")\">";
+				html_code += "Remove <i class=\"glyphicon glyphicon-trash\"></i></button><h4>Title: "+ prop.title + "</h4>";
 				html_code += "<p>Description: "+ prop.description + "</p><section><i class=\"glyphicon glyphicon-usd\"></i>" + prop.price;
-				html_code += "<button class=\"btn btn-default btn-sm pull-right\" onclick=\"reserve_prop("+ prop.id +")\">Reserve</button></section></div></div></article>";
+				html_code += "<p>Amount : "+ prop.amount + "</p><button class=\"btn btn-default btn-sm pull-right\" onclick=\"reserve_prop("+ prop.id +")\">Reserve</button>";
+				html_code += "<input id=\"prop_amount_"+ prop.id +"\" class=\"pull-right\" type=\"number\"/ placeholder=\"Amount\" min=\"1\" max=\"" + prop.amount + "\"></section></div></div></article>";
 				html_code += "";
 				$("#props").append(html_code);
 				counter++;
@@ -210,5 +283,15 @@ function remove_prop(id){
 
 
 function reserve_prop(id){
-	
+	$.ajax({
+		type : "PUT",
+		url : "http://localhost:8080/admin_fan/update_prop/" + id + "/" + $("#prop_amount_" + id).val(),
+		dataType : "json",
+		success : function(data) {
+			if(data.message == "Not enough props"){
+				alert("Not enough props");
+			}
+			display_props();
+		}
+	});	
 }

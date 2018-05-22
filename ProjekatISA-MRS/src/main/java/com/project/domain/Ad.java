@@ -1,6 +1,7 @@
 package com.project.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -35,7 +36,11 @@ public class Ad implements Serializable{
 	@Column
 	private boolean isPublished = false;
 	
-	@Column boolean isTaken = false;
+	@Column
+	boolean isTaken = false;
+	
+	@Column
+	private ArrayList<Bid> bids = new ArrayList<Bid>();
 
 	Ad(){}
 
@@ -120,6 +125,14 @@ public class Ad implements Serializable{
 	public String toString() {
 		return "Ad [id=" + id + ", title=" + title + ", description=" + description + ", exp_date=" + exp_date
 				+ ", isPublished=" + isPublished + ", isTaken=" + isTaken + "]";
+	}
+
+	public ArrayList<Bid> getBids() {
+		return bids;
+	}
+
+	public void setBids(ArrayList<Bid> bids) {
+		this.bids = bids;
 	};
 	
 	

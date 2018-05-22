@@ -18,18 +18,24 @@
 
 </head>
 <body>
-		<nav class="navbar navbar-inverse">
-		  <div class="container-fluid">
-		    <div class="navbar-header">
-		      <a class="navbar-brand" href="index.html">Cinemas and Theaters</a>
-		    </div>
-			<ul class="nav navbar-nav"></li></ul>
-		    <ul class="nav navbar-nav" id="navbarLeft_fan">
-		    </ul>
-		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
-		    </ul>
-		  </div>
-		</nav>
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">Cinemas and Theaters</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li></li>
+			</ul>
+			<ul class="nav navbar-nav" id="navbarLeft_fan">
+				<li><button class="btn btn-link navbar-btn" data-toggle="modal"
+						data-target="#modal_create_prop">Create prop</button></li>
+				<li><button class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_send_ad">Send ad request</button></li>
+				<li><button class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_get_ad" onclick="get_ad_request()">Get pending ad</button></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right" id="navbarRight">
+			</ul>
+		</div>
+	</nav>
 
 	<div class="container">
 
@@ -51,7 +57,7 @@
 							</div>
 							<div class="form-group">
 								<label class="ad_exp_date" for="date">Expire date</label> <input
-									class="form-control" id="ad_exp_date" type="date" required/>
+									class="form-control" id="ad_exp_date" type="date" required />
 							</div>
 							<div class="form-group">
 								<label for="profile-picture">Ad picture</label> <input
@@ -72,8 +78,7 @@
 			<div class="modal-dialog">
 
 				<div class="modal-content">
-					<div class="modal-body" id="get_ad_container">
-					</div>
+					<div class="modal-body" id="get_ad_container"></div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					</div>
@@ -98,14 +103,58 @@
 							</div>
 							<div class="form-group">
 								<label for="prop_price">Price (USD):</label> <input
-									type="number" class="form-control" id="prop_price" required/>
+									type="number" class="form-control" id="prop_price" required />
 							</div>
 							<div class="form-group">
-								<label for="prop_file">Prop picture</label> <input
-									type="file" class="form-control-file" id="prop_file">
+								<label for="prop_amount">Amount:</label> <input
+									type="number" class="form-control" id="prop_amount" required />
 							</div>
-							<button type="submit" class="btn btn btn-primary" id="prop_create">Create
-								prop</button>
+							<div class="form-group">
+								<label for="prop_file">Prop picture</label> <input type="file"
+									class="form-control-file" id="prop_file">
+							</div>
+							<button type="submit" class="btn btn btn-primary"
+								id="prop_create">Create prop</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="modal_edit_prop" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h3>Edit prop</h3>
+						<form role="form" id="form_edit_prop" method="POST">
+							<div class="form-group">
+								<label for="prop_title_edit">Title</label> <input type="text"
+									class="form-control" id="prop_title_edit" required />
+							</div>
+							<input type="hidden" id="prop_id_edit"/>
+							<input type="hidden" id="prop_picture_edit"/>
+							<div class="form-group">
+								<label for="prop_description_edit">Description</label>
+								<textarea class="form-control" rows="3" id="prop_description_edit"
+									required></textarea>
+							</div>
+							<div class="form-group">
+								<label for="prop_price_edit">Price (USD):</label> <input
+									type="number" class="form-control" id="prop_price_edit" required />
+							</div>
+							<div class="form-group">
+								<label for="prop_amount_edit">Amount:</label> <input
+									type="number" class="form-control" id="prop_amount_edit" required />
+							</div>
+							<div class="form-group">
+								<label for="prop_file_edit">Prop picture</label> <input type="file"
+									class="form-control-file" id="prop_file_edit">
+							</div>
+							<button type="submit" class="btn btn btn-primary"
+								id="prop_edit">Save changes</button>
 						</form>
 					</div>
 					<div class="modal-footer">
@@ -123,12 +172,10 @@
 
 			<div class="tab-content">
 				<div id="ads_tab" class="tab-pane fade in active">
-					<div id="ads">
-					</div>
+					<div id="ads"></div>
 				</div>
 				<div id="props_tab" class="tab-pane fade">
-					<div id="props">
-					</div>
+					<div id="props"></div>
 				</div>
 			</div>
 		</div>
