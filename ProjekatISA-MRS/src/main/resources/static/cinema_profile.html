@@ -15,8 +15,9 @@
 <script src="js/projection_add.js"></script>
 <script type="text/javascript">
 
-	var halls;
-	var cin_id;
+	var halls = [];
+	var cin_id = -1;
+	var projections = [];
 	var actors_count = 0;
 	var halls_count = 0;
 	
@@ -36,7 +37,7 @@
 				url : 'https://maps.googleapis.com/maps/api/geocode/json?address=' + loc,
 				
 				success : function(data){
-					if(data == null){
+					if(data.results[0] == null){
 						var lat = 1000;
 						var lng = 1000;
 					}else{
@@ -55,7 +56,6 @@
 	function render_cinema(cinema){
 		halls = cinema.halls;
 		cin_id = cinema.id;
-		projections = cinema.projections;
 		$('#details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
 		if (cinema.isCinema){
 			$('#image_and_map').append('<img src="resources/images/cinema.jpg" alt="Cinema" style="width:100%; height: 240px">');
@@ -70,6 +70,7 @@
 		
 		$.each(cinema.halls, function(index, hall){
 			$('#sel1').append('<option>'+hall.hall_id+'</option>');
+			$('#m_sel1').append('<option>'+hall.hall_id+'</option>');
 		});
 		
 	}
@@ -88,12 +89,14 @@
 	
 	function render_projections(data){
 		var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
-		all_projections = list;
-		$.each(all_projections, function(index, proj){
+		$.each(list, function(index, proj){
 			if (cin_id == proj.cinthe_id){
-				var proj_html = '<div id="proj_'+index+'" style="border:1px solid grey"><img src="'+proj.poster+'" alt="Projection_image" '+
-						'style="width: 100px; height: 100px">'+proj.name+'<br/>'+proj.description+'<br/>'+proj.genre+
-						', '+proj.director+'<br/>'+proj.price+'</div>'
+				projections.push(proj);
+				var proj_html = '<div id="proj_'+index+'" style="border:1px solid grey"><img id="proj_'+index+'_poster" src="'+proj.poster+'" alt="Projection_image" '+
+						'style="width: 100px; height: 100px; float: right"><b id="proj_'+index+'_name">'+proj.name+'</b><p id="proj_'+index+'_description">'+proj.description+
+						'</p><b id="proj_'+index+'_genre">'+proj.genre+'</b>,<p id="proj_'+index+'_director">'+proj.director+'</p><br/>'+proj.price+'<div class="float-right">'+
+						'<button type="button" class="btn btn-primary" onclick="modify_projection('+index+')">Modify</button>'+
+						'<button type="button" class="btn btn-primary" onclick="delete_projection('+index+')">Delete</button></div></div>'
 				$('#repertoire').append(proj_html);
 			}
 		});
@@ -109,18 +112,18 @@
 		});
 	}
 	
-	function actorsAdd(){
-		var actor_name = $('#actor').val();
-		$('#actors').append('<tr><td id="actor'+actors_count+'">'+actor_name+'</td></tr>');
+	function actorsAdd(modal_check){
+		var actor_name = $('#'+modal_check+'actor').val();
+		$('#'+modal_check+'actors').append('<tr><td id="'+modal_check+'actor'+actors_count+'">'+actor_name+'</td><button type="button" class="btn">Remove</button></tr>');
 		actors_count++;
 	}
 	
-	function hallsAdd(){
-		var hall = $('#sel1').val();
-		$('#halls').append('<tr><td id="hall'+halls_count+'">'+hall+'</td></tr>');
+	function hallsAdd(modal_check){
+		var hall = $('#'+modal_check+'sel1').val();
+		$('#'+modal_check+'halls').append('<tr><td id="'+modal_check+'hall'+halls_count+'">'+hall+'</td></tr>');
 		var time_html = '<div class="form-group"><label for="time'+halls_count+'" class="col-form-label">'+
 					'Time of projection:</label><input type="time" class="form-control" id="time'+halls_count+'"></div>';
-		$('#halls').append(time_html);
+		$('#'+modal_check+'halls').append(time_html);
 		halls_count++;
 	}
 	
@@ -173,12 +176,12 @@
 	        <form role="form" id="add_projection_form" method="POST">
 	          <div class="form-group">
 	            <label for="name" class="col-form-label">Name:</label>
-	            <input type="text" class="form-control" id="name">
+	            <input type="text" class="form-control" id="name" required>
 	          </div>
 	          <div class="form-group">
 				<label for="cinema_rows">Add actor</label> 
 				<input type="text" class="form-control" id="actor">
-				<button type="button" class="btn btn-primary" id="actor_add" onclick="actorsAdd()">Add actor</button>
+				<button type="button" class="btn btn-primary" onclick="actorsAdd('')">Add actor</button>
 				<div class="form-group">
 					<table class="table">
 					<thead><tr><th>Actors</th></tr></thead>
@@ -189,15 +192,15 @@
 	          </div>
 	          <div class="form-group">
 	            <label for="genre" class="col-form-label">Genre:</label>
-	            <input type="text" class="form-control" id="genre">
+	            <input type="text" class="form-control" id="genre" required>
 	          </div>
 	          <div class="form-group">
 	            <label for="director" class="col-form-label">Director:</label>
-	            <input type="text" class="form-control" id="director">
+	            <input type="text" class="form-control" id="director" required>
 	          </div>
 	          <div class="form-group">
 	            <label for="length" class="col-form-label">Length (hours):</label>
-	            <input type="number" class="form-control" id="length">
+	            <input type="number" class="form-control" id="length" required>
 	          </div>
 	          <div class="form-group">
 	            <label for="poster">Projection poster</label> 
@@ -205,13 +208,13 @@
 	          </div>
 	          <div class="form-group">
 	            <label for="description" class="col-form-label">Description:</label>
-	            <textarea class="form-control" id="description"></textarea>
+	            <textarea class="form-control" id="description" required></textarea>
 	          </div>
 	          <div class="form-group">
 			      <label for="sel1">Select hall (select one):</label>
 			      <select class="form-control" id="sel1">
 			      </select>
-			      <button type="button" class="btn btn-primary" id="actor_add" onclick="hallsAdd()">Add hall</button>
+			      <button type="button" class="btn btn-primary" onclick="hallsAdd('')">Add hall</button>
 				  <div class="form-group">
 					<table class="table">
 					<thead><tr><th>Halls</th></tr></thead>
@@ -222,11 +225,105 @@
 			  </div>
 			  <div class="form-group">
 	            <label for="price" class="col-form-label">Price (RSD):</label>
-	            <input type="number" class="form-control" id="price">
+	            <input type="number" class="form-control" id="price" required>
 	          </div>
 	          <button class="btn btn-primary">Confirm</button>
 	          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	        </form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="modifyModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="modifyLabel">Modify projection</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <form role="form" id="modify_form" method="POST">
+	 		  <p id="m_id" hidden></p>
+	          <div class="form-group">
+	            <label for="name" class="col-form-label">Name:</label>
+	            <input type="text" class="form-control" id="m_name" required>
+	          </div>
+	          <div class="form-group">
+				<label for="cinema_rows">Add actor</label> 
+				<input type="text" class="form-control" id="m_actor">
+				<button type="button" class="btn btn-primary" onclick="actorsAdd('m_')">Add actor</button>
+				<div class="form-group">
+					<table class="table">
+					<thead><tr><th>Actors</th></tr></thead>
+					<tbody id="m_actors">
+					</tbody>
+					</table>
+				</div>
+	          </div>
+	          <div class="form-group">
+	            <label for="genre" class="col-form-label">Genre:</label>
+	            <input type="text" class="form-control" id="m_genre" required>
+	          </div>
+	          <div class="form-group">
+	            <label for="director" class="col-form-label">Director:</label>
+	            <input type="text" class="form-control" id="m_director" required>
+	          </div>
+	          <div class="form-group">
+	            <label for="length" class="col-form-label">Length (hours):</label>
+	            <input type="number" class="form-control" id="m_length" required>
+	          </div>
+	          <div class="form-group">
+	            <label for="poster">Projection poster</label> 
+	            <input type="file" class="form-control-file" id="m_poster">
+	          </div>
+	          <div class="form-group">
+	            <label for="description" class="col-form-label">Description:</label>
+	            <textarea class="form-control" id="m_description" required></textarea>
+	          </div>
+	          <div class="form-group">
+			      <label for="sel1">Select hall (select one):</label>
+			      <select class="form-control" id="m_sel1">
+			      </select>
+			      <button type="button" class="btn btn-primary" onclick="hallsAdd('m_')">Add hall</button>
+				  <div class="form-group">
+					<table class="table">
+					<thead><tr><th>Halls</th></tr></thead>
+					<tbody id="m_halls">
+					</tbody>
+					</table>
+  				  </div>
+			  </div>
+			  <div class="form-group">
+	            <label for="price" class="col-form-label">Price (RSD):</label>
+	            <input type="number" class="form-control" id="m_price" required>
+	          </div>
+	          <input type="text" id='m_id' hidden />
+	          <button class="btn btn-primary">Confirm</button>
+	          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        </form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="deleteModalLabel">Delete projection</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">Are you sure you want to delete this projection?
+	      	<p id="del_proj_id" hidden></p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-primary" id="delete_proj_btn">Yes</button>
+	        <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
 	      </div>
 	    </div>
 	  </div>

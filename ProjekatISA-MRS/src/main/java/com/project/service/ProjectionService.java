@@ -8,6 +8,10 @@ public interface ProjectionService {
 
 	public void addProjection(Projection prj);
 	
+	public void modifyProjection(Projection prj);
+	
+	public void deleteProjection(Long id);
+	
 	public ArrayList<Projection> findAll();
 	
 	public Projection findById(Long id);
