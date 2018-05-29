@@ -13,6 +13,8 @@
 <link href="css/fan_zone.css" rel="stylesheet" />
 <script type="text/javascript" src="js/user_types.js"></script>
 <script type="text/javascript" src="js/fan_page.js"></script>
+<script type="text/javascript" src="js/profile.js"></script>
+
 
 <title>Tim12 Cogi</title>
 
@@ -31,6 +33,7 @@
 						data-target="#modal_create_prop">Create prop</button></li>
 				<li><button class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_send_ad">Send ad request</button></li>
 				<li><button class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_get_ad" onclick="get_ad_request()">Get pending ad</button></li>
+				<li><button class="btn btn-link navbar-btn" data-toggle="modal" data-target="#edit">Edit profile</button></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right" id="navbarRight">
 			</ul>
@@ -41,7 +44,6 @@
 
 		<div id="modal_send_ad" class="modal fade" role="dialog">
 			<div class="modal-dialog">
-
 				<div class="modal-content">
 					<div class="modal-body">
 						<h3>Create ad</h3>
@@ -164,6 +166,90 @@
 			</div>
 		</div>
 
+		<div id="modal_edit_bid" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h3>Edit bid</h3>
+						<form role="form" id="form_edit_bid" method="POST">
+							<input type="hidden" id="bid_id_edit"/>
+							<input type="hidden" id="bid_ad_id_edit"/>
+							<input type="hidden" id="bid_user_edit"/>
+							<div class="form-group">
+								<label for="prop_price_edit">Your bid (USD):</label> <input
+									type="number" class="form-control" id="bid_value_edit" required />
+							</div>
+							<button type="submit" class="btn btn btn-primary"
+								id="bid_edit">Save changes</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+      <div id="edit" class="modal fade" role="dialog">
+         <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Edit profile</h4>
+               </div>
+               <div class="modal-body">
+                  <img class="profile-img" align="center" id = "profile-img" 
+                     alt="profile picture">
+                  <form role="form"  id = "form" method = "POST">
+                     <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="modal-email" required/>
+                        <p id="message-email"></p>
+                     </div>
+                     <div class="form-group">
+                        <!--<a class="pull-right" href="#">Forgot password?</a>!-->
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="modal-password" required/>
+                     </div>
+                     <div class="form-group">
+                        <!--<a class="pull-right" href="#">Forgot password?</a>!-->
+                        <label for="r-password">Repeat password</label>
+                        <input type="password" class="form-control" id="modal-r-password" required/>
+                        <p id="message"></p>
+                     </div>
+                     <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="modal-name" required/>
+                     </div>
+                     <div class="form-group">
+                        <label for="Surname">Surname</label>
+                        <input type="text" class="form-control" id="modal-surname" required/>
+                     </div>
+                     <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="modal-city" required/>
+                     </div>
+                     <div class="form-group">
+                        <label for="Phone">Phone</label>
+                        <input type="text" class="form-control" id="modal-phone" required/>
+                     </div>
+                     <div class="form-group">
+                        <label for="profile-picture">Profile picture</label>
+                        <input type="file" class="form-control-file" id="file">
+                     </div>
+                     <div class="modal-footer">
+                        <button type="submit" class="btn btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Updating.." id="update">
+                        Update
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+
 		<div class="middle_container">
 			<ul class="nav nav-tabs nav-justified">
 				<li class="active"><a data-toggle="tab" href="#ads_tab">Ads</a></li>
@@ -179,6 +265,7 @@
 				</div>
 			</div>
 		</div>
+		
 	</div>
 </body>
 <script type="text/javascript">

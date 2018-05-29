@@ -12,6 +12,7 @@ import com.project.domain.Prop;
 import com.project.repository.AdRepository;
 import com.project.repository.BidRepository;
 import com.project.repository.PropRepository;
+import com.project.utils.Response;
 
 @Service
 public class FanZoneImpl implements FanZoneService {
@@ -63,7 +64,14 @@ public class FanZoneImpl implements FanZoneService {
 
 	@Override
 	public List<Ad> getPublishedAds() {
-		return adRepository.findByIsPublished(true);
+		ArrayList<Ad> ads = (ArrayList<Ad>) adRepository.findByIsPublished(true);
+/*		for (Ad ad : ads) {
+			for (int i = 0 ; i < ad.getBids().size();i++) {
+				if(!ad.getBids().get(i).isDeleted())
+					ad.getBids().remove(i);
+			}
+		}*/
+		return ads;
 	}
 	
 	@Override
@@ -110,16 +118,56 @@ public class FanZoneImpl implements FanZoneService {
 
 	@Override
 	public String addAdBid(Long ad_id, Bid bid) {
+		Long bid_id = bid.getId();
 		Ad ad;
 		if((ad = adRepository.findOne(ad_id))== null){
 			return "Invalid request";
 		}
+		
 		bidRepository.save(bid);
-		ad.getBids().add(bid);
+		
+		System.out.println(bid);
+		if(bid_id == null) {
+			ad.getBids().add(bid);
+		}else {
+			for(int i = 0 ; i < ad.getBids().size();i++) {
+				if(ad.getBids().get(i).getId().equals(bid_id)) {
+					ad.getBids().get(i).setValue(bid.getValue());
+				}
+			}
+		}
+
 		System.out.println("\n\n #################" + ad.getBids().toString() + "############## \n\n");
 		adRepository.save(ad);
 		return "Success";
 	}
+
+	@Override
+	public Bid getBid(Long id) {
+		return bidRepository.findOne(id);
+	}
 	
+	@Override
+	public String deleteBid(Long ad_id,Long id) {
+		Bid bid;
+		Ad ad;
+		if((ad = adRepository.findOne(ad_id))==null) {
+			return "Id doesn't exist";
+		}
+		if((bid = bidRepository.findOne(id)) == null) {
+			return "Id doesn't exist";
+		}
+		
+		//bid.setDeleted(true);
+		bidRepository.save(bid);
+		for(int i = 0 ; i < ad.getBids().size();i++) {
+			if(ad.getBids().get(i).getId().equals(bid.getId())) {
+				ad.getBids().remove(i);
+				continue;
+			}
+		}
+		adRepository.save(ad);
+		return "Success";
+	}
 
 }

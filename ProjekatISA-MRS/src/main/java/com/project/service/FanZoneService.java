@@ -5,6 +5,7 @@ import java.util.List;
 import com.project.domain.Ad;
 import com.project.domain.Bid;
 import com.project.domain.Prop;
+import com.project.utils.Response;
 
 public interface FanZoneService {
 
@@ -16,7 +17,9 @@ public interface FanZoneService {
 	public void addProp(Prop prop);
 	public List<Prop> getProps();
 	public Prop getProp(Long id);
+	public Bid getBid(Long id);
 	public String deleteProp(Long id);
 	public String updateProp(Long id,int amount);
 	public String addAdBid(Long ad_id,Bid bid);
+	public String deleteBid(Long ad_id,Long id);
 }

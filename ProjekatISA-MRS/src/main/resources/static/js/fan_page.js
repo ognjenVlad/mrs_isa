@@ -96,6 +96,28 @@ $(document).ready(function() {
 			}
 		});
 	});
+
+	$("#form_edit_bid").submit(function(event) {
+		event.preventDefault();
+		var ad_id = $("#bid_ad_id_edit").val();
+		var d = JSON.stringify({
+			"value" : $("#bid_value_edit").val(),
+			"id" : $("#bid_id_edit").val(),
+			"user" : $("#bid_user_edit").val(),
+		})
+
+		console.log(d);
+
+		$.post({
+			url : "http://localhost:8080/admin_fan/add_ad_bid/" + ad_id,
+			data : d,
+			contentType : "application/json",
+			success : function(data) {
+				$('#modal_edit_prop').modal('hide')
+				display_props();
+			}
+		});
+	});
 });
 
 
@@ -184,6 +206,31 @@ function add_bid(ad_id){
 	});
 }
 
+function fill_bid_window(ad_id,id){
+	$.ajax({
+		type : "GET",
+		url : "http://localhost:8080/admin_fan/get_bid/" + id,
+		dataType : "json",
+		success : function(data) {
+			$("#bid_value_edit").val(data.obj.value);
+			$("#bid_user_edit").val(data.obj.user);
+			$("#bid_id_edit").val(id);
+			$("#bid_ad_id_edit").val(ad_id);
+		}
+	});
+}
+
+function remove_bid(ad_id,id){
+	$.ajax({
+		type : "PUT",
+		url : "http://localhost:8080/admin_fan/remove_bid/" + ad_id + "/" + id,
+		dataType : "json",
+		success : function(data) {
+			display_props();
+		}
+	});
+}
+
 function display_ads() {
 	$("#ads").empty();
 	var counter = 0;
@@ -206,11 +253,12 @@ function display_ads() {
 				html_code += "<div class=\"collapse\" id=\"ad_bids_"+ ad.id +"\"><div class=\"card card-body\">";
 				console.log(ad);
 				$.each(ad.bids,function(index2, bid){
-					html_code += "<p>User &lt"+ bid.user + "&gt offered:"+ bid.value +" </p>"
+					html_code += "<div><span>User &lt"+ bid.user + "&gt offered:"+ bid.value +" </span><button class=\"btn btn-danger\" onclick=\"remove_bid("+ ad.id + " , " + bid.id +")\">";
+					html_code += "Remove <i class=\"glyphicon glyphicon-trash\"></i></button>";
+					html_code += "<button class=\"btn btn-dark\" data-toggle=\"modal\" data-target=\"#modal_edit_bid\" onclick=\"fill_bid_window("+ ad.id + " , " + bid.id +")\">Edit <i class=\"glyphicon glyphicon-pencil\"></i></button></div>";
 				})
 				html_code += "</div></div><div class=\"input-group\"><input class= \"form-control width100\" id=\"ad_amount_" + ad.id +"\" type=\"number\"/ placeholder=\"Bid amount\">";
 				html_code += "<span class=\"input-group-btn\"><button class=\"btn\" onclick=\"add_bid("+ ad.id +")\">Add bid</button></span></div></div>";
-				
 				
 				$("#ads").append(html_code);
 				counter++;
@@ -251,12 +299,10 @@ function display_props() {
 			$.each(data.obj,function(index, prop) {
 				html_code = "<article><div class=\"row\"><div class=\"col-sm-6 col-md-3\"><figure>";
 				html_code += "<img src=\""+ prop.picture + "\" />";
-				html_code += "</figure></div>";
-				html_code += "<div class=\"col-md-9 col-sm-6\"><button class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#modal_edit_prop\" onclick=\"fill_prop_window("+ prop.id +")\">";
-				html_code += "Edit <i class=\"glyphicon glyphicon-pencil\"></i></button>";
-				html_code += "<button class=\"btn pull-right\" onclick=\"remove_prop("+ prop.id +")\">";
-				html_code += "Remove <i class=\"glyphicon glyphicon-trash\"></i></button><h4>Title: "+ prop.title + "</h4>";
-				html_code += "<p>Description: "+ prop.description + "</p><section><i class=\"glyphicon glyphicon-usd\"></i>" + prop.price;
+				html_code += "</figure></div><div class=\"col-md-9 col-sm-6\"><button class=\"btn pull-right btn-danger\" onclick=\"remove_prop("+ prop.id +")\">";
+				html_code += "Remove <i class=\"glyphicon glyphicon-trash\"></i></button>";
+				html_code += "<button class=\"btn pull-right btn-dark\" data-toggle=\"modal\" data-target=\"#modal_edit_prop\" onclick=\"fill_prop_window("+ prop.id +")\">Edit <i class=\"glyphicon glyphicon-pencil\"></i></button>";
+				html_code += "<h4>Title: "+ prop.title + "</h4><p>Description: "+ prop.description + "</p><section><i class=\"glyphicon glyphicon-usd\"></i>" + prop.price;
 				html_code += "<p>Amount : "+ prop.amount + "</p><button class=\"btn btn-default btn-sm pull-right\" onclick=\"reserve_prop("+ prop.id +")\">Reserve</button>";
 				html_code += "<input id=\"prop_amount_"+ prop.id +"\" class=\"pull-right\" type=\"number\"/ placeholder=\"Amount\" min=\"1\" max=\"" + prop.amount + "\"></section></div></div></article>";
 				html_code += "";
