@@ -7,14 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.domain.Ad;
+import com.project.domain.Bid;
 import com.project.domain.Prop;
 import com.project.repository.AdRepository;
+import com.project.repository.BidRepository;
 import com.project.repository.PropRepository;
 
 @Service
 public class FanZoneImpl implements FanZoneService {
 	@Autowired
 	AdRepository adRepository;
+
+	@Autowired
+	BidRepository bidRepository;
 
 	@Autowired
 	PropRepository propRepository;
@@ -47,7 +52,7 @@ public class FanZoneImpl implements FanZoneService {
 	@Override
 	public String updateAd(boolean is_published, boolean is_taken, Long id) {
 		Ad ad;
-		if((ad = adRepository.getOne(id))== null){
+		if((ad = adRepository.findOne(id))== null){
 			return "Invalid request";
 		}
 		ad.setIsPublished(is_published);
@@ -74,11 +79,45 @@ public class FanZoneImpl implements FanZoneService {
 	@Override
 	public String deleteProp(Long id) {
 		Prop prop;
-		if((prop = propRepository.getOne(id))==null) {
+		if((prop = propRepository.findOne(id))==null) {
 			return "Id doesn't exist";
 		}
 		prop.setDeleted(true);
 		propRepository.save(prop);
+		return "Success";
+	}
+
+	@Override
+	public Prop getProp(Long id) {
+		return propRepository.findOne(id);
+	}
+
+	@Override
+	public String updateProp(Long id, int amount) {
+		Prop prop;
+		if((prop = propRepository.findOne(id))==null) {
+			return "Id doesn't exist";
+		}
+		System.out.println("\n\n" + prop.getAmount() + "\n\n");
+		if(prop.getAmount() < amount) {
+			return "Not enough props";
+		}else {
+			prop.setAmount(prop.getAmount() - amount);
+			propRepository.save(prop);
+			return "Success";
+		}
+	}
+
+	@Override
+	public String addAdBid(Long ad_id, Bid bid) {
+		Ad ad;
+		if((ad = adRepository.findOne(ad_id))== null){
+			return "Invalid request";
+		}
+		bidRepository.save(bid);
+		ad.getBids().add(bid);
+		System.out.println("\n\n #################" + ad.getBids().toString() + "############## \n\n");
+		adRepository.save(ad);
 		return "Success";
 	}
 	

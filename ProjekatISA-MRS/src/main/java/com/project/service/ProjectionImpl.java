@@ -19,6 +19,32 @@ public class ProjectionImpl implements ProjectionService {
 		System.out.println("U POJECTIONIMP JE " + prj.getName() + "\n\n");
 		prRepository.save(prj);
 	}
+	
+	@Override
+	public void modifyProjection(Projection prj){
+		System.out.println("U PROJECTIONIMP JE " + prj.getName() + "\n\n");
+		Projection old_prj = prRepository.findById(prj.getId());
+		
+		old_prj.setName(prj.getName());
+		old_prj.setActors(prj.getActors());
+		old_prj.setGenre(prj.getGenre());
+		old_prj.setDirector(prj.getDirector());
+		old_prj.setDescription(prj.getDescription());
+		old_prj.setHalls(prj.getHalls());
+		old_prj.setTime(prj.getTime());
+		old_prj.setLength(prj.getLength());
+		if (prj.getPoster() != null)
+			old_prj.setPoster(prj.getPoster());
+		old_prj.setPrice(prj.getPrice());
+		prRepository.save(old_prj);
+	}
+	
+	@Override
+	public void deleteProjection(Long id){
+		System.out.println("OVDE JE ID "+id+"\n\n");
+		prRepository.deleteById(id);
+		return;
+	}
 
 	@Override
 	public ArrayList<Projection> findAll() {

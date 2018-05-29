@@ -3,6 +3,7 @@ package com.project.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +42,21 @@ public class AdminCTConroller {
 	public String addProjection(@RequestBody Projection pr){
 		System.out.println(pr.getHalls().size() +" halls size \n\n");
 		prService.addProjection(pr);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/modify_projection", method = RequestMethod.POST)
+	public String modifyProjection(@RequestBody Projection pr){
+		System.out.println(pr.getHalls().size() +" halls size MODIFY\n\n");
+		prService.modifyProjection(pr);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/delete_projection/{id}", method = RequestMethod.POST)
+	public String deleteProjection(@PathVariable(value = "id") String id){
+		Long pr_id = Long.parseLong(id);
+		System.out.println(pr_id+" je id \n\n\n");
+		prService.deleteProjection(pr_id);
 		return "success";
 	}
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.domain.Ad;
+import com.project.domain.Bid;
 import com.project.domain.Prop;
 import com.project.service.FanZoneImpl;
 import com.project.utils.Response;
@@ -52,6 +53,11 @@ public class AdminFanController {
 		return new Response("Success",fanZoneService.getProps());
 	}
 
+	@RequestMapping(value = "/get_prop/{id}", method = RequestMethod.GET)
+	public Response getProp(@PathVariable(value = "id") String id) {
+		return new Response("Success",fanZoneService.getProp(Long.parseLong(id)));
+	}
+
 	@RequestMapping(value = "/add_prop", method = RequestMethod.POST)
 	public Response propAd(@RequestBody Prop prop) {
 		fanZoneService.addProp(prop);
@@ -61,5 +67,15 @@ public class AdminFanController {
 	@RequestMapping(value = "/remove_prop/{id}", method = RequestMethod.PUT)
 	public Response removeProp(@PathVariable(value = "id") String id){
 		return new Response(fanZoneService.deleteProp(Long.parseLong(id)),null);
+	}
+
+	@RequestMapping(value = "/update_prop/{id}/{amount}", method = RequestMethod.PUT)
+	public Response updateProp(@PathVariable(value = "id") String id,@PathVariable(value = "amount") String amount){
+		return new Response(fanZoneService.updateProp(Long.parseLong(id),Integer.parseInt(amount)),null);
+	}
+	
+	@RequestMapping(value = "/add_ad_bid/{id}", method = RequestMethod.POST)
+	public Response addAdBid(@PathVariable(value = "id") String ad_id,@RequestBody Bid bid) {
+		return new Response(fanZoneService.addAdBid(Long.parseLong(ad_id),bid),null);
 	}
 }

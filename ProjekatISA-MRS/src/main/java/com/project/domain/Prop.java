@@ -25,6 +25,9 @@ public class Prop {
 	@Column(nullable = false)
 	private Double price;
 
+	@Column(nullable = false)
+	private int amount;
+
 	@Column
 	private String picture;
 	
@@ -106,5 +109,14 @@ public class Prop {
 		this.isDeleted = isDeleted;
 	}
 
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+	
 	
 }
