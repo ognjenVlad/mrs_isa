@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.project.DTO.ReservationDTO;
+import com.project.domain.User;
 import com.project.service.ReservationImpl;
 
 import io.jsonwebtoken.JwtBuilder;
@@ -67,6 +68,13 @@ public class ReservationController {
 	public boolean decline(@RequestBody ReservationDTO r){
 		
 		return reservationService.declineInvite(r);
+	}
+	@RequestMapping(value = "/getReservation",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<ReservationDTO> getReservations(@RequestBody User r){
+		
+		return reservationService.getReservations(r);
 	}
 	@RequestMapping(value = "/get_seats",method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,

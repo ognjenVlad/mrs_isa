@@ -20,7 +20,12 @@ $(document).ready(function() {
                                     ],
                                     "aaSorting": []
 	});
-	
+	var reservationsTable = $('#tickets').DataTable({
+		"paging":   false,
+
+        "info":     false,
+      
+	});
 	var find_table = $('#find-table').DataTable({
 		"paging":   false,
 
@@ -315,6 +320,44 @@ $(document).ready(function() {
 	    readURL(this);
 	});
 	
+	$("#showReservations").on('click',function(){
+		readReservations();
+	})
+	function readReservations(){
+		var reservations = [];
+		//$('#friends-table').empty();
+		reservationsTable.clear();
+		$.post({
+			url : "http://localhost:8080/api/getReservation",
+			data : localStorage.getItem('user'),
+			contentType : "application/json",
+			success : function(data) {
+				console.log(data);
+				
+				for(reservation in data){
+					friends = []
+					seats = []
+					for(item in data[reservation].friends){
+						friends.push(" " + data[reservation].friends[item].name + " " + data[reservation].friends[item].surname)
+					}
+					for(item in data[reservation].seats){
+						seats.push(" " + data[reservation].seats[item] + " ")
+					}
+					reservationsTable.row.add([data[reservation].show,data[reservation].time,
+					               data[reservation].date,
+					               data[reservation].place,
+					               friends,
+					               seats
+					               ]);
+					reservationsTable.draw();
+				}
+				
+			     
+		        
+			}})
+		
+	}
+
 	$('#modal-password, #modal-r-password').on('keyup', function () {
 		  if ($('#modal-password').val() == $('#modal-r-password').val()) {
 		    $('#message').html('Passwords matching').css('color', 'green');

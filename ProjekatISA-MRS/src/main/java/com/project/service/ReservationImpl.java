@@ -127,7 +127,24 @@ public class ReservationImpl implements ReservationService {
 		}
 		return true;
 	}
-	
+	public ArrayList<ReservationDTO> getReservations(User u){
+		User user = userRepository.findByEmail(u.getEmail());
+		ArrayList<Reservation> reservations= resRepository.findByUser(user);
+		ArrayList<ReservationDTO> allInfo = new ArrayList<ReservationDTO>();
+		for(Reservation r: reservations){
+			ReservationDTO info = new ReservationDTO(r);
+			
+			ArrayList<Invited> i = invitedRepository.findByReservation(r);
+			for (Invited invited : i) {
+				invited.getUser().setPicture("");
+				info.getFriends().add(invited.getUser());
+				info.getSeats().add(invited.getSeat());
+			}
+			allInfo.add(info);
+		}
+		
+		return allInfo;
+	}
 	public ArrayList<String> findBookedSeats(String projection, String date, String time){
 		ArrayList<Reservation> tickets = resRepository.findByProjectionAndDateAndTime(projection,date,time);
 		ArrayList<String> seats = new ArrayList<String>();
