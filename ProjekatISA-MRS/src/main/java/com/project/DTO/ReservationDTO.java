@@ -3,6 +3,7 @@ package com.project.DTO;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.project.domain.Reservation;
 import com.project.domain.User;
 
 public class ReservationDTO {
@@ -37,6 +38,17 @@ public class ReservationDTO {
 		this.time = r.time;
 		this.friends = r.friends;
 		this.seats = r.seats;
+	}
+	public ReservationDTO(Reservation r) {
+		super();
+		this.user = null;
+		this.place = r.getPlace();
+		this.show = r.getProjection();
+		this.isCinema = r.isCinema();
+		this.date = r.getDate();
+		this.time = r.getTime();
+		this.friends = new ArrayList<User>();
+		this.seats = new ArrayList<String>();
 	}
 
 	public ReservationDTO(User user, String place, String show, boolean isCinema, String date, String time,
