@@ -282,9 +282,10 @@ $(document).ready(function() {
     	if ($('#modal-password').val() != $('#modal-r-password').val()){
 			return;
 		} 
-		event.preventDefault();
+		event.preventDefault();		
 		var d = JSON.stringify({email:$("#modal-email").val(),password:$("#modal-password").val(),name:$("#modal-name").val(),surname:$("#modal-surname").val(),
-			picture:document.getElementById('profile-img').src,phone:$("#modal-phone").val(),city:$("#modal-city").val()})
+			picture:document.getElementById('profile-img').src,phone:$("#modal-phone").val(),city:$("#modal-city").val(),
+			id:user.id, activated:user.activated, user_type:user.user_type})
 		 	var $btn = $(this);
 			$btn.button('loading');
 		$.post({

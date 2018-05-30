@@ -73,6 +73,12 @@
 			$('#m_sel1').append('<option>'+hall.hall_id+'</option>');
 		});
 		
+		$('#details').append('<button type="button" class="btn" data-toggle="modal" data-target="#modal_modify_cinema">Modify</button>')
+		
+		$('#m_cinema_name').val(cinema.name);
+		$('#m_cinema_address').val(cinema.address);
+		$('#m_cinema_description').val(cinema.description);
+		
 	}
 
 	function get_cinema_data(){
@@ -134,7 +140,7 @@
 	<nav class="navbar navbar-inverse">
 	  <div class="container-fluid">
 	    <div class="navbar-header">
-	      <a class="navbar-brand" href="#">Movies and cinemas</a>
+	      <a class="navbar-brand" href="/">Movies and cinemas</a>
 	    </div>
 	    <ul class="nav navbar-nav navbar-right" id="navbarRight">
 	    </ul>
@@ -329,6 +335,71 @@
 	  </div>
 	</div>
 
+	<div id="modal_modify_cinema" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<div class="modal-content">
+				<div class="modal-body">
+					<h3>Modify Cinema/Theatre</h3>
+					<form role="form" id="add_cinema_form" method="POST">
+						<div class="form-group">
+							<label for="cinema_name">Name</label> <input type="text"
+								class="form-control" id="m_cinema_name" required />
+						</div>
+						<div class="form-group">
+							<label for="cinema_address">Address</label> <input type="text"
+								class="form-control" id="m_cinema_address" required />
+						</div>
+						<div class="form-group">
+							<label for="cinema_description">Description</label>
+							<textarea class="form-control" rows="3" id="m_cinema_description"
+								required></textarea>
+						</div>
+						<div class="form-group">
+							<label for="is_cinema_radio">Type</label>
+							<div class="radio">
+								<label><input type="radio" name="is_cinema_radio"
+									value="true" checked="checked">Cinema</label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="is_cinema_radio"
+									value="false">Theater</label>
+							</div>
+						</div>
+						<h4>Add Hall</h4>
+						<div class="form-group">
+							<label for="cinema_rows">Number of rows</label> <input
+								type="number" class="form-control" id="cinema_rows" />
+						</div>
+						<div class="form-group">
+							<label for="cinema_columns">Number of columns</label> <input
+								type="number" class="form-control" id="cinema_columns" />
+						</div>
+						<button type="button" class="btn btn-primary"
+							id="cinema_hall_add" onclick="cinemaHallAdd()">Add hall</button>
+						<div class="form-group">
+							<table class="table" id="cinema_halls">
+								<thead>
+									<tr>
+										<th>Rows</th>
+										<th>Columns</th>
+										<th><br></th>
+									</tr>
+								</thead>
+								<tbody id="cinema_hall_body">
+								</tbody>
+							</table>
+						</div>
+						<button class="btn btn-primary" id="cinema_add">Add</button>
+					</form>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default"
+							data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 <script type="text/javascript">
 	check_user();
