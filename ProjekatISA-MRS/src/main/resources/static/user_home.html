@@ -1,4 +1,15 @@
 <html>
+    <script type="text/javascript" src ="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+      <script type="text/javascript" src ="//cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+     
+     
+<script type="text/javascript" src="js/adminct.js"></script>
+<script type="text/javascript" src="js/home_user.js"></script>
+<link rel="stylesheet" href="css/homeuser.css">
+<link rel="stylesheet" href="/css/login.css">
+<link rel="stylesheet" href="/css/profile.css">
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+     
 <script>
 function renderCinemaTheaters(data) {
 		// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
@@ -32,14 +43,7 @@ function renderCinemaTheaters(data) {
 			success : renderCinemaTheaters,
 		});
 	}
-
-	function showCinemaList() {
-		$('#cinemas').modal('show');
-	}
-
-	function showTheatreList() {
-		$('#theatres').modal('show');
-	}
+	
 
 	getCinemas();
 </script>
@@ -49,42 +53,28 @@ function renderCinemaTheaters(data) {
 		    <div class="navbar-header">
 		      <a class="navbar-brand" href="#">Cinemas and Theaters</a>
 		    </div>
-			<ul class="nav navbar-nav"> <li><a class="nav-link" href="fan_page.html">Fan Zone</a></li></ul>
+			<ul class="nav navbar-nav"> <li><a class="nav-link" href="fan_page.html">Fan Zone</a></li>
+			 <li><a href="reserve.html"><span class="glyphicon glyphicon-floppy-disk"></span> Make reservation</a></li>
+			</ul>
+		   
 		    <ul class="nav navbar-nav" id="navbarLeft">
+		    
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
 		    </ul>
+		     <ul class="nav navbar-nav">
+		     
+		   
+		 
+		    </ul>
+		   
 		  </div>
 		</nav>
 
 	<div class="container">
 
-		<div class="row">
-			<div class="col-md-4">
-				<div class="thumbnail">
-					<a href="javascript:showCinemaList();"> <img
-						src="resources/images/cinema.jpg" alt="Cinema"
-						style="width: 100%; height: 240px">
-						<div class="caption">
-							<p>List of cinemas</p>
-						</div>
-					</a>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="thumbnail">
-					<a href="javascript:showTheatreList();"> <img
-						src="resources/images/theatre.jpg" alt="Theatre"
-						style="width: 100%; height: 240px">
-						<div class="caption">
-							<p>List of theatres</p>
-						</div>
-					</a>
-				</div>
-			</div>
-
-
-		</div>
+		
+	
 
 		<div id="modal_add_cinema" class="modal fade" role="dialog">
 			<div class="modal-dialog">
@@ -230,50 +220,149 @@ function renderCinemaTheaters(data) {
 		</div>
 
 
-
-		<div class="modal fade" id="cinemas" tabindex="-1" role="dialog"
-			aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Cinema list</h5>
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="panel-group" id="cinemas_list"></div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="modal fade" id="theatres" tabindex="-1" role="dialog"
-			aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Theatre list</h5>
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="panel-group" id="theatres_list"></div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	</div>
+</div>
+<div id="reservations" class="modal fade" role="dialog">
+         <div id="reservations1" class="modal-dialog" style="width:950px">
+            <!-- Modal content-->
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Your reservations</h4>
+               </div>
+               <div class="modal-body">
+               	 <table id = "tickets" class="table table-hover" >
+                              <thead>
+						        <tr>
+						            
+						            <th>Show/projection</th>
+						            <th>Time</th>
+						            <th>Date</th>
+						            <th>Place</th>
+						            <th>Friends</th>
+						            <th>Seats</th>
+						            
+						        </tr>
+				    </thead>
+                 	<tbody></tbody>
+                 </table>
+               </div>
+               
+               </div>
+	           </div>
+ 	       </div>
+    	</div>
+    	
+    	<div id="history" class="modal fade" role="dialog">
+         <div class="modal-dialog" style="width:950px">
+            <!-- Modal content-->
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Places you visited</h4>
+               </div>
+               <div class="modal-body">
+               	 <table id = "history_tickets" class="table table-hover" >
+                              <thead>
+						        <tr>
+						            
+						            <th>Show/projection</th>
+						            <th>Time</th>
+						            <th>Date</th>
+						            <th>Place</th>
+						            <th>Friends</th>
+						            <th>Seats</th>
+						            
+						        </tr>
+				    </thead>
+                 	<tbody></tbody>
+                 </table>
+               </div>
+               
+               </div>
+	           </div>
+ 	       </div>
+    	</div>
+		<div id="cinemas" class="modal fade" role="dialog">
+         <div class="modal-dialog" style="width:950px">
+            <!-- Modal content-->
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Cinemas</h4>
+               </div>
+               <div class="modal-body">
+               	 <table id = "cinemaTable" class="table table-hover" >
+                              <thead>
+						        <tr>
+						            
+						            <th>Cinema</th>
+						            <th>Address</th>
+						            <th>Profile</th>
+						            
+						        </tr>
+				    </thead>
+                 	<tbody></tbody>
+                 </table>
+               </div>
+               
+               </div>
+	           </div>
+ 	       </div>
+    	</div>
+    	<div id="theaters" class="modal fade" role="dialog">
+         <div class="modal-dialog" style="width:950px">
+            <!-- Modal content-->
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Theaters</h4>
+               </div>
+               <div class="modal-body">
+               	 <table id = "theatersTable" class="table table-hover" >
+                              <thead>
+						        <tr>
+						            
+						            <th>Theater</th>
+						            <th>Address</th>
+						            <th>Profile</th>
+						            
+						        </tr>
+				    </thead>
+                 	<tbody></tbody>
+                 </table>
+               </div>
+               
+               </div>
+	           </div>
+ 	       </div>
+    	</div>
+<section class="xop-container">
+    <div class="xop-left">
+        <article>
+            <h1>Cinemas</h1><a data-toggle="modal" data-target="#cinemas" class="xop-button">Show</a>
+        </article>
+    </div>
+    <div class="xop-right">
+        <article>
+            <h1>Theaters</h1><a data-toggle="modal" data-target="#theaters" class="xop-button">Show</a>
+        </article>
+    </div>
+    
+</section>
+<section class="xop-container">
+    <div class="xop-bottom-left">
+        <article>
+            <h1>Reservations</h1><a data-toggle="modal" data-target="#reservations" class="xop-button">Show</a>
+        </article>
+    </div>
+    <div class="xop-bottom-right">
+        <article>
+                        	
+            <h1>History</h1><a class="xop-button"  data-toggle="modal" data-target="#history" id ="showReservations" data-toggle="modal" data-target="#reservations">Show</a>
+        </article>
+    </div>
+    
+</section>
 </body>
 
 <script type="text/javascript">

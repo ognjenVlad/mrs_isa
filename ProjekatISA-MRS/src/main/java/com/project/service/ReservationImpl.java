@@ -125,10 +125,10 @@ public class ReservationImpl implements ReservationService {
 		}
 		return true;
 	}
-	public ArrayList<Reservation> history(User u){
+	public ArrayList<ReservationDTO> history(User u){
 		User user = userRepository.findByEmail(u.getEmail());
 		ArrayList<Reservation> reservations= resRepository.findByUser(user);
-		ArrayList<Reservation> history = new ArrayList<Reservation>();
+		ArrayList<ReservationDTO> allInfo = new ArrayList<ReservationDTO>();
 		for(Reservation r: reservations){
 			DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			Date date = null;
@@ -142,9 +142,20 @@ public class ReservationImpl implements ReservationService {
 			if(date.after(today)){
 				continue;
 			}
-			history.add(r);
+			ReservationDTO info = new ReservationDTO(r);
+			
+			ArrayList<Invited> i = invitedRepository.findByReservation(r);
+			for (Invited invited : i) {
+				invited.getUser().setPicture("");
+				if(!invited.getUser().getEmail().equals(u.getEmail())){
+					info.getFriends().add(invited.getUser());
+				}
+				info.getSeats().add(invited.getSeat());
+			}
+			allInfo.add(info);
 		}
-		return history;
+		
+		return allInfo;
 	}
 	public ArrayList<ReservationDTO> getReservations(User u){
 		User user = userRepository.findByEmail(u.getEmail());

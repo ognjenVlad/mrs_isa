@@ -13,7 +13,8 @@ function check_user(){
 		html_to_add = '<li><a href="userProfile.html"><span class="glyphicon glyphicon-profile"></span> My profile</a></li>';
 		var html_left;
 		if(user.user_type == "user"){
-			html_left = '<button class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_send_ad">Send ad request</button>';
+			
+			html_left += '<button class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_send_ad">Send ad request</button>';
 			$("#navbarLeft_fan").append(html_left);
 		}else if(user.user_type == "sys"){
 			html_left = '<button type="button" class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_add_cinema">Add Cinema/Theatre</button>';
