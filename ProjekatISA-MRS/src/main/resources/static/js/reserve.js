@@ -45,7 +45,7 @@ $(document).ready(function() {
 	
 	$('#cinema-select').on('change',function(){
 		$('#projection-select').empty();
-		resetSeats();
+		//resetSeats();
 		var cinema = $('#cinema-select').find(":selected").text();
 //		var projections;
 //		$.get({
@@ -71,7 +71,7 @@ $(document).ready(function() {
 		
 	})
 	$('#date').on('change',function(){
-		resetSeats();
+		//resetSeats();
 		$('#time').empty();
 		var day = $('#date');
 		console.log(day);
@@ -94,7 +94,7 @@ $(document).ready(function() {
 	});
 	
 	$('#time').on('change',function(){
-		resetSeats();
+		//resetSeats();
 		$('#hall').empty();
 		var time = $('#time');
 		console.log(time);
@@ -161,7 +161,8 @@ $(document).ready(function() {
 		if(friend =='Choose one of the following...'){
 			return;
 		}
-		length = seats.getSelected().length
+		length = seats.getSelected().length;
+		
 		if(seats.getSelected().length<=rowCount){
 			alert("You did not pick enaugh seats!");
 			return;
@@ -201,6 +202,7 @@ $(document).ready(function() {
 		
 	length = seats.getSelected().length
 		var rowCount = $('#friends-table tr').length;
+	console.log(length);
 	if(length <rowCount){
 			alert("You invited more friends than you have reserved seats, please reserve more seats or delete invites!");
 			return;
@@ -258,7 +260,7 @@ $(document).ready(function() {
 			data : data,
 			contentType: "application/json",
 			success: function(data){
-				
+				console.log(data);
 				$("#legends").css("visibility", "visible");
 				seats = $('#seats').flexiSeats({
 				    rows: 8,
@@ -266,6 +268,8 @@ $(document).ready(function() {
 				    multiple: false,
 				    booked: data
 				});
+				console.log(seats.getAvailable());
+				console.log(seats);
 
 			
 			}
@@ -273,12 +277,19 @@ $(document).ready(function() {
 		})
 		
 	});
-	function resetSeats(){
-		$("#legends").css("visibility", "hidden");
-		seats = $('#seats').flexiSeats({
-			rows: 0,
-			columns: 0
-
-		})
+//	function resetSeats(){
+//		$("#legends").css("visibility", "hidden");
+//		seats.booked = [];
+//	}
+	function getCinemas() {
+		console.log("ready!");
+		$.ajax({
+			type : 'GET',
+			url : 'http://localhost:8080/load_cinemas',
+			dataType : "json", // data type of response
+			success : function(data){
+				
+			}
+		});
 	}
 });

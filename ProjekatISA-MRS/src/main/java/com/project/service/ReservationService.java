@@ -2,8 +2,8 @@ package com.project.service;
 
 import java.util.ArrayList;
 
-import com.project.DTO.FriendsDTO;
 import com.project.DTO.ReservationDTO;
+import com.project.domain.Reservation;
 import com.project.domain.User;
 
 public interface ReservationService {
@@ -12,5 +12,6 @@ public interface ReservationService {
 	boolean acceptInvite(ReservationDTO reservation);
 	boolean declineInvite(ReservationDTO reservation);
 	ArrayList<ReservationDTO> getReservations(User u);
+	ArrayList<Reservation> history(User u);
 	ArrayList<String> findBookedSeats(String projection, String date, String time);
 }
