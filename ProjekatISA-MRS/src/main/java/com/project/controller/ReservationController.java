@@ -80,7 +80,7 @@ public class ReservationController {
 	@RequestMapping(value = "/getHistory",method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ArrayList<Reservation> history(@RequestBody User r){
+	public ArrayList<ReservationDTO> history(@RequestBody User r){
 		
 		return reservationService.history(r);
 	}

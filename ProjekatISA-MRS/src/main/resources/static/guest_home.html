@@ -32,7 +32,13 @@ function renderCinemaTheaters(data) {
 			success : renderCinemaTheaters,
 		});
 	}
+	function showCinemaList() {
+		$('#cinemas').modal('show');
+	}
 
+	function showTheatreList() {
+		$('#theatres').modal('show');
+	}
 
 	getCinemas();
 </script>

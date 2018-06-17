@@ -1,0 +1,109 @@
+
+
+section {
+    height: 45%;
+}
+
+.xop-container {
+    display: flex;
+    
+}
+
+ 
+.xop-left {
+    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(255, 255, 225, 0.10)), url(../resources/images/cinema.jpg);
+    background-size: cover;
+    background-position: center;
+    flex: 1;
+    padding: 1rem;
+    transition: all .2s ease-in-out;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+ 
+.xop-right {
+    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(164, 222, 102, 0.10)), url(../resources/images/theatre.jpg);
+    background-size: cover;
+    background-position: center;
+    flex: 1;
+    padding: 1rem;
+    transition: all .2s ease-in-out;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.xop-bottom-right {
+    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(164, 222, 102, 0.10)), url(../resources/images/tickets.jpg);
+    background-size: cover;
+    background-position: center;
+    flex: 1;
+    padding: 1rem;
+    transition: all .2s ease-in-out;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.xop-bottom-left {
+    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(164, 222, 102, 0.10)), url(../resources/images/ticket2.jpg);
+    background-size: cover;
+    background-position: center;
+    flex: 1;
+    padding: 1rem;
+    transition: all .2s ease-in-out;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.xop-left:hover, .xop-right:hover ,.xop-bottom-right:hover, .xop-bottom-left:hover{
+    transform: scale(0.95);
+}
+
+.xop-left h1 {
+    font-family: lato, 'roboto', sans-serif;cursive;
+    font-size: 6rem;
+}
+ 
+.xop-right h1 {
+    font-family: lato, 'roboto', sans-serif;
+    font-size: 6rem;
+}
+.xop-bottom-right h1 {
+    font-family: lato, 'roboto', sans-serif;cursive;
+    font-size: 6rem;
+}
+.xop-bottom-left h1 {
+    font-family: lato, 'roboto', sans-serif;cursive;
+    font-size: 6rem;
+}
+ 
+.xop-button {
+    border-radius: 6px;
+    color: #ffff;
+    background-color: #958815;
+    padding: 1%;
+    margin: 0 1%;
+    text-align: center;
+  font-family: lato, 'roboto', sans-serif;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.5s;
+    width: 150px;
+}
+ 
+.xop-button:hover {
+    background: #fcc567;
+    color: #fff;
+}

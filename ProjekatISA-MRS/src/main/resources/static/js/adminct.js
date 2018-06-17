@@ -73,7 +73,7 @@ $(document).ready(function() {
 				password:$("#add_admin_password").val(),
 				name:$("#add_admin_name").val(),
 				surname:$("#add_admin_surname").val(),
-				picture: "nothing" //document.getElementById('add_admin_profile-img').src,
+				picture:document.getElementById('add_admin_profile-img').src,
 				phone:$("#add_admin_phone").val(),
 				city:$("#add_admin_city").val(),
 				"user_type":user_type_val
@@ -82,7 +82,6 @@ $(document).ready(function() {
 		$.post({
 			url:"http://localhost:8080/api/add_admin",
 			data: d,
-			dataType: "json"
 			contentType: "application/json",
             success:function(data){
             	if(data == ""){
