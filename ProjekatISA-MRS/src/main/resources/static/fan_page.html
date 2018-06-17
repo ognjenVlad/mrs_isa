@@ -32,12 +32,13 @@
 				<li><button class="btn btn-link navbar-btn admin_fan" data-toggle="modal" data-target="#modal_create_prop">Create prop</button></li>
 				<li><button class="btn btn-link navbar-btn user" data-toggle="modal" data-target="#modal_send_ad">Send ad request</button></li>
 				<li><button class="btn btn-link navbar-btn admin_fan" data-toggle="modal" data-target="#modal_get_ad" onclick="get_ad_request()">Get pending ad</button></li>
-				<li><button class="btn btn-link navbar-btn admin_fan admin_ct admin_sys" data-toggle="modal" data-target="#edit">Edit profile</button></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right" id="navbarRight">
+			<li><button class="btn btn-link navbar-btn admin_fan admin_ct admin_sys" data-toggle="modal" data-target="#edit">Edit profile</button></li>
 			<li><a href="userProfile.html" class="user"><span class="glyphicon glyphicon-profile"></span> My profile</a></li>
 			<li><a href="reg.html" class="user_not_logged"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 			<li><a href="signin.html" class="user_not_logged"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+			<li><a href="javascript:log_out();" class="user admin_sys admin_fan admin_ct"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
 			</ul>
 		</div>
 	</nav>

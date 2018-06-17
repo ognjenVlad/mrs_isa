@@ -16,6 +16,7 @@ import com.project.domain.Friends;
 import com.project.domain.User;
 import com.project.repository.FriendsRepository;
 import com.project.repository.UserRepository;
+import com.project.utils.Response;
 @Service
 public class UserServiceImpl implements UserService{
 
@@ -38,11 +39,13 @@ public class UserServiceImpl implements UserService{
 		User u = userRepository.findByEmail(email);
 		System.out.println(u);
 		if(u==null){
-			
 			return null;
 		}
+		
 		if(u.getEmail().equals(email) && u.getPassword().equals(password) && u.isActivated() == true){
 			System.out.println(u.getEmail());
+			return u;
+		}else if(u.getEmail().equals(email) && u.getPassword().equals(password) && u.isActivated() == false && !u.getUser_type().equals("user")){
 			return u;
 		}else{
 			return null;
@@ -193,5 +196,16 @@ public class UserServiceImpl implements UserService{
 		Friends f = friendsRepository.findByUserAndFriend(friend,user);
 		friendsRepository.delete(f);
 		return true;
+	}
+
+	@Override
+	public Response activate_admin(String email, String pw) {
+		User user = userRepository.findByEmail(email);
+		if(user == null) {
+			return new Response("Wrong action",null);
+		}
+		user.setPassword(pw);
+		user.setActivated(true);
+		return new Response("Success",null);
 	}
 }

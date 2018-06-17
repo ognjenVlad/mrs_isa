@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
 @Entity
 public class User implements Serializable{
@@ -145,5 +146,13 @@ public class User implements Serializable{
 	public void setUser_type(String user_type) {
 		this.user_type = user_type; // user , sys , ct , fan
 	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", email=" + email + ", password=" + password + ", activated=" + activated
+				+ ", user_type=" + user_type + "]";
+	}
+	
+	
 
 }

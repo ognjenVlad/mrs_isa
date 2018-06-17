@@ -1,21 +1,21 @@
-function cinemaHallAdd(purpose){
-	var rows = $("#"+purpose+"cinema_rows").val();
-	var columns = $("#"+purpose+"cinema_columns").val();
+function cinemaHallAdd(){
+	var rows = $("#cinema_rows").val();
+	var columns = $("#cinema_columns").val();
 	if(rows == "" || columns == "")
 		{
 		alert("No empty fields");
 		return;
 		}
 	row_counter += 1;
-	var tr_code = "<tr id=\""+purpose+"table_row_"+ row_counter +"\"> <td> "+ rows +" </td> <td> "+ columns +" </td> ";
-	tr_code += "<td> <button type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"deleteHall(\'"+purpose+"\',\'"+ row_counter +"\')\">Remove</button></td></tr>";
-	$("#"+purpose+"cinema_hall_body").append(tr_code);
+	var tr_code = "<tr id=\"table_row_"+ row_counter +"\"> <td> "+ rows +" </td> <td> "+ columns +" </td> ";
+	tr_code += "<td> <button type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"deleteHall(\'"+ row_counter +"\')\">Remove</button></td></tr>";
+	$("#cinema_hall_body").append(tr_code);
 }
 var row_counter = 0;
 
-function deleteHall(purpose, row_id){
-	$('#'+purpose+'cinema_halls tr').each(function(){
-		if ($(this).attr('id') == purpose+"table_row_" + row_id){
+function deleteHall(row_id){
+	$('#cinema_halls tr').each(function(){
+		if ($(this).attr('id') == "table_row_" + row_id){
 			$(this).remove();
 		}
 	});
@@ -43,7 +43,7 @@ $(document).ready(function() {
 			"address": address,
 			"description":description,
 			"isCinema":isCinema,
-			"halls" : createHallsJson(""),
+			"halls" : createHallsJson()
 		});
 	
 		
@@ -73,7 +73,7 @@ $(document).ready(function() {
 				password:$("#add_admin_password").val(),
 				name:$("#add_admin_name").val(),
 				surname:$("#add_admin_surname").val(),
-				picture:document.getElementById('add_admin_profile-img').src,
+				picture: "nothing" //document.getElementById('add_admin_profile-img').src,
 				phone:$("#add_admin_phone").val(),
 				city:$("#add_admin_city").val(),
 				"user_type":user_type_val
@@ -82,6 +82,7 @@ $(document).ready(function() {
 		$.post({
 			url:"http://localhost:8080/api/add_admin",
 			data: d,
+			dataType: "json"
 			contentType: "application/json",
             success:function(data){
             	if(data == ""){
@@ -113,52 +114,12 @@ $(document).ready(function() {
     	  } else 
     	    $('#add_admin_message').html('Passwords do not match').css('color', 'red');
     	});	
-    
-    
-    $("#modify_cinema_form").submit(function(event){
-		event.preventDefault();
-
-		var name = $("#m_cinema_name").val();
-		var address = $("#m_cinema_address").val();
-		var description = $("#m_cinema_description").val();
-		var isCinema_val = document.getElementById("m_is_cinema").checked;
-	
-		if(isCinema_val){
-			var isCinema = true;
-		}else{
-			var isCinema = false;
-		}
-			
-		var json_data =  JSON.stringify({
-			"id": cin_id,
-			"name": name,
-			"address": address,
-			"description":description,
-			"isCinema":isCinema,
-			"halls" : createHallsJson("m_"),
-			"ratings": cin_ratings,
-		});
-	
-		
-		
-		$.post({
-			url : 'http://localhost:8080/adminct/modify_cinema',
-			contentType : 'application/json',
-			dataType : "text",
-			data : json_data,
-			success: function(data){
-				alert("Cinema modified");
-				 $('#modal_modify_cinema').modal('hide');
-			},
-		});
-	})
-	
 });
 
-function createHallsJson(purpose){
+function createHallsJson(){
 	var hall_list = [];
 	var i = 0;
-	$('#'+purpose+'cinema_halls tr').each(function(){
+	$('#cinema_halls tr').each(function(){
 		if(i == 0){
 			i++;
 			return true;

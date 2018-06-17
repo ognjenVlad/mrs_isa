@@ -10,6 +10,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mail.MailException;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +21,7 @@ import com.project.DTO.FriendsDTO;
 import com.project.DTO.UserDTO;
 import com.project.domain.User;
 import com.project.service.UserServiceImpl;
+import com.project.utils.Response;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -38,7 +40,15 @@ public class UserController {
 		System.out.println(u);
 		return userService.login(u.getEmail(),u.getPassword());
 	}
-	
+
+	@RequestMapping(value = "/activate_admin/{email}/{pw}",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response login(@PathVariable("email") String email,@PathVariable("pw") String pw){
+		System.out.println(email + "    " + pw);
+		return userService.activate_admin(email, pw);
+	}
+
 	@RequestMapping(value = "/register",method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
@@ -152,7 +162,7 @@ public class UserController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public User add_admin(@RequestBody User u){
-		User uu = userService.register(u,"iregular");
+		User uu = userService.register(u,"regular");
 		System.out.println(u.isActivated());
 		return uu;
 		
