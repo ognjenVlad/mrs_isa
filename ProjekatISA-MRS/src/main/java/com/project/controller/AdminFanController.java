@@ -76,6 +76,17 @@ public class AdminFanController {
 	
 	@RequestMapping(value = "/add_ad_bid/{id}", method = RequestMethod.POST)
 	public Response addAdBid(@PathVariable(value = "id") String ad_id,@RequestBody Bid bid) {
+		System.out.println(bid + " <-----------------" );
 		return new Response(fanZoneService.addAdBid(Long.parseLong(ad_id),bid),null);
+	}
+
+	@RequestMapping(value = "/get_bid/{id}", method = RequestMethod.GET)
+	public Response getBid(@PathVariable(value = "id") String id) {
+		return new Response("Success",fanZoneService.getBid(Long.parseLong(id)));
+	}
+
+	@RequestMapping(value = "/remove_bid/{ad_id}/{id}", method = RequestMethod.PUT)
+	public Response removeBid(@PathVariable(value = "ad_id") String ad_id,@PathVariable(value = "id") String id){
+		return new Response(fanZoneService.deleteBid(Long.parseLong(id),Long.parseLong(id)),null);
 	}
 }

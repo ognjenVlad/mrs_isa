@@ -21,7 +21,11 @@ public class Bid implements Serializable{
 	
 	@Column(nullable = false)
 	private String user;
-
+	
+	/*
+	@Column
+	private boolean isDeleted = false;
+	*/
 	public Bid() {}
 	
 	public Bid(Long id, int value, String user) {
@@ -58,4 +62,21 @@ public class Bid implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	/*
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}*/
+
+	@Override
+	public String toString() {
+		return "Bid [id=" + id + ", value=" + value + ", user=" + user + "]";
+	}
+	
+	
+	
 }

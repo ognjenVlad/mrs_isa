@@ -105,13 +105,14 @@ public class UserServiceImpl implements UserService{
 		return ret;
 	}
 	public User changeUser(User u){
-		User old_user = userRepository.findByEmail(u.getEmail());
+		User old_user = userRepository.findById(u.getId());
 		old_user.setCity(u.getCity());
 		old_user.setName(u.getName());
 		old_user.setPhone(u.getPhone());
 		old_user.setPicture(u.getPicture());
 		old_user.setSurname(u.getSurname());
 		old_user.setPassword(u.getPassword());
+		
 		userRepository.save(u);
 		return u;
 	}
