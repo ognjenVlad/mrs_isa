@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.project.DTO.ReservationDTO;
+import com.project.domain.Reservation;
 import com.project.domain.User;
 import com.project.service.ReservationImpl;
 
@@ -75,6 +76,13 @@ public class ReservationController {
 	public ArrayList<ReservationDTO> getReservations(@RequestBody User r){
 		
 		return reservationService.getReservations(r);
+	}
+	@RequestMapping(value = "/getHistory",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<Reservation> history(@RequestBody User r){
+		
+		return reservationService.history(r);
 	}
 	@RequestMapping(value = "/get_seats",method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,

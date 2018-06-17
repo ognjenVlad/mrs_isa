@@ -1,0 +1,133 @@
+<html>
+<script>
+function renderCinemaTheaters(data) {
+		// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
+		var list = data == null ? []
+				: (data instanceof Array ? data : [ data ]);
+		cinemas = list;
+		$.each(list, function(index, cinema) {
+			var ind = index + 1;
+			var html_string = '<div class="panel panel-default"><div class="panel-heading">'+
+						'<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+ind+'">'+cinema.name+
+						'</a></h4></div><div id="collapse'+ind+'" class="panel-collapse collapse"><div class="panel-body">'+
+						'<a href="cinema_profile.html?'+cinema.id+'" style="float:right">Visit profile</a>'+cinema.description+
+						'<br/>'+cinema.address;
+				
+			if(cinema.isCinema == true){
+				$('#cinemas_list').append(html_string);
+			}else{
+				$('#theatres_list').append(html_string);
+			}
+	        
+		});
+		
+	}
+
+	function getCinemas() {
+		console.log("ready!");
+		$.ajax({
+			type : 'GET',
+			url : 'http://localhost:8080/load_cinemas',
+			dataType : "json", // data type of response
+			success : renderCinemaTheaters,
+		});
+	}
+
+
+	getCinemas();
+</script>
+<body>
+		<nav class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="#">Cinemas and Theaters</a>
+		    </div>
+			<ul class="nav navbar-nav"> <li><a class="nav-link" href="fan_page.html">Fan Zone</a></li></ul>
+		    <ul class="nav navbar-nav" id="navbarLeft">
+		    </ul>
+		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
+		    <li><a href="reg.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li><li>
+		<a href="signin.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		    </ul>
+		  </div>
+		</nav>
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-4">
+				<div class="thumbnail">
+					<a href="javascript:showCinemaList();"> <img
+						src="resources/images/cinema.jpg" alt="Cinema"
+						style="width: 100%; height: 240px">
+						<div class="caption">
+							<p>List of cinemas</p>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="thumbnail">
+					<a href="javascript:showTheatreList();"> <img
+						src="resources/images/theatre.jpg" alt="Theatre"
+						style="width: 100%; height: 240px">
+						<div class="caption">
+							<p>List of theatres</p>
+						</div>
+					</a>
+				</div>
+			</div>
+
+
+		</div>
+
+		
+
+
+		<div class="modal fade" id="cinemas" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Cinema list</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="panel-group" id="cinemas_list"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="theatres" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Theatre list</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="panel-group" id="theatres_list"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+
+
+</html>
