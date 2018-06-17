@@ -2,6 +2,8 @@ package com.project.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,6 +35,8 @@ public class CinemaTheatre implements Serializable{
 	@Column
 	private ArrayList<Hall> halls;
 	
+	@Column(nullable = true)
+	private HashMap<String, Double> ratings;
 	
 	public CinemaTheatre() {
 		
@@ -47,6 +51,7 @@ public class CinemaTheatre implements Serializable{
 		this.description = description;
 		this.isCinema = isCinema;
 		this.halls = halls;
+		this.ratings = new HashMap<String, Double>();
 	}
 
 	public ArrayList<Hall> getHalls() {
@@ -104,5 +109,27 @@ public class CinemaTheatre implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public HashMap<String, Double> getRatings() {
+//		if (ratings == null){
+//			ratings = new HashMap<String, Double>();
+//		}
+		return ratings;
+	}
+
+	public void setRatings(HashMap<String, Double> ratings) {
+		this.ratings = ratings;
+	}
 	
+	public double getRating(){
+		if (this.ratings.size() == 0){
+			return 0.0;
+		}
+		double rating = 0.0;
+		for (Map.Entry<String, Double> entry : this.ratings.entrySet()){
+			rating += entry.getValue();
+		}
+		rating = rating / this.ratings.size();
+		return rating;
+	}
 }

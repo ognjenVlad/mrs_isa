@@ -12,6 +12,7 @@
 <title>Cinema profile</title>
 </head>
 <script src="js/user_types.js"></script>
+<script src="resources/js/adminct.js"></script>
 <script src="js/projection_add.js"></script>
 <script type="text/javascript">
 
@@ -20,6 +21,7 @@
 	var projections = [];
 	var actors_count = 0;
 	var halls_count = 0;
+	var cin_ratings = null;
 	
 	function fill_map(div_id, lat, lng){
 		var mapCanvas = document.getElementById(div_id);
@@ -56,13 +58,15 @@
 	function render_cinema(cinema){
 		halls = cinema.halls;
 		cin_id = cinema.id;
+		cin_ratings = cinema.ratings;
 		$('#details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
 		if (cinema.isCinema){
 			$('#image_and_map').append('<img src="resources/images/cinema.jpg" alt="Cinema" style="width:100%; height: 240px">');
-			
+			document.getElementById("m_is_cinema").checked = true;
 		}else{
 			$('#image_and_map').append('<img src="resources/images/theatre.jpg" alt="Theatre" style="width:100%; height: 240px">');
 			
+			document.getElementById("m_is_theatre").checked = true;
 		}
 		var html_string = '<div id="map" style="width:100%;height:250px;"></div>';
 		$('#image_and_map').append(html_string);
@@ -71,6 +75,9 @@
 		$.each(cinema.halls, function(index, hall){
 			$('#sel1').append('<option>'+hall.hall_id+'</option>');
 			$('#m_sel1').append('<option>'+hall.hall_id+'</option>');
+			var tr_code = "<tr id=\"m_table_row_"+ hall.hall_id +"\"> <td> "+ hall.rows +" </td> <td> "+ hall.columns +" </td> ";
+			tr_code += "<td> <button type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"deleteHall(\'m_\',\'"+ hall.hall_id +"\')\">Remove</button></td></tr>";
+			$("#m_cinema_hall_body").append(tr_code);
 		});
 		
 		$('#details').append('<button type="button" class="btn" data-toggle="modal" data-target="#modal_modify_cinema">Modify</button>')
@@ -142,6 +149,7 @@
 	    <div class="navbar-header">
 	      <a class="navbar-brand" href="/">Movies and cinemas</a>
 	    </div>
+	    <ul class="nav navbar-nav" id="navbarLeft"></ul>
 	    <ul class="nav navbar-nav navbar-right" id="navbarRight">
 	    </ul>
 	  </div>
@@ -341,7 +349,7 @@
 			<div class="modal-content">
 				<div class="modal-body">
 					<h3>Modify Cinema/Theatre</h3>
-					<form role="form" id="add_cinema_form" method="POST">
+					<form role="form" id="modify_cinema_form" method="POST">
 						<div class="form-group">
 							<label for="cinema_name">Name</label> <input type="text"
 								class="form-control" id="m_cinema_name" required />
@@ -359,26 +367,26 @@
 							<label for="is_cinema_radio">Type</label>
 							<div class="radio">
 								<label><input type="radio" name="is_cinema_radio"
-									value="true" checked="checked">Cinema</label>
+									id="m_is_cinema">Cinema</label>
 							</div>
 							<div class="radio">
 								<label><input type="radio" name="is_cinema_radio"
-									value="false">Theater</label>
+									id="m_is_theatre">Theatre</label>
 							</div>
 						</div>
 						<h4>Add Hall</h4>
 						<div class="form-group">
 							<label for="cinema_rows">Number of rows</label> <input
-								type="number" class="form-control" id="cinema_rows" />
+								type="number" class="form-control" id="m_cinema_rows" />
 						</div>
 						<div class="form-group">
 							<label for="cinema_columns">Number of columns</label> <input
-								type="number" class="form-control" id="cinema_columns" />
+								type="number" class="form-control" id="m_cinema_columns" />
 						</div>
 						<button type="button" class="btn btn-primary"
-							id="cinema_hall_add" onclick="cinemaHallAdd()">Add hall</button>
+							id="cinema_hall_add" onclick="cinemaHallAdd('m_')">Add hall</button>
 						<div class="form-group">
-							<table class="table" id="cinema_halls">
+							<table class="table" id="m_cinema_halls">
 								<thead>
 									<tr>
 										<th>Rows</th>
@@ -386,12 +394,28 @@
 										<th><br></th>
 									</tr>
 								</thead>
-								<tbody id="cinema_hall_body">
+								<tbody id="m_cinema_hall_body">
 								</tbody>
 							</table>
 						</div>
-						<button class="btn btn-primary" id="cinema_add">Add</button>
+						<button class="btn btn-primary">Add</button>
 					</form>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default"
+							data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="modal_report" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<div class="modal-content">
+				<div class="modal-body">
+					<h3>Modify Cinema/Theatre</h3>
+					
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default"
 							data-dismiss="modal">Close</button>

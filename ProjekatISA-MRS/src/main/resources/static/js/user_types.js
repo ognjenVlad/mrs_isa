@@ -1,10 +1,12 @@
+var user;
+
 function log_out(){
 	localStorage.removeItem('user');
 	location.reload();
 }
 
 function check_user(){
-	var user = JSON.parse(localStorage.getItem('user'));
+	user = JSON.parse(localStorage.getItem('user'));
 	var html_to_add = "";
 	if (user == null){
 		html_to_add = '<li><a href="reg.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li><li>'+
@@ -20,7 +22,10 @@ function check_user(){
 			html_left += '<button type="button" class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_add_admin">Add admin</button>';
 			$("#navbarLeft").append(html_left);
 		}else if(user.user_type == "ct"){
-
+			if (window.location.href.substring(0, 36) == "http://localhost:8080/cinema_profile" ){
+				var reportButton = '<button type="button" class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_report">Business report</button>'
+				$("#navbarLeft").append(reportButton);
+			}
 		}else if(user.user_type =="fan"){
 			html_left +='<button class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_create_prop">Create prop</button>';
 			html_left +='<button class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_get_ad" onclick="get_ad_request()">Get pending ad</button>';

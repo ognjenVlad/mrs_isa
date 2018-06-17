@@ -10,7 +10,7 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script
 	src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing&key=AIzaSyAro0psoaV4dA4AkTSUm7TXt_bO9Nf1sB4"></script>
-<script type="text/javascript" src="resources/js/site_functions.js"></script>
+<!-- <script type="text/javascript" src="resources/js/site_functions.js"></script> -->
 <script type="text/javascript" src="resources/js/adminct.js"></script>
 <link rel="stylesheet" href="resources/css/styles.css">
 
@@ -63,7 +63,7 @@
 
 	getCinemas();
 </script>
-<body>
+<body style="background-color: 	#696969">
 		<nav class="navbar navbar-inverse">
 		  <div class="container-fluid">
 		    <div class="navbar-header">
@@ -80,7 +80,7 @@
 	<div class="container">
 
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div class="thumbnail">
 					<a href="javascript:showCinemaList();"> <img
 						src="resources/images/cinema.jpg" alt="Cinema"
@@ -91,7 +91,7 @@
 					</a>
 				</div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div class="thumbnail">
 					<a href="javascript:showTheatreList();"> <img
 						src="resources/images/theatre.jpg" alt="Theatre"
@@ -147,7 +147,7 @@
 									type="number" class="form-control" id="cinema_columns" />
 							</div>
 							<button type="button" class="btn btn-primary"
-								id="cinema_hall_add" onclick="cinemaHallAdd()">Add hall</button>
+								id="cinema_hall_add" onclick="cinemaHallAdd('')">Add hall</button>
 							<div class="form-group">
 								<table class="table" id="cinema_halls">
 									<thead>
