@@ -1,10 +1,12 @@
 package com.project.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.DTO.RateDTO;
 import com.project.domain.CinemaTheatre;
 import com.project.repository.CinemaTheatreRepository;
 
@@ -69,4 +71,13 @@ public class CinemaTheatreImpl implements CinemaTheatreService{
 		return theatres;
 	}
 	
+	@Override
+	public void updateRating(RateDTO rate){
+		CinemaTheatre ct = ctRepository.findById(rate.getId());
+		HashMap<String, Integer> ratings = ct.getRatings();
+		ratings.put(rate.getUser_id(), rate.getVote());
+		ct.setRatings(ratings);
+		ctRepository.save(ct);
+		return;
+	}
 }

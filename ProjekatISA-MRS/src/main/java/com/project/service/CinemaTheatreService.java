@@ -2,6 +2,7 @@ package com.project.service;
 
 import java.util.ArrayList;
 
+import com.project.DTO.RateDTO;
 import com.project.domain.CinemaTheatre;
 
 public interface CinemaTheatreService {
@@ -17,4 +18,6 @@ public interface CinemaTheatreService {
 	public ArrayList<CinemaTheatre> getTheatres();
 	
 	public ArrayList<CinemaTheatre> getCinemas();
+	
+	public void updateRating(RateDTO rate);
 }

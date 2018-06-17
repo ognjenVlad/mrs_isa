@@ -5,6 +5,8 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<ling rel="stylesheet" src="css/ratings.css">
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing&key=AIzaSyAro0psoaV4dA4AkTSUm7TXt_bO9Nf1sB4"></script>
@@ -14,6 +16,15 @@
 <script src="js/user_types.js"></script>
 <script src="resources/js/adminct.js"></script>
 <script src="js/projection_add.js"></script>
+<style>
+.fa {
+    font-size: 25px;
+}
+
+.checked {
+    color: orange;
+}
+</style>
 <script type="text/javascript">
 
 	var halls = [];
@@ -22,6 +33,7 @@
 	var actors_count = 0;
 	var halls_count = 0;
 	var cin_ratings = null;
+	var current_rating_choice = 0;
 	
 	function fill_map(div_id, lat, lng){
 		var mapCanvas = document.getElementById(div_id);
@@ -59,7 +71,7 @@
 		halls = cinema.halls;
 		cin_id = cinema.id;
 		cin_ratings = cinema.ratings;
-		$('#details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
+		$('#all_details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
 		if (cinema.isCinema){
 			$('#image_and_map').append('<img src="resources/images/cinema.jpg" alt="Cinema" style="width:100%; height: 240px">');
 			document.getElementById("m_is_cinema").checked = true;
@@ -79,12 +91,11 @@
 			tr_code += "<td> <button type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"deleteHall(\'m_\',\'"+ hall.hall_id +"\')\">Remove</button></td></tr>";
 			$("#m_cinema_hall_body").append(tr_code);
 		});
-		
-		$('#details').append('<button type="button" class="btn" data-toggle="modal" data-target="#modal_modify_cinema">Modify</button>')
-		
+		$('#cin_rating').append('<p>'+cinema.rating+' average based on '+Object.keys(cinema.ratings).length+' reviews.</p>')
 		$('#m_cinema_name').val(cinema.name);
 		$('#m_cinema_address').val(cinema.address);
 		$('#m_cinema_description').val(cinema.description);
+		ratingChoice(cinema.rating, -1);
 		
 	}
 
@@ -105,12 +116,24 @@
 		$.each(list, function(index, proj){
 			if (cin_id == proj.cinthe_id){
 				projections.push(proj);
-				var proj_html = '<div id="proj_'+index+'" style="border:1px solid grey"><img id="proj_'+index+'_poster" src="'+proj.poster+'" alt="Projection_image" '+
-						'style="width: 100px; height: 100px; float: right"><b id="proj_'+index+'_name">'+proj.name+'</b><p id="proj_'+index+'_description">'+proj.description+
-						'</p><b id="proj_'+index+'_genre">'+proj.genre+'</b>,<p id="proj_'+index+'_director">'+proj.director+'</p><br/>'+proj.price+'<div class="float-right">'+
-						'<button type="button" class="btn btn-primary" onclick="modify_projection('+index+')">Modify</button>'+
-						'<button type="button" class="btn btn-primary" onclick="delete_projection('+index+')">Delete</button></div></div>'
+				var proj_html = '<div id="proj_'+index+'" style="border:1px solid grey"><img id="proj_'+index+'_poster" src="'+
+					proj.poster+'" alt="Projection_image" style="width: 100px; height: 100px; float: right"><b id="proj_'+index+
+					'_name">'+proj.name+'</b><p id="proj_'+index+'_description">'+proj.description+'</p><b id="proj_'+index+
+					'_genre">'+proj.genre+'</b>,<p id="proj_'+index+'_director">'+proj.director+'</p><br/>'+proj.price
+				proj_html += '<div><span class="heading">User Rating</span>'+
+					'<a href="javascript:ratingChoice(1,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_1"></span></a>'+
+					'<a href="javascript:ratingChoice(2,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_2"></span></a>'+
+					'<a href="javascript:ratingChoice(3,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_3"></span></a>'+
+					'<a href="javascript:ratingChoice(4,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_4"></span></a>'+
+					'<a href="javascript:ratingChoice(5,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_5"></span></a>'+
+					'<button type="button" class="btn" onclick="ratingVote('+proj.id+')">Vote</button>'+
+					'<p>'+proj.rating+' average based on '+Object.keys(proj.ratings).length+' reviews.</p></div>';
+				proj_html +='<div class="float-right"><button type="button" class="btn btn-primary" onclick="modify_projection('+
+					index+')">Modify</button><button type="button" class="btn btn-primary" onclick="delete_projection('+index+
+					')">Delete</button></div></div>';
 				$('#repertoire').append(proj_html);
+				ratingChoice(proj.rating, index);
+				
 			}
 		});
 		
@@ -140,6 +163,65 @@
 		halls_count++;
 	}
 	
+	function ratingChoice(stars, target){
+		for (var i = 1; i <= 5; i++){
+			if (i <= stars)
+				if (target == -1)
+					document.getElementById("cin_star_"+i).classList.add("checked");
+				else
+					document.getElementById("prj"+target+"_star_"+i).classList.add("checked");
+			else
+				if (target == -1)
+					document.getElementById("cin_star_"+i).classList.remove("checked");
+				else
+					document.getElementById("prj"+target+"_star_"+i).classList.remove("checked");
+		}
+		current_rating_choice = stars;
+	}
+	
+	function ratingVote(target){
+		if (current_rating_choice == 0)
+			return;
+		
+		if (target == -1){
+			var json_data =  JSON.stringify({
+				"user_id": user.email,
+				"id": cin_id,
+				"vote": current_rating_choice
+			});
+			
+			$.post({
+				url : 'http://localhost:8080/rate_cinthe',
+				contentType : 'application/json',
+				dataType : "json",
+				data : json_data,
+				success: function(data){
+					alert("Vote registered.");
+					location.reload();
+				},
+			});
+		}else{
+			var json_data =  JSON.stringify({
+				"user_id": user.email,
+				"id": target,
+				"vote": current_rating_choice
+			});
+			
+			$.post({
+				url : 'http://localhost:8080/rate_proj',
+				contentType : 'application/json',
+				dataType : "json",
+				data : json_data,
+				success: function(data){
+					alert("Vote registered.");
+					location.reload();
+				},
+			});
+		}
+	
+		
+	}
+	
 	get_cinema_data();
 	get_projections();
 </script>
@@ -165,6 +247,17 @@
 				</ul>
 				<div class="tab-content">
 				  <div class="tab-pane fade in active" id="details">
+				  <div id="all_details"></div>
+				  <div id="cin_rating">
+				    <span class="heading">User Rating</span>
+					<a href="javascript:ratingChoice(1, -1)"><span class="fa fa-star" id="cin_star_1"></span></a>
+					<a href="javascript:ratingChoice(2, -1)"><span class="fa fa-star" id="cin_star_2"></span></a>
+					<a href="javascript:ratingChoice(3, -1)"><span class="fa fa-star" id="cin_star_3"></span></a>
+					<a href="javascript:ratingChoice(4, -1)"><span class="fa fa-star" id="cin_star_4"></span></a>
+					<a href="javascript:ratingChoice(5, -1)"><span class="fa fa-star" id="cin_star_5"></span></a>
+					<button type="button" class="btn" onclick="ratingVote(-1)">Vote</button>
+				  </div>
+				  <button type="button" class="btn" data-toggle="modal" data-target="#modal_modify_cinema">Modify</button>
 				  </div>
 				  <div class="tab-pane fade" id="repertoire">
 				  	 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProjectionModal">Add new projection</button>

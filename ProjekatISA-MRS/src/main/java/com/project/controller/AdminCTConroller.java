@@ -26,7 +26,10 @@ public class AdminCTConroller {
 		
 	@RequestMapping(value = "/add_cinema",method = RequestMethod.POST)
 	public String addCinema(@RequestBody CinemaTheatre ct){
-		ct.setRatings(new HashMap<String, Double>());
+		HashMap<String, Integer> rt = new HashMap<String, Integer>();
+		rt.put("a@aa", 4);
+		ct.setRatings(rt);
+		
 		ctService.addCinemaTheatre(ct);
 		return "success";
 	}
@@ -48,7 +51,7 @@ public class AdminCTConroller {
 	
 	@RequestMapping(value = "/add_projection", method = RequestMethod.POST)
 	public String addProjection(@RequestBody Projection pr){
-		pr.setRatings(new HashMap<String,Double>());
+		pr.setRatings(new HashMap<String,Integer>());
 		System.out.println(pr.getHalls().size() +" halls size \n\n");
 		prService.addProjection(pr);
 		return "success";

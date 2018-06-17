@@ -60,7 +60,7 @@ function renderCinemaTheaters(data) {
 	<div class="container">
 
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div class="thumbnail">
 					<a href="javascript:showCinemaList();"> <img
 						src="resources/images/cinema.jpg" alt="Cinema"
@@ -71,7 +71,7 @@ function renderCinemaTheaters(data) {
 					</a>
 				</div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div class="thumbnail">
 					<a href="javascript:showTheatreList();"> <img
 						src="resources/images/theatre.jpg" alt="Theatre"
@@ -92,7 +92,7 @@ function renderCinemaTheaters(data) {
 				<div class="modal-content">
 					<div class="modal-body">
 						<h3>Add Cinema/Theatre</h3>
-						<form role="form" id="add_cinema_form" method="POST">
+						<form role="form" id="add_cinema_form" method="post">
 							<div class="form-group">
 								<label for="cinema_name">Name</label> <input type="text"
 									class="form-control" id="cinema_name" required />
@@ -127,7 +127,7 @@ function renderCinemaTheaters(data) {
 									type="number" class="form-control" id="cinema_columns" />
 							</div>
 							<button type="button" class="btn btn-primary"
-								id="cinema_hall_add" onclick="cinemaHallAdd()">Add hall</button>
+								id="cinema_hall_add" onclick="cinemaHallAdd('')">Add hall</button>
 							<div class="form-group">
 								<table class="table" id="cinema_halls">
 									<thead>

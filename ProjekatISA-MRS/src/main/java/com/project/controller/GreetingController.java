@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.project.DTO.RateDTO;
 import com.project.domain.CinemaTheatre;
 import com.project.domain.Projection;
 import com.project.service.CinemaTheatreImpl;
@@ -54,5 +55,16 @@ public class GreetingController {
     	ArrayList<Projection> projections = prService.findAll();
     	return projections;
     }
+    
+    @RequestMapping(value = "/rate_cinthe", method = RequestMethod.POST)
+    public CinemaTheatre rateCinema(@RequestBody RateDTO rate){
+    	ctService.updateRating(rate);
+    	return ctService.findById(rate.getId());
+    }
 		
+    @RequestMapping(value = "/rate_proj", method = RequestMethod.POST)
+    public Projection rateProjection(@RequestBody RateDTO rate){
+    	prService.updateRating(rate);
+    	return prService.findById(rate.getId());
+    }
 }
