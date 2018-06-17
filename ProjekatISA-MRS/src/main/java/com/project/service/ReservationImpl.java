@@ -1,13 +1,13 @@
 package com.project.service;
 
-import java.security.Key;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
-
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.project.DTO.ReservationDTO;
-import com.project.DTO.UserDTO;
 import com.project.domain.Invited;
 import com.project.domain.Reservation;
 import com.project.domain.User;
@@ -30,7 +29,6 @@ import com.project.repository.UserRepository;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 public class ReservationImpl implements ReservationService {
 
@@ -127,17 +125,52 @@ public class ReservationImpl implements ReservationService {
 		}
 		return true;
 	}
+	public ArrayList<Reservation> history(User u){
+		User user = userRepository.findByEmail(u.getEmail());
+		ArrayList<Reservation> reservations= resRepository.findByUser(user);
+		ArrayList<Reservation> history = new ArrayList<Reservation>();
+		for(Reservation r: reservations){
+			DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = null;
+			try {
+				date = format.parse(r.getDate());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Date today = java.util.Calendar.getInstance().getTime();
+			if(date.after(today)){
+				continue;
+			}
+			history.add(r);
+		}
+		return history;
+	}
 	public ArrayList<ReservationDTO> getReservations(User u){
 		User user = userRepository.findByEmail(u.getEmail());
 		ArrayList<Reservation> reservations= resRepository.findByUser(user);
 		ArrayList<ReservationDTO> allInfo = new ArrayList<ReservationDTO>();
 		for(Reservation r: reservations){
+			DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = null;
+			try {
+				date = format.parse(r.getDate());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Date today = java.util.Calendar.getInstance().getTime();
+			if(date.before(today)){
+				continue;
+			}
 			ReservationDTO info = new ReservationDTO(r);
 			
 			ArrayList<Invited> i = invitedRepository.findByReservation(r);
 			for (Invited invited : i) {
 				invited.getUser().setPicture("");
-				info.getFriends().add(invited.getUser());
+				if(!invited.getUser().getEmail().equals(u.getEmail())){
+					info.getFriends().add(invited.getUser());
+				}
 				info.getSeats().add(invited.getSeat());
 			}
 			allInfo.add(info);
