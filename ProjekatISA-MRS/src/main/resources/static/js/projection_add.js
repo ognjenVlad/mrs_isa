@@ -96,7 +96,7 @@ $(document).ready(function() {
 			"halls":prj_halls,
 			"time" : prj_time,
 			"price" : price,
-			"cinthe_id" : cinthe_id
+			"cinthe_id" : cinthe_id,
 		});
 	
 		

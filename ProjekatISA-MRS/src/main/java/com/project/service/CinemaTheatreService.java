@@ -8,6 +8,8 @@ public interface CinemaTheatreService {
 	
 	public void addCinemaTheatre(CinemaTheatre ct);
 	
+	public void modifyCinemaTheatre(CinemaTheatre ct);
+	
 	public ArrayList<CinemaTheatre> findAll();
 	
 	public CinemaTheatre findById(Long id);

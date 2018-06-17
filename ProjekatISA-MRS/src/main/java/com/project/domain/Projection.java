@@ -2,6 +2,8 @@ package com.project.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,9 +39,6 @@ public class Projection implements Serializable{
 	private String poster;
 	
 	@Column(nullable = false)
-	private double rating;
-	
-	@Column(nullable = false)
 	private String description;
 	
 	@Column(nullable = false)
@@ -54,26 +53,11 @@ public class Projection implements Serializable{
 	@Column(nullable = false)
 	private Long cinthe_id;
 	
+	@Column(nullable = true)
+	private HashMap<String, Double> ratings;
+	
 	public Projection() {
 		super();
-	}
-
-	public Projection(Long id, String name, ArrayList<String> actors, String genre, String director, double length,
-			String poster, double rating, String description, ArrayList<Hall> halls, ArrayList<String> time,
-			double price) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.actors = actors;
-		this.genre = genre;
-		this.director = director;
-		this.length = length;
-		this.poster = poster;
-		this.rating = rating;
-		this.description = description;
-		this.halls = halls;
-		this.time = time;
-		this.price = price;
 	}
 
 	public Projection(Long id, String name, ArrayList<String> actors, String genre, String director, double length,
@@ -90,6 +74,7 @@ public class Projection implements Serializable{
 		this.halls = halls;
 		this.time = time;
 		this.price = price;
+		this.ratings = new HashMap<String, Double>();
 	}
 
 	public Long getId() {
@@ -148,14 +133,6 @@ public class Projection implements Serializable{
 		this.poster = poster;
 	}
 
-	public double getRating() {
-		return rating;
-	}
-
-	public void setRating(double rating) {
-		this.rating = rating;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -198,6 +175,26 @@ public class Projection implements Serializable{
 
 	public void setCinthe_id(Long cinthe_id) {
 		this.cinthe_id = cinthe_id;
+	}
+
+	public HashMap<String, Double> getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(HashMap<String, Double> ratings) {
+		this.ratings = ratings;
+	}
+	
+	public double getRating(){
+		if (this.ratings.size() == 0){
+			return 0.0;
+		}
+		double rating = 0.0;
+		for (Map.Entry<String, Double> entry : this.ratings.entrySet()){
+			rating += entry.getValue();
+		}
+		rating = rating / this.ratings.size();
+		return rating;
 	}
 	
 	

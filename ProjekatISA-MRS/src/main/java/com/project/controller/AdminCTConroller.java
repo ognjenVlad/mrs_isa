@@ -1,5 +1,6 @@
 package com.project.controller;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,14 @@ public class AdminCTConroller {
 		
 	@RequestMapping(value = "/add_cinema",method = RequestMethod.POST)
 	public String addCinema(@RequestBody CinemaTheatre ct){
+		ct.setRatings(new HashMap<String, Double>());
 		ctService.addCinemaTheatre(ct);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/modify_cinema",method = RequestMethod.POST)
+	public String modifyCinema(@RequestBody CinemaTheatre ct){
+		ctService.modifyCinemaTheatre(ct);
 		return "success";
 	}
 	
@@ -40,6 +48,7 @@ public class AdminCTConroller {
 	
 	@RequestMapping(value = "/add_projection", method = RequestMethod.POST)
 	public String addProjection(@RequestBody Projection pr){
+		pr.setRatings(new HashMap<String,Double>());
 		System.out.println(pr.getHalls().size() +" halls size \n\n");
 		prService.addProjection(pr);
 		return "success";
