@@ -26,6 +26,7 @@ function check_user(){
 	}
 }
 
+<<<<<<< HEAD
 function hide_all(){
 	$(".admin_fan").hide();
 	$(".admin_sys").hide();
@@ -34,4 +35,7 @@ function hide_all(){
 	$(".user_not_logged").hide();
 	
 }
+=======
+
+>>>>>>> branch 'Login' of https://github.com/ognjenVlad/mrs_isa.git
 
