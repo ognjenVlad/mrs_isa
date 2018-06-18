@@ -1,3 +1,4 @@
+
 function cinemaHallAdd(purpose){
 	var rows = $("#"+purpose+"cinema_rows").val();
 	var columns = $("#"+purpose+"cinema_columns").val();
