@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.project.DTO.FriendsDTO;
+import com.project.DTO.ScaleDTO;
 import com.project.DTO.UserDTO;
 import com.project.domain.User;
 import com.project.service.UserServiceImpl;
@@ -49,6 +50,10 @@ public class UserController {
 		return userService.activate_admin(email, pw);
 	}
 
+	@RequestMapping(value = "/set_scale",method = RequestMethod.POST)
+	public Response setScale(@RequestBody ScaleDTO scale) {
+		return userService.setScale(scale);
+	}
 	@RequestMapping(value = "/register",method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)

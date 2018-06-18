@@ -106,6 +106,41 @@ $(document).ready(function() {
         readURL(this);
     });
 	
+	$("#form_set_scale").submit(function(event){
+		event.preventDefault();
+		var bronze = parseInt($("#bronze_limit").val());
+		var silver = parseInt($("#silver_limit").val());
+		var gold = parseInt($("#gold_limit").val());
+		
+		console.log(bronze < silver && silver < gold);
+		
+		if(!(bronze < silver && silver < gold)){
+    		$('#set_scale_message').html('You must follow the rule : Bronze < Silver < Gold').css('color', 'red');
+		}else{
+			$("#set_scale_message").html("");
+		}
+
+		var d = JSON.stringify(
+			{
+				bronze_limit:bronze,
+				silver_limit:silver,
+				gold_limit:gold
+			})
+
+		$.post({
+			url:"http://localhost:8080/api/set_scale",
+			data: d,
+			dataType:"json",
+			contentType: "application/json",
+            success:function(data){
+            	if(data.message == "Success"){
+            		$("modal_set_scale").modal("hide");
+            	}else{
+            		alert(data.message);
+            	}
+            }
+		});
+	});
 
     $('#add_admin_password, #add_admin_r-password').on('keyup', function () {
     	  if ($('#add_admin_password').val() == $('#add_admin_r-password').val()) {

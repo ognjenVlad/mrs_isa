@@ -46,12 +46,22 @@ public class User implements Serializable{
 	@Column
 	private String user_type;
 	
+	@Column
+	private MEMBER_LEVEL member_level;
+	
+	@Column
+	private int no_of_visits;
+	
 	public User() {
 		super();
+		this.no_of_visits = 0;
+		this.member_level = MEMBER_LEVEL.NONE;
 	}
 
 	public User(Long id, String name, String surname, String email, String password, String picture,String phone,String user_type) {
 		super();
+		this.no_of_visits = 0;
+		this.member_level = MEMBER_LEVEL.NONE;
 		this.id = id;
 		this.name = name;
 		this.surname = surname;
@@ -147,10 +157,27 @@ public class User implements Serializable{
 		this.user_type = user_type; // user , sys , ct , fan
 	}
 
+	
+	public int getNo_of_visits() {
+		return no_of_visits;
+	}
+
+	public void setNo_of_visits(int no_of_visits) {
+		this.no_of_visits = no_of_visits;
+	}
+
+	public MEMBER_LEVEL getMember_level() {
+		return member_level;
+	}
+
+	public void setMember_level(MEMBER_LEVEL member_level) {
+		this.member_level = member_level;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", password=" + password + ", activated=" + activated
-				+ ", user_type=" + user_type + "]";
+				+ ", user_type=" + user_type + ", member_level=" + member_level + "]";
 	}
 	
 	

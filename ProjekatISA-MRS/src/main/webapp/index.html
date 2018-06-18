@@ -86,8 +86,9 @@
 		    </div>
 			<ul class="nav navbar-nav"> <li><a class="nav-link" href="fan_page.html">Fan Zone</a></li></ul>
 		    <ul class="nav navbar-nav" id="navbarLeft">
-		    <li><button type="button" class="btn btn-link navbar-btn admin_ct" data-toggle="modal" data-target="#modal_add_cinema">Add Cinema/Theatre</button></li>
+		    <li><button type="button" class="btn btn-link navbar-btn admin_sys" data-toggle="modal" data-target="#modal_add_cinema">Add Cinema/Theatre</button></li>
 			<li><button type="button" class="btn btn-link navbar-btn admin_sys" data-toggle="modal" data-target="#modal_add_admin">Add admin</button></li>    
+			<li><button type="button" class="btn btn-link navbar-btn admin_sys" data-toggle="modal" data-target="#modal_set_scale">Set users scale</button></li>    
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
 			<li><a href="userProfile.html" class="user"><span class="glyphicon glyphicon-profile"></span> My profile</a></li>
@@ -270,7 +271,36 @@
 			</div>
 		</div>
 
-
+		<div id="modal_set_scale" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h3>Set scale</h3>
+						<form role="form" id="form_set_scale" method="POST">
+							<div class="form-group">
+								<label for="bronze_limit">Bronze limit</label> <input type="number" min="1"
+									class="form-control" id="bronze_limit" required />
+							</div>
+							<div class="form-group">
+								<label for="silver_limit">Silver limit</label> <input type="number" min="1"
+									class="form-control" id="silver_limit" required />
+							</div>
+							<div class="form-group">
+								<label for="gold_limit">Gold limit</label> <input type="number" min="1"
+									class="form-control" id="gold_limit" required />
+							</div>
+							<button type="submit" class="btn btn btn-primary"
+								id="set_scale_button">Update scale</button>
+						</form>
+							<label id="set_scale_message"></label>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<div class="modal fade" id="cinemas" tabindex="-1" role="dialog"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">

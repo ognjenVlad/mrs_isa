@@ -12,7 +12,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.project.DTO.FriendsDTO;
+import com.project.DTO.ScaleDTO;
 import com.project.domain.Friends;
+import com.project.domain.MEMBER_LEVEL;
 import com.project.domain.User;
 import com.project.repository.FriendsRepository;
 import com.project.repository.UserRepository;
@@ -210,5 +212,31 @@ public class UserServiceImpl implements UserService{
 		userRepository.save(user);
 		
 		return new Response("Success",user);
+	}
+	
+	@Override
+	public Response setScale(ScaleDTO scale) {
+		if(!(scale.getBronze_limit() < scale.getSilver_limit() && scale.getSilver_limit() < scale.getGold_limit())) {
+			return new Response("Invalid request",null);
+		}
+		
+		ArrayList<User> users = (ArrayList<User>) userRepository.findAll();
+		
+		for (User user : users) {
+			if(user.getNo_of_visits() > scale.getGold_limit()) {
+				user.setMember_level(MEMBER_LEVEL.GOLD);
+			}else if(user.getNo_of_visits() > scale.getSilver_limit()) {
+				user.setMember_level(MEMBER_LEVEL.SILVER);
+			}else if(user.getNo_of_visits() > scale.getBronze_limit()) {
+				user.setMember_level(MEMBER_LEVEL.BRONZE);
+			}else{
+				user.setMember_level(MEMBER_LEVEL.NONE);
+			}
+			System.out.println(user);
+		}
+
+		userRepository.save(users);
+		
+		return new Response("Success",null);
 	}
 }
