@@ -3,12 +3,15 @@ package com.project.domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -40,7 +43,10 @@ public class Ad implements Serializable{
 	boolean isTaken = false;
 	
 	@Column
-	private ArrayList<Bid> bids = new ArrayList<Bid>();
+    @OneToMany(
+            cascade = CascadeType.ALL, 
+            orphanRemoval = true)
+	private List<Bid> bids = new ArrayList<Bid>();
 
 	Ad(){}
 
@@ -127,7 +133,7 @@ public class Ad implements Serializable{
 				+ ", isPublished=" + isPublished + ", isTaken=" + isTaken + "]";
 	}
 
-	public ArrayList<Bid> getBids() {
+	public List<Bid> getBids() {
 		return bids;
 	}
 

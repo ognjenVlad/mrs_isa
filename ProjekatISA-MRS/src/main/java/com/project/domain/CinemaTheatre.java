@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +37,9 @@ public class CinemaTheatre implements Serializable{
 	private ArrayList<Hall> halls;
 	
 	@Column(nullable = true)
-	private HashMap<String, Double> ratings;
+	private HashMap<String, Integer> ratings;
+	
+	private double rating;
 	
 	public CinemaTheatre() {
 		
@@ -51,7 +54,7 @@ public class CinemaTheatre implements Serializable{
 		this.description = description;
 		this.isCinema = isCinema;
 		this.halls = halls;
-		this.ratings = new HashMap<String, Double>();
+		this.ratings = new HashMap<String, Integer>();
 	}
 
 	public ArrayList<Hall> getHalls() {
@@ -110,23 +113,27 @@ public class CinemaTheatre implements Serializable{
 		return serialVersionUID;
 	}
 
-	public HashMap<String, Double> getRatings() {
+	public HashMap<String, Integer> getRatings() {
 //		if (ratings == null){
 //			ratings = new HashMap<String, Double>();
 //		}
 		return ratings;
 	}
 
-	public void setRatings(HashMap<String, Double> ratings) {
+	public void setRatings(HashMap<String, Integer> ratings) {
 		this.ratings = ratings;
 	}
 	
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+
 	public double getRating(){
 		if (this.ratings.size() == 0){
 			return 0.0;
 		}
-		double rating = 0.0;
-		for (Map.Entry<String, Double> entry : this.ratings.entrySet()){
+		this.rating = 0.0;
+		for (Entry<String, Integer> entry : this.ratings.entrySet()){
 			rating += entry.getValue();
 		}
 		rating = rating / this.ratings.size();

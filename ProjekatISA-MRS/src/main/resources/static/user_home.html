@@ -4,6 +4,7 @@
      
      
 <script type="text/javascript" src="js/adminct.js"></script>
+<script type="text/javascript" src="js/user_types.js"></script>
 <script type="text/javascript" src="js/home_user.js"></script>
 <link rel="stylesheet" href="css/homeuser.css">
 <link rel="stylesheet" href="/css/login.css">
@@ -58,16 +59,16 @@ function renderCinemaTheaters(data) {
 			</ul>
 		   
 		    <ul class="nav navbar-nav" id="navbarLeft">
+		    <li><button type="button" class="btn btn-link navbar-btn admin_ct" data-toggle="modal" data-target="#modal_add_cinema">Add Cinema/Theatre</button></li>
+			<li><button type="button" class="btn btn-link navbar-btn admin_sys" data-toggle="modal" data-target="#modal_add_admin">Add admin</button></li>    
 		    
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
+			<li><a href="userProfile.html" class="user"><span class="glyphicon glyphicon-profile"></span> My profile</a></li>
+			<li><a href="reg.html" class="user_not_logged"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+			<li><a href="signin.html" class="user_not_logged"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+			<li><a href="javascript:log_out();" class="user admin_sys admin_fan admin_ct"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
 		    </ul>
-		     <ul class="nav navbar-nav">
-		     
-		   
-		 
-		    </ul>
-		   
 		  </div>
 		</nav>
 

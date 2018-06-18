@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,7 +55,9 @@ public class Projection implements Serializable{
 	private Long cinthe_id;
 	
 	@Column(nullable = true)
-	private HashMap<String, Double> ratings;
+	private HashMap<String, Integer> ratings;
+	
+	private double rating;
 	
 	public Projection() {
 		super();
@@ -74,7 +77,7 @@ public class Projection implements Serializable{
 		this.halls = halls;
 		this.time = time;
 		this.price = price;
-		this.ratings = new HashMap<String, Double>();
+		this.ratings = new HashMap<String, Integer>();
 	}
 
 	public Long getId() {
@@ -177,20 +180,25 @@ public class Projection implements Serializable{
 		this.cinthe_id = cinthe_id;
 	}
 
-	public HashMap<String, Double> getRatings() {
+	public HashMap<String, Integer> getRatings() {
 		return ratings;
 	}
 
-	public void setRatings(HashMap<String, Double> ratings) {
+	public void setRatings(HashMap<String, Integer> ratings) {
 		this.ratings = ratings;
 	}
 	
+	
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+
 	public double getRating(){
 		if (this.ratings.size() == 0){
 			return 0.0;
 		}
 		double rating = 0.0;
-		for (Map.Entry<String, Double> entry : this.ratings.entrySet()){
+		for (Entry<String, Integer> entry : this.ratings.entrySet()){
 			rating += entry.getValue();
 		}
 		rating = rating / this.ratings.size();

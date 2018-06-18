@@ -1,10 +1,13 @@
 package com.project.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.DTO.RateDTO;
+import com.project.domain.CinemaTheatre;
 import com.project.domain.Projection;
 import com.project.repository.ProjectionRepository;
 
@@ -54,6 +57,16 @@ public class ProjectionImpl implements ProjectionService {
 	@Override
 	public Projection findById(Long id) {
 		return prRepository.findById(id);
+	}
+	
+	@Override
+	public void updateRating(RateDTO rate){
+		Projection pr = prRepository.findById(rate.getId());
+		HashMap<String, Integer> ratings = pr.getRatings();
+		ratings.put(rate.getUser_id(), rate.getVote());
+		pr.setRatings(ratings);
+		prRepository.save(pr);
+		return;
 	}
 
 }
