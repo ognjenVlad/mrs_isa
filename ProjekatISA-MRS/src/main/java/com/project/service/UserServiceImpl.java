@@ -206,6 +206,9 @@ public class UserServiceImpl implements UserService{
 		}
 		user.setPassword(pw);
 		user.setActivated(true);
-		return new Response("Success",null);
+		
+		userRepository.save(user);
+		
+		return new Response("Success",user);
 	}
 }

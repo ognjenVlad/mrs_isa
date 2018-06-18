@@ -21,8 +21,8 @@ $("#log").click(
 					} else {
 						$('#message').html('');
 					}
-					if(data.user_type != "user" && data.isActive == "false"){
-						$("edit_email").val(data.email);
+					if(data.user_type != "user" && data.activated == false){
+						$("#edit_email").val(data.email);
 						$("#modal_change_pw").modal("show");
 						return;
 					}
@@ -60,12 +60,11 @@ function activate_admin(){
 	
 	$.post({
 		url : "http://localhost:8080/api/activate_admin/" + email + "/" + pass,
-		data : d,
 		contentType : "application/json",
 		success : function(data) {
 			if(data.message == "Success"){
-				localStorage.setItem('user',JSON.stringify(data));
-				window.location.replace("http://localhost:8080/pocetna.html");
+				localStorage.setItem('user',JSON.stringify(data.obj));
+				window.location.replace("http://localhost:8080/index.html");
 			}else{
 				alert(data.message);
 			}
