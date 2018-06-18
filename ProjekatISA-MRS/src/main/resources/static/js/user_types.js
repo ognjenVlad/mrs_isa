@@ -34,3 +34,4 @@ function hide_all(){
 	$(".user_not_logged").hide();
 	
 }
+
