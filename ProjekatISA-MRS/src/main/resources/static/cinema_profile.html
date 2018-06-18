@@ -4,12 +4,25 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<ling rel="stylesheet" src="css/ratings.css">
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing&key=AIzaSyAro0psoaV4dA4AkTSUm7TXt_bO9Nf1sB4"></script>
+
+<link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+<script src = "js/reserve.js"></script>
+<script src="scripts/flexiSeats/code/scripts/flexiseats.js"></script>
+<link href="scripts/flexiSeats/code/styles/flexiseats.css" rel="stylesheet">
+
+
 
 <title>Cinema profile</title>
 </head>
@@ -264,6 +277,7 @@
 				  	
 				  </div>
 				  <div class="tab-pane fade" id="discounts">
+					  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDiscountModal">Add new discount</button>
 				  </div>
 				</div>
 			</div>
@@ -307,7 +321,7 @@
 	          </div>
 	          <div class="form-group">
 	            <label for="length" class="col-form-label">Length (hours):</label>
-	            <input type="number" class="form-control" id="length" required>
+	            <input type="number" class="form-control" id="length" min="0" required>
 	          </div>
 	          <div class="form-group">
 	            <label for="poster">Projection poster</label> 
@@ -319,7 +333,7 @@
 	          </div>
 	          <div class="form-group">
 			      <label for="sel1">Select hall (select one):</label>
-			      <select class="form-control" id="sel1">
+			      <select class="selectpicker" class="form-control" id="sel1">
 			      </select>
 			      <button type="button" class="btn btn-primary" onclick="hallsAdd('')">Add hall</button>
 				  <div class="form-group">
@@ -332,7 +346,7 @@
 			  </div>
 			  <div class="form-group">
 	            <label for="price" class="col-form-label">Price (RSD):</label>
-	            <input type="number" class="form-control" id="price" required>
+	            <input type="number" class="form-control" id="price" min="0" required>
 	          </div>
 	          <button class="btn btn-primary">Confirm</button>
 	          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -392,7 +406,7 @@
 	          </div>
 	          <div class="form-group">
 			      <label for="sel1">Select hall (select one):</label>
-			      <select class="form-control" id="m_sel1">
+			      <select class="selectpicker" class="form-control" id="m_sel1">
 			      </select>
 			      <button type="button" class="btn btn-primary" onclick="hallsAdd('m_')">Add hall</button>
 				  <div class="form-group">
@@ -502,12 +516,64 @@
 		</div>
 	</div>
 	
+	<div class="modal fade" id="addDiscountModal" tabindex="-1" role="dialog" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="addProjectionModalLabel">Add new discount</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <form role="form" id="add_discount_form" method="POST">
+				      
+				<div class="form-group" style="margin-top:5px">
+					<label for="projection-select">Projection:</label>
+					<select class="selectpicker" data-live-search="true" id="discount_proj"  title = "Choose one of the following..." required>
+					</select>
+				</div>
+				
+				<div class="form-group">
+					<label style="margin-top:5px" for="d">Date:</label>
+				       <input class="form-control" id="date" name="date" placeholder="DD/MM/YYYY" type="text" required/>
+				   	
+				   </div>
+				<div class="form-group" style="margin-top:5px">
+					<label for="time">Select time:</label>
+					<select class="selectpicker" data-live-search="true" id="time"  title="Choose one of the following..." required></select>
+				</div>
+				<div class="form-group" style="margin-top:5px">
+						<label for="hall">Hall:</label>
+						<select class="selectpicker" data-live-search="true" id="hall"  title="Choose one of the following..." required></select>
+					</div>
+				
+				<div style="margin-left:40px" id="seats">
+				</div>
+				<div class="legends" id="legends" style="visibility: hidden">
+				  <input id="legAvailable" type="checkbox" disabled />
+				  <label for="legAvailable"> Available</label>
+				  <input id="legBooked" type="checkbox" data-status="booked" checked disabled />
+				  <label for="legBooked"> Booked</label>
+				  <input id="legBooked" type="checkbox" checked disabled />
+				  <label for="legBooked"> Selected</label>
+				</div>
+				
+	          <button class="btn btn-primary">Confirm</button>
+	          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        </form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	
 	<div id="modal_report" class="modal fade" role="dialog">
 		<div class="modal-dialog">
 
 			<div class="modal-content">
 				<div class="modal-body">
-					<h3>Modify Cinema/Theatre</h3>
+					<h3>Business report</h3>
 					
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default"
