@@ -43,6 +43,7 @@ function renderCinemaTheaters(data) {
 	getCinemas();
 </script>
 <body>
+<body style="background-color: 	#696969">
 		<nav class="navbar navbar-inverse">
 		  <div class="container-fluid">
 		    <div class="navbar-header">
@@ -50,18 +51,19 @@ function renderCinemaTheaters(data) {
 		    </div>
 			<ul class="nav navbar-nav"> <li><a class="nav-link" href="fan_page.html">Fan Zone</a></li></ul>
 		    <ul class="nav navbar-nav" id="navbarLeft">
-		    </ul>
+			</ul>
 		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
-		    <li><a href="reg.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li><li>
-			<a href="signin.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-		    </ul>
+			<li><a href="reg.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+			<li><a href="signin.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    		
+			</ul>
 		  </div>
 		</nav>
 
 	<div class="container">
 
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div class="thumbnail">
 					<a href="javascript:showCinemaList();"> <img
 						src="resources/images/cinema.jpg" alt="Cinema"
@@ -72,7 +74,7 @@ function renderCinemaTheaters(data) {
 					</a>
 				</div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div class="thumbnail">
 					<a href="javascript:showTheatreList();"> <img
 						src="resources/images/theatre.jpg" alt="Theatre"
@@ -86,9 +88,7 @@ function renderCinemaTheaters(data) {
 
 
 		</div>
-
 		
-
 
 		<div class="modal fade" id="cinemas" tabindex="-1" role="dialog"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -133,6 +133,7 @@ function renderCinemaTheaters(data) {
 		</div>
 
 	</div>
+
 </body>
 
 
