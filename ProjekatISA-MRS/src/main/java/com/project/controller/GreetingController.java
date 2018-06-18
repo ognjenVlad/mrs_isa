@@ -3,6 +3,7 @@ package com.project.controller;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,6 +54,13 @@ public class GreetingController {
     @RequestMapping(value = "/get_projections", method = RequestMethod.GET)
     public ArrayList<Projection> getProjections(){
     	ArrayList<Projection> projections = prService.findAll();
+    	return projections;
+    }
+    @RequestMapping(value = "/get_cin_projections", method = RequestMethod.POST,
+    		consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+    public ArrayList<Projection> getCinemaProjections(CinemaTheatre ct){
+    	ArrayList<Projection> projections = prService.findCinemaProjections();
     	return projections;
     }
     

@@ -4,18 +4,8 @@ function log_out(){
 		location.replace("http://localhost:8080/");
 }
 $(document).ready(function() {
-	$('#reservations').on('shown.bs.modal', function (e) {
-		readReservations();
-	})
-	$('#history').on('shown.bs.modal', function (e) {
-		readHistory();
-	})
-	$('#cinemas').on('shown.bs.modal', function (e) {
-		readCinemas();
-	})
-	$('#theaters').on('shown.bs.modal', function (e) {
-		readCinemas();
-	})
+	
+	
 	var reservationsTable = $('#tickets').DataTable({
 		"paging":   false,
 
@@ -43,7 +33,10 @@ $(document).ready(function() {
       
 	});
 
-
+	readReservations();
+	readHistory();
+	readCinemas();
+	readCinemas();
 	function readReservations(){
 		var reservations = [];
 		//$('#friends-table').empty();
@@ -59,16 +52,18 @@ $(document).ready(function() {
 					friends = []
 					seats = []
 					for(item in data[reservation].friends){
-						friends.push(" " + data[reservation].friends[item].name + " " + data[reservation].friends[item].surname)
+						friends.push(" " + data[reservation].friends[item].name + " " + data[reservation].friends[item].surname +" " + data[reservation].friends[item].email)
 					}
 					for(item in data[reservation].seats){
 						seats.push(" " + data[reservation].seats[item] + " ")
 					}
+					var button = '<input type="button" class="ibtnDel btn btn-md btn-default"  value="Cancel">';
+					
 					reservationsTable.row.add([data[reservation].show,data[reservation].time,
 					               data[reservation].date,
 					               data[reservation].place,
 					               friends,
-					               seats
+					               seats,button
 					               ]);
 					reservationsTable.draw();
 				}
@@ -78,6 +73,45 @@ $(document).ready(function() {
 			}})
 		
 	}
+	$("#tickets").on("click", ".ibtnDel", function (event) {
+		$row = $(this).closest("tr");
+		$tds = $row.find("td");          
+		var reservation = [];
+		$.each($tds, function() {               
+			reservation.push($(this).text());        
+		});
+		var u = JSON.parse(localStorage.getItem('user'));
+		delete u.id;
+		var friends = reservation[4].split(",");
+		var invited = [];
+		for(item in friends){
+			var res = item.split(" ");
+			invited.push({"email":res[2],"name":res[0],"surname":res[1]});
+			console.log(res);
+		}
+		var data =JSON.stringify({"user":u,"place":reservation[3],"time":reservation[1],"date":reservation[2],"show":reservation[0]
+			,"friends":invited,"isCinema":true});
+		console.log(data);
+		
+		
+		$.post({
+			url : "http://localhost:8080/api/cancel_reservation",
+			data : data,
+			contentType : "application/json",
+			success : function(data){
+				if(data!=false){
+					console.log(data);
+					
+					$row.remove();
+				}
+				alert("It is only 30 minutes until projection starts, too late to cancel reservation!");
+				
+				
+			}
+        });
+        
+        
+    });
 	function readHistory(){
 		var reservations = [];
 		//$('#friends-table').empty();
@@ -112,6 +146,7 @@ $(document).ready(function() {
 			}})
 		
 	}
+	var user = JSON.parse(localStorage.getItem('user'));
 	function readCinemas(){
 		cinemaTable.clear();
 		theatersTable.clear();
@@ -130,6 +165,7 @@ $(document).ready(function() {
 						if(cinema.isCinema == true){
 							var button = '<a href="cinema_profile.html?'+
 		                     cinema.id+'">Repertoire</a>';
+							
 							cinemaTable.row.add([cinema.name,cinema.address,button]);
 							cinemaTable.draw();
 						}else{
@@ -145,22 +181,8 @@ $(document).ready(function() {
 				}
 			})
 		};
-		
-		var rad = function(x) {
-			  return x * Math.PI / 180;
-			};
-
-			var getDistance = function(p1, p2) {
-			  var R = 6378137; // Earth’s mean radius in meter
-			  var dLat = rad(p2.lat() - p1.lat());
-			  var dLong = rad(p2.lng() - p1.lng());
-			  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-			    Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
-			    Math.sin(dLong / 2) * Math.sin(dLong / 2);
-			  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-			  var d = R * c;
-			  return d; // returns the distance in meter
-			};
+	
+	
 	function getCinemas() {
 		console.log("ready!");
 		$.ajax({
