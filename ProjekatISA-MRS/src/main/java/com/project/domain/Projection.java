@@ -3,7 +3,6 @@ package com.project.domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.persistence.Column;
@@ -46,6 +45,9 @@ public class Projection implements Serializable{
 	private ArrayList<Hall> halls;
 	
 	@Column(nullable = false)
+	private ArrayList<String> date;
+	
+	@Column(nullable = false)
 	private ArrayList<String> time;
 	
 	@Column(nullable = false)
@@ -64,7 +66,7 @@ public class Projection implements Serializable{
 	}
 
 	public Projection(Long id, String name, ArrayList<String> actors, String genre, String director, double length,
-			String poster, String description, ArrayList<Hall> halls, ArrayList<String> time, double price) {
+			String poster, String description, ArrayList<Hall> halls, ArrayList<String> date, ArrayList<String> time, double price) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -75,6 +77,7 @@ public class Projection implements Serializable{
 		this.poster = poster;
 		this.description = description;
 		this.halls = halls;
+		this.date = date;
 		this.time = time;
 		this.price = price;
 		this.ratings = new HashMap<String, Integer>();
@@ -152,6 +155,14 @@ public class Projection implements Serializable{
 		this.halls = halls;
 	}
 
+	public ArrayList<String> getDate() {
+		return date;
+	}
+
+	public void setDate(ArrayList<String> date) {
+		this.date = date;
+	}
+
 	public ArrayList<String> getTime() {
 		return time;
 	}
@@ -197,7 +208,7 @@ public class Projection implements Serializable{
 		if (this.ratings.size() == 0){
 			return 0.0;
 		}
-		double rating = 0.0;
+		rating = 0.0;
 		for (Entry<String, Integer> entry : this.ratings.entrySet()){
 			rating += entry.getValue();
 		}

@@ -39,6 +39,9 @@ public class CinemaTheatre implements Serializable{
 	@Column(nullable = true)
 	private HashMap<String, Integer> ratings;
 	
+	@Column(nullable = true)
+	private ArrayList<Discount> discounts;
+	
 	private double rating;
 	
 	public CinemaTheatre() {
@@ -55,6 +58,7 @@ public class CinemaTheatre implements Serializable{
 		this.isCinema = isCinema;
 		this.halls = halls;
 		this.ratings = new HashMap<String, Integer>();
+		this.discounts = new ArrayList<Discount>();
 	}
 
 	public ArrayList<Hall> getHalls() {
@@ -126,6 +130,19 @@ public class CinemaTheatre implements Serializable{
 	
 	public void setRating(double rating) {
 		this.rating = rating;
+	}
+
+	public ArrayList<Discount> getDiscounts() {
+		return discounts;
+	}
+
+	public void setDiscounts(ArrayList<Discount> discounts) {
+		this.discounts = discounts;
+	}
+	
+	public void addDiscount(Discount d){
+		this.discounts.add(d);
+		return;
 	}
 
 	public double getRating(){

@@ -15,7 +15,7 @@ public interface ProjectionRepository extends JpaRepository<Projection, Long>{
 	Projection findById(Long id);
 	
 	ArrayList<Projection> findAll();
-
+	
 	@Transactional
 	void deleteById(Long id);
 }

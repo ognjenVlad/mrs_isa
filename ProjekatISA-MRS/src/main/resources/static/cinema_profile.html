@@ -37,11 +37,17 @@
 .checked {
     color: orange;
 }
+
+.activeClass{
+    background: #F00; 
+  }
 </style>
 <script type="text/javascript">
 
 	var halls = [];
 	var cin_id = -1;
+	var cin_name;
+	var is_cinema;
 	var projections = [];
 	var actors_count = 0;
 	var halls_count = 0;
@@ -83,6 +89,8 @@
 	function render_cinema(cinema){
 		halls = cinema.halls;
 		cin_id = cinema.id;
+		cin_name = cinema.name;
+		is_cinema = cinema.isCinema;
 		cin_ratings = cinema.ratings;
 		$('#all_details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
 		if (cinema.isCinema){
@@ -146,9 +154,10 @@
 					')">Delete</button></div></div>';
 				$('#repertoire').append(proj_html);
 				ratingChoice(proj.rating, index);
-				
 			}
 		});
+		render_discount_form();
+
 		
 	}
 	
@@ -161,6 +170,29 @@
 		});
 	}
 	
+	function render_discount_form(){
+		var tommorow = new Date();
+		tommorow.setDate(tommorow.getDate() + 1);
+		$('#discount_date').datepicker({
+			format: 'dd/mm/yyyy',
+			autoclose: true,
+			startDate: tommorow,
+		});
+		
+		
+		$.each(projections, function(index, proj){
+			if (cin_id == proj.cinthe_id){
+				$('#discount_proj').append($('<option>', { 
+			        value: proj.name,
+			        text : proj.name 
+			    }));
+
+			}
+		});
+		$('#discount_proj').selectpicker('refresh');
+	}
+	
+	
 	function actorsAdd(modal_check){
 		var actor_name = $('#'+modal_check+'actor').val();
 		$('#'+modal_check+'actors').append('<tr><td id="'+modal_check+'actor'+actors_count+'">'+actor_name+'</td><button type="button" class="btn">Remove</button></tr>');
@@ -170,8 +202,22 @@
 	function hallsAdd(modal_check){
 		var hall = $('#'+modal_check+'sel1').val();
 		$('#'+modal_check+'halls').append('<tr><td id="'+modal_check+'hall'+halls_count+'">'+hall+'</td></tr>');
+		
+		var date_html = '<div class="form-group"><label for="date'+halls_count+'" class="col-form-label">Date of projection:</label>'+
+					'<input class="form-control" id="'+modal_check+'date'+halls_count+'" name="date" placeholder="DD/MM/YYYY" autocomplete="off" '+
+					'type="text" required/></div>';
+		$('#'+modal_check+'halls').append(date_html);
+		
+		var tommorow = new Date();
+		tommorow.setDate(tommorow.getDate() + 1);
+		$('#'+modal_check+'date'+halls_count).datepicker({
+			format: 'dd/mm/yyyy',
+			autoclose: true,
+			startDate: tommorow,
+		})
+		
 		var time_html = '<div class="form-group"><label for="time'+halls_count+'" class="col-form-label">'+
-					'Time of projection:</label><input type="time" class="form-control" id="time'+halls_count+'"></div>';
+					'Time of projection:</label><input type="time" class="form-control" id="'+modal_check+'time'+halls_count+'"></div>';
 		$('#'+modal_check+'halls').append(time_html);
 		halls_count++;
 	}
@@ -237,6 +283,147 @@
 	
 	get_cinema_data();
 	get_projections();
+	check_user();
+	
+	$(document).ready(function() {
+		
+		var seats;
+		
+		$('#discount_proj').on('change', function(){
+			$('#discount_date').empty();
+			$('#discount_time').empty();
+			$('#discount_hall').empty();
+			var disc_proj;
+			var existing_dates = [];
+			$.each(projections, function(index, proj){
+				if (proj.name == $('#discount_proj').val()){
+					disc_proj = proj;
+					
+				}
+			});
+			$.each(disc_proj.date, function(index, date){
+				if (existing_dates.includes(date)){
+					return true;
+				}
+				$('#discount_date').append($('<option>', { 
+			        value: date,
+			        text : date 
+			    }));
+				existing_dates.push(date);
+				
+			});
+			$('#discount_date').selectpicker('refresh');
+			$('#discount_time').selectpicker('refresh');
+			$('#discount_hall').selectpicker('refresh');
+		});
+		
+		$('#discount_date').on('change', function(){
+			$('#discount_time').empty();
+			$('#discount_hall').empty();
+			var disc_date;
+			var disc_time;
+			$.each(projections, function(index, proj){
+				if (proj.name == $('#discount_proj').val()){
+					disc_date = proj.date;
+					disc_time = proj.time;
+				}
+			});
+			$.each(disc_date, function(index, date){
+				if (date == $('#discount_date').val()){
+						
+					$('#discount_time').append($('<option>', { 
+				        value: disc_time[index],
+				        text : disc_time[index]
+				    }));
+				}	
+			});
+			$('#discount_time').selectpicker('refresh');
+			$('#discount_hall').selectpicker('refresh');
+		});
+		
+		$('#discount_time').on('change', function(){
+			$('#discount_hall').empty();
+			var disc_time;
+			var disc_hall;
+			$.each(projections, function(index, proj){
+				if (proj.name == $('#discount_proj').val()){
+					disc_time = proj.time;
+					disc_hall = proj.halls;
+				}
+			});
+			$.each(disc_time, function(index, time){
+				if (time == $('#discount_time').val()){
+						
+					$('#discount_hall').append($('<option>', { 
+				        value: disc_hall[index].hall_id,
+				        text : disc_hall[index].hall_id
+				    }));
+				}	
+			});
+			$('#discount_hall').selectpicker('refresh');
+		});
+		
+		$('#discount_hall').on('change',function(){
+			var hall_info;
+			var time = $('#discount_time').find(":selected").text();
+			var date = $('#discount_date').find(":selected").text();
+			var projection = $('#discount_proj').find(":selected").text();
+
+			var data =JSON.stringify({"time":time,"date":date,"show":projection});
+			
+			$.post({
+				url : "http://localhost:8080/api/get_seats",
+				data : data,
+				contentType: "application/json",
+				success: function(data){
+					console.log(data);
+					$("#disc_legends").css("visibility", "visible");
+					seats = $('#disc_seats').flexiSeats({
+					    rows: 8,
+					    columns: 10,
+					    multiple: false,
+					    booked: data
+					});
+					console.log(seats.getAvailable());
+					console.log(seats);
+
+				
+				}
+			
+			});
+		});
+		
+		$('#add_discount_form').on('click',function(){
+			
+			var length = seats.getSelected().length
+			if(length > 1){
+					alert("You can only reserve one seat with discount ticket!");
+					return;
+			}
+			
+			var time = $('#discount_time').find(":selected").text();
+			var date = $('#discount_date').find(":selected").text();
+			var projection = $('#discount_proj').find(":selected").text();
+			var hall = $('#discount_hall').find(":selected").text();
+			var seat;
+			var items = seats.getSelected()
+			jQuery.each(items, function(index, item) {
+				seat = item;
+			});
+			var data =JSON.stringify({"place":cin_name,"time":time,"date":date,"show":projection
+				,"isCinema":is_cinema,"seat":seat});
+			console.log(data);
+			$.post({
+				url:'http://localhost:8080/adminct/add_discount',
+				contentType: "application/json",
+				data: data
+				
+			})
+			
+			location.reload();
+			
+		});
+	});
 </script>
 <body>
 	<nav class="navbar navbar-inverse">
@@ -294,7 +481,7 @@
 	        </button>
 	      </div>
 	      <div class="modal-body">
-	        <form role="form" id="add_projection_form" method="POST">
+	        <form role="form" id="add_projection_form">
 	          <div class="form-group">
 	            <label for="name" class="col-form-label">Name:</label>
 	            <input type="text" class="form-control" id="name" required>
@@ -325,7 +512,8 @@
 	          </div>
 	          <div class="form-group">
 	            <label for="poster">Projection poster</label> 
-	            <input type="file" class="form-control-file" id="poster">
+	            <input type="file" class="form-control-file" onchange="load_poster('')" id="poster">
+	            <input type="hidden" id="poster_src">
 	          </div>
 	          <div class="form-group">
 	            <label for="description" class="col-form-label">Description:</label>
@@ -366,7 +554,7 @@
 	        </button>
 	      </div>
 	      <div class="modal-body">
-	        <form role="form" id="modify_form" method="POST">
+	        <form role="form" id="modify_form">
 	 		  <p id="m_id" hidden></p>
 	          <div class="form-group">
 	            <label for="name" class="col-form-label">Name:</label>
@@ -398,7 +586,8 @@
 	          </div>
 	          <div class="form-group">
 	            <label for="poster">Projection poster</label> 
-	            <input type="file" class="form-control-file" id="m_poster">
+	            <input type="file" class="form-control-file" onchange="javascript:load_poster('m_')" id="m_poster">
+	            <input type="hidden" id="m_poster_src">
 	          </div>
 	          <div class="form-group">
 	            <label for="description" class="col-form-label">Description:</label>
@@ -456,7 +645,7 @@
 			<div class="modal-content">
 				<div class="modal-body">
 					<h3>Modify Cinema/Theatre</h3>
-					<form role="form" id="modify_cinema_form" method="POST">
+					<form role="form" id="modify_cinema_form">
 						<div class="form-group">
 							<label for="cinema_name">Name</label> <input type="text"
 								class="form-control" id="m_cinema_name" required />
@@ -526,37 +715,36 @@
 	        </button>
 	      </div>
 	      <div class="modal-body">
-	        <form role="form" id="add_discount_form" method="POST">
+	        <form role="form" id="add_discount_form">
 				      
 				<div class="form-group" style="margin-top:5px">
 					<label for="projection-select">Projection:</label>
-					<select class="selectpicker" data-live-search="true" id="discount_proj"  title = "Choose one of the following..." required>
-					</select>
+					<select class="selectpicker" data-live-search="true" id="discount_proj" title = "Choose one of the following..." required></select>
 				</div>
 				
-				<div class="form-group">
-					<label style="margin-top:5px" for="d">Date:</label>
-				       <input class="form-control" id="date" name="date" placeholder="DD/MM/YYYY" type="text" required/>
+				<div class="form-group" style="margin-top:5px">
+					<label  for="d">Date:</label>
+				    <select class="selectpicker" data-live-search="true" id="discount_date"  title="Choose one of the following..." required></select>
 				   	
 				   </div>
 				<div class="form-group" style="margin-top:5px">
 					<label for="time">Select time:</label>
-					<select class="selectpicker" data-live-search="true" id="time"  title="Choose one of the following..." required></select>
+					<select class="selectpicker" data-live-search="true" id="discount_time"  title="Choose one of the following..." required></select>
 				</div>
 				<div class="form-group" style="margin-top:5px">
-						<label for="hall">Hall:</label>
-						<select class="selectpicker" data-live-search="true" id="hall"  title="Choose one of the following..." required></select>
-					</div>
-				
-				<div style="margin-left:40px" id="seats">
+					<label for="hall">Hall:</label>
+					<select class="selectpicker" data-live-search="true" id="discount_hall"  title="Choose one of the following..." required></select>
 				</div>
-				<div class="legends" id="legends" style="visibility: hidden">
-				  <input id="legAvailable" type="checkbox" disabled />
-				  <label for="legAvailable"> Available</label>
-				  <input id="legBooked" type="checkbox" data-status="booked" checked disabled />
-				  <label for="legBooked"> Booked</label>
-				  <input id="legBooked" type="checkbox" checked disabled />
-				  <label for="legBooked"> Selected</label>
+				
+				<div style="margin-left:40px" id="disc_seats">
+				</div>
+				<div class="legends" id="disc_legends" style="visibility: hidden">
+				  <input id="disc_legAvailable" type="checkbox" disabled />
+				  <label for="disc_legAvailable"> Available</label>
+				  <input id="disc_legBooked" type="checkbox" data-status="booked" checked disabled />
+				  <label for="disc_legBooked"> Booked</label>
+				  <input id="disc_legBooked" type="checkbox" checked disabled />
+				  <label for="disc_legBooked"> Selected</label>
 				</div>
 				
 	          <button class="btn btn-primary">Confirm</button>

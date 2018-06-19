@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.DTO.ScaleDTO;
 import com.project.domain.CinemaTheatre;
+import com.project.domain.Discount;
 import com.project.domain.Projection;
 import com.project.service.CinemaTheatreImpl;
 import com.project.service.ProjectionImpl;
@@ -29,7 +30,7 @@ public class AdminCTConroller {
 	@RequestMapping(value = "/add_cinema",method = RequestMethod.POST)
 	public String addCinema(@RequestBody CinemaTheatre ct){
 		HashMap<String, Integer> rt = new HashMap<String, Integer>();
-		rt.put("a@aa", 4);
+		//rt.put("a@aa", 4);
 		ct.setRatings(rt);
 		
 		ctService.addCinemaTheatre(ct);
@@ -71,6 +72,12 @@ public class AdminCTConroller {
 		Long pr_id = Long.parseLong(id);
 		System.out.println(pr_id+" je id \n\n\n");
 		prService.deleteProjection(pr_id);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/add_discount", method = RequestMethod.POST)
+	public String addDiscount(@RequestBody Discount dc){
+		ctService.addDiscount(dc);
 		return "success";
 	}
 }

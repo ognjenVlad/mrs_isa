@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.project.DTO.RateDTO;
 import com.project.DTO.ScaleDTO;
 import com.project.domain.CinemaTheatre;
+import com.project.domain.Discount;
 import com.project.utils.Response;
 
 public interface CinemaTheatreService {
@@ -22,5 +23,7 @@ public interface CinemaTheatreService {
 	public ArrayList<CinemaTheatre> getCinemas();
 	
 	public void updateRating(RateDTO rate);
+	
+	public void addDiscount(Discount d);
 	
 }
