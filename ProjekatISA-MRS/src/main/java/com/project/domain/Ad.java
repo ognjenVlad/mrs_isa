@@ -32,6 +32,9 @@ public class Ad implements Serializable{
 	@JsonFormat(pattern="MM/dd/yyyy")
 	@Column(nullable = false)
 	private Date exp_date;
+	
+	@Column(nullable = false)
+	private String user_email;
 
 	@Column
 	private String picture;
@@ -50,13 +53,20 @@ public class Ad implements Serializable{
 
 	Ad(){}
 
-	public Ad(Long id, String title, String description, Date exp_date, String picture) {
+	public Ad(Long id, String title, String description, Date exp_date, String picture,String user_email) {
 		super();
 		this.id = id;
+		this.user_email = user_email;
 		this.title = title;
 		this.description = description;
 		this.exp_date = exp_date;
 		this.picture = picture;
+	}
+	
+	
+
+	public String getTitle() {
+		return title;
 	}
 
 	public Long getId() {
@@ -66,9 +76,13 @@ public class Ad implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public String getUser_email() {
+		return user_email;
+	}
 
-	public String getTitle() {
-		return title;
+	public void setUser_email(String user_email) {
+		this.user_email = user_email;
 	}
 
 	public void setTitle(String title) {

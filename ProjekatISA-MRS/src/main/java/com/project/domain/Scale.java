@@ -1,20 +1,46 @@
-package com.project.DTO;
+package com.project.domain;
 
-public class ScaleDTO {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Scale {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(nullable = false)
 	private int bronze_limit;
+
+	@Column(nullable = false)
 	private int silver_limit;
+
+	@Column(nullable = false)
 	private int gold_limit;
 	
-	public ScaleDTO() {
+	public Scale() {
 		
 	}
 	
-	public ScaleDTO(int bronze_limit, int silver_limit, int gold_limit) {
+	public Scale(long id,int bronze_limit, int silver_limit, int gold_limit) {
 		super();
+		this.id = id;
 		this.bronze_limit = bronze_limit;
 		this.silver_limit = silver_limit;
 		this.gold_limit = gold_limit;
 	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public int getBronze_limit() {
 		return bronze_limit;
 	}
@@ -33,8 +59,5 @@ public class ScaleDTO {
 	public void setGold_limit(int gold_limit) {
 		this.gold_limit = gold_limit;
 	}
-	
-	
-	
 	
 }

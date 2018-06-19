@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.DTO.ScaleDTO;
 import com.project.domain.CinemaTheatre;
 import com.project.domain.Projection;
 import com.project.service.CinemaTheatreImpl;

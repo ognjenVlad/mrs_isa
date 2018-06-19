@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.project.DTO.FriendsDTO;
-import com.project.DTO.ScaleDTO;
+import com.project.domain.Scale;
 import com.project.domain.User;
 import com.project.utils.Response;
 
@@ -16,7 +16,8 @@ public interface UserService {
 	List<User> getUsers(User u);
 	ArrayList<User> getFriends(User u);
 	Response activate_admin(String email,String pw);
-	Response setScale(ScaleDTO scale);
+	Response getScale();
+	Response setScale(Scale scale);
 
 	ArrayList<User> getFriendRequest(User u);
 	boolean addFriend(FriendsDTO u);

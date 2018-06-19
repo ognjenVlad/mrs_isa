@@ -1,4 +1,5 @@
 display_ads();
+fill_history();
 display_props();
 var ad_img_src = "https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120";
 var prop_img_src = "https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120";
@@ -31,14 +32,16 @@ $(document).ready(function() {
 
 		date_val = new Date($("#ad_exp_date").val());
 
+		var user = JSON.parse(localStorage.getItem('user'));
+		
 		var d = JSON.stringify({
 			"title" : $("#ad_title").val(),
 			"description" : $("#ad_description").val(),
 			"exp_date" : date_val.getMonth() + "/" + date_val.getDate() +  "/" + date_val.getFullYear(),
+			"user_email" :user.email,
 			"picture" : ad_img_src
 		})
 
-		console.log(d);
 
 		$.post({
 			url : "http://localhost:8080/admin_fan/add_ad",
@@ -120,6 +123,16 @@ $(document).ready(function() {
 	});
 });
 
+function fillHistory(){
+	var user = JSON.parse(localStorage.getItem('user'));
+	if(user != null){
+		$("#histroy").empty();
+		$.each(user.history,function(index,notification){
+			$("#history").append("<div class=\"notification\">"+ notification +"</div>");
+		})
+	}
+}
+
 
 function get_ad_request() {
 	$("#get_ad_container").empty();
@@ -186,10 +199,11 @@ function update_ad(isPublished, isTaken) {
 }
 
 function add_bid(ad_id){
+	var user = JSON.parse(localStorage.getItem('user'));
 
 	var d = JSON.stringify({
 		"value" : $("#ad_amount_" + ad_id).val(),
-		"user" : "Default_user", // localStorage.getItem('user').email
+		"user" : user.email
 	})
 	
 	console.log(d);
@@ -233,7 +247,11 @@ function remove_bid(ad_id,id){
 
 function display_ads() {
 	$("#ads").empty();
+	$("#my_ads").empty();
+	var user = JSON.parse(localStorage.getItem('user'));
 	var counter = 0;
+	var counter_my_ads = 0;
+	var have_bid = false;
 	$.ajax({
 		type : "GET",
 		url : "http://localhost:8080/admin_fan/get_ads",
@@ -242,33 +260,81 @@ function display_ads() {
 			var html_code;
 			$("#post_container").empty();
 			$.each(data.obj,function(index, ad) {
+				have_bid = false;
 				html_code = "<div><article><div class=\"row\"><div class=\"col-sm-6 col-md-3\"><figure>";
 				html_code += "<img src=\""+ ad.picture + "\" />";
 				html_code += "</figure></div>";
 				html_code += "<div class=\"col-md-9 col-sm-6\"><span class=\"label label-default pull-right\"><i class=\"glyphicon glyphicon-inbox\"></i> 0</span>";
 				html_code += "<h4>Title: "+ ad.title + "</h4>";
-				html_code += "<p>Description: "+ ad.description + "</p><section><i class=\"glyphicon glyphicon-user\"></i> Default User <i class=\"glyphicon glyphicon-calendar\">";
+				html_code += "<p>Description: "+ ad.description + "</p><section><i class=\"glyphicon glyphicon-user\"></i>" + ad.user_email + "<i class=\"glyphicon glyphicon-calendar\">";
 				html_code += "</i>" + ad.exp_date + "<button class=\"btn pull-right\" data-toggle=\"collapse\" data-target=\"#ad_bids_"+ ad.id + "\" aria-expanded=\"false\"";
 				html_code += "aria-controls=\"ad_bids_" + ad.id + "\"> Show/Hide bids </button></section></div></div></article>";
 				html_code += "<div class=\"collapse\" id=\"ad_bids_"+ ad.id +"\"><div class=\"card card-body\">";
 				console.log(ad);
+
 				$.each(ad.bids,function(index2, bid){
-					html_code += "<div><span>User &lt"+ bid.user + "&gt offered:"+ bid.value +" </span><button class=\"btn btn-danger\" onclick=\"remove_bid("+ ad.id + " , " + bid.id +")\">";
-					html_code += "Remove <i class=\"glyphicon glyphicon-trash\"></i></button>";
-					html_code += "<button class=\"btn btn-dark\" data-toggle=\"modal\" data-target=\"#modal_edit_bid\" onclick=\"fill_bid_window("+ ad.id + " , " + bid.id +")\">Edit <i class=\"glyphicon glyphicon-pencil\"></i></button></div>";
+					html_code += "<div><span>User &lt"+ bid.user + "&gt offered:"+ bid.value +" </span>";
+					if(user != null){
+						if(bid.user == user.email){
+							have_bid = true;
+							html_code += "<button class=\"btn btn-danger\" onclick=\"remove_bid("+ ad.id + " , " + bid.id +")\">";
+							html_code += "Remove <i class=\"glyphicon glyphicon-trash\"></i></button><button class=\"btn btn-dark\" data-toggle=\"modal\" data-target=\"#modal_edit_bid\"";
+							html_code += " onclick=\"fill_bid_window("+ ad.id + " , " + bid.id +")\">Edit <i class=\"glyphicon glyphicon-pencil\"></i></button>";
+						}else if(user.email == ad.user_email){
+							html_code += "<button class=\"btn btn-success\" onclick=\"accept_bid_offer("+ ad.id + " , " + bid.id +")\">";
+							html_code += "Accept offer</button>";
+						}					
+					}
+					html_code += "</div>";
 				})
-				html_code += "</div></div><div class=\"input-group\"><input class= \"form-control width100\" id=\"ad_amount_" + ad.id +"\" type=\"number\"/ placeholder=\"Bid amount\">";
-				html_code += "<span class=\"input-group-btn\"><button class=\"btn\" onclick=\"add_bid("+ ad.id +")\">Add bid</button></span></div></div>";
+				html_code += "</div></div>";
+				if(user != null){
+					if(have_bid == false && user.user_type == "user" && user.email != ad.user_email){
+						html_code += "<div class=\"input-group user\"><input class= \"form-control width100\" id=\"ad_amount_" + ad.id +"\" type=\"number\"/ placeholder=\"Bid amount\">";
+						html_code += "<span class=\"input-group-btn\"><button class=\"btn\" onclick=\"add_bid("+ ad.id +")\">Add bid</button></span></div>";					
+					}
+				}
+				html_code += "</div>"
 				
-				$("#ads").append(html_code);
-				counter++;
+				if(user != null){
+					if(user.email != ad.user_email){
+						$("#ads").append(html_code);
+						counter++;
+					}else{
+						$("#my_ads").append(html_code);
+						counter_my_ads++;
+					}
+				}else{
+					$("#ads").append(html_code);
+					counter++;
+				}
 			})
 
 			if(counter ==0){
 				$("#ads").append("<h3> No ads to display </h3>");
 			}
+			if(user == null){
+				$("#my_ads").append("<h3> <a href=\"signin.html\"> Log in to see your ads</a> </h3>");
+			}else{
+				if(counter_my_ads == 0){
+					$("#my_ads").append("<h3> You still have any ads <h3>");
+				}
+			}
 		}
 	});
+}
+
+function accept_bid_offer(ad_id,bid_id){
+	$.ajax({
+		type : "PUT",
+		url : "http://localhost:8080/admin_fan/choose_bid/" + ad_id + "/" + bid_id,
+		dataType : "json",
+		success : function(data) {
+			alert(data.message);
+			display_ads();
+		}
+	});
+	
 }
 
 function fill_prop_window(id){
@@ -329,9 +395,11 @@ function remove_prop(id){
 
 
 function reserve_prop(id){
+	var user = JSON.parse(localStorage.getItem('user'));
+
 	$.ajax({
 		type : "PUT",
-		url : "http://localhost:8080/admin_fan/update_prop/" + id + "/" + $("#prop_amount_" + id).val(),
+		url : "http://localhost:8080/admin_fan/update_prop/" + id + "/" + $("#prop_amount_" + id).val() + "/" + user.email,
 		dataType : "json",
 		success : function(data) {
 			if(data.message == "Not enough props"){

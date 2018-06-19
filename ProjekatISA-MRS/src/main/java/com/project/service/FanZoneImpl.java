@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import com.project.domain.Ad;
 import com.project.domain.Bid;
 import com.project.domain.Prop;
+import com.project.domain.User;
 import com.project.repository.AdRepository;
 import com.project.repository.BidRepository;
 import com.project.repository.PropRepository;
+import com.project.repository.UserRepository;
 import com.project.utils.Response;
 
 @Service
@@ -24,6 +26,9 @@ public class FanZoneImpl implements FanZoneService {
 
 	@Autowired
 	PropRepository propRepository;
+	
+	@Autowired
+	UserRepository userRepository;
 	
 	@Override
 	public void addAd(Ad ad) {
@@ -101,7 +106,7 @@ public class FanZoneImpl implements FanZoneService {
 	}
 
 	@Override
-	public String updateProp(Long id, int amount) {
+	public String updateProp(Long id, int amount,String user_email) {
 		Prop prop;
 		if((prop = propRepository.findOne(id))==null) {
 			return "Id doesn't exist";
@@ -111,7 +116,10 @@ public class FanZoneImpl implements FanZoneService {
 			return "Not enough props";
 		}else {
 			prop.setAmount(prop.getAmount() - amount);
+			User user = userRepository.findByEmail(user_email);
+			user.getHistory().add("You bought " + Integer.toString(amount) + " items related to post <AHF593SLE" + Long.toString(id)+ ">. You can pick it up at .."); 
 			propRepository.save(prop);
+			userRepository.save(user);
 			return "Success";
 		}
 	}
@@ -158,15 +166,43 @@ public class FanZoneImpl implements FanZoneService {
 			return "Id doesn't exist";
 		}
 		
-		//bid.setDeleted(true);
-		bidRepository.save(bid);
+		int index = 0;
 		for(int i = 0 ; i < ad.getBids().size();i++) {
-			if(ad.getBids().get(i).getId().equals(bid.getId())) {
-				ad.getBids().remove(i);
-				continue;
+			if(ad.getBids().get(i).getId() == bid.getId()) {
+				index = i;
+				break;
 			}
 		}
+		ad.getBids().remove(index);
+		
 		adRepository.save(ad);
+		bidRepository.delete(bid);
+		return "Success";
+	}
+
+	@Override
+	public String chooseBid(Long ad_id, Long id) {
+		Ad ad = adRepository.findOne(ad_id);
+		if(ad == null) {
+			return "Ad doesn't exist anymore";
+		}
+		User user;
+		for(Bid bid : ad.getBids()) {
+			user = userRepository.findByEmail(bid.getUser());
+			if(user == null) {
+				System.out.println("User wasn't found , error.");
+				continue;
+			}
+			if(bid.getId() == id) {
+				user.getHistory().add("Your bid has been accepted on ad : " + ad.getTitle() +".");
+			}else {
+				user.getHistory().add("Your bid has been rejected on ad : " + ad.getTitle() +".");
+			}
+			userRepository.save(user);
+		}
+				
+		adRepository.delete(ad);
+
 		return "Success";
 	}
 

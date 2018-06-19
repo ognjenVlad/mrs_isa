@@ -1,14 +1,14 @@
 package com.project.domain;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 
 @Entity
 public class User implements Serializable{
@@ -52,16 +52,21 @@ public class User implements Serializable{
 	@Column
 	private int no_of_visits;
 	
+	@Column
+	private ArrayList<String> history;
+	
 	public User() {
 		super();
 		this.no_of_visits = 0;
 		this.member_level = MEMBER_LEVEL.NONE;
+		this.history = new ArrayList<String>();
 	}
 
-	public User(Long id, String name, String surname, String email, String password, String picture,String phone,String user_type) {
+	public User(Long id, String name, String surname, String email, String password, String picture,String phone,String user_type,ArrayList<String> history) {
 		super();
 		this.no_of_visits = 0;
 		this.member_level = MEMBER_LEVEL.NONE;
+		this.history = history;
 		this.id = id;
 		this.name = name;
 		this.surname = surname;
@@ -88,6 +93,13 @@ public class User implements Serializable{
 		this.phone = phone;
 	}
 
+	public ArrayList<String> getHistory() {
+		return history;
+	}
+
+	public void setHistory(ArrayList<String> history) {
+		this.history = history;
+	}
 
 	public Long getId() {
 		return id;
