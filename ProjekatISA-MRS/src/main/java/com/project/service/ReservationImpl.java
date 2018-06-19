@@ -4,9 +4,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,15 +125,55 @@ public class ReservationImpl implements ReservationService {
 		}
 		return true;
 	}
+	public boolean cancel(ReservationDTO r){
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Date date = null;
+		try {
+			date = format.parse(r.getDate()+ " " +r.getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.getTime();
+		Date today = new Date(cal.getTimeInMillis()-(30*60000));
+		System.out.println(today);
+		System.out.println(date);
+		if(date.after(today)){
+			System.out.println("A");
+			return false;
+		}
+		User u = userRepository.findByEmail(r.getUser().getEmail());
+		ArrayList<Reservation> reservations = resRepository.findByDateAndPlaceAndProjectionAndTimeAndUser(r.getDate(), r.getPlace(),
+				r.getShow(),r.getTime(),u);
+		if(reservations == null){
+			return false;
+		}
+		for(Reservation res:reservations){
+			for(User user:r.getFriends()){
+				User uuu = userRepository.findByEmail(user.getEmail());
+				Invited  i = invitedRepository.findByUserAndReservation(uuu,res);
+				if(i!=null){
+					i.setAccepted(true);
+					invitedRepository.delete(i);
+					
+				}
+				resRepository.delete(res);
+			}
+			
+		}
+		
+		return true;
+	}
 	public ArrayList<ReservationDTO> history(User u){
 		User user = userRepository.findByEmail(u.getEmail());
 		ArrayList<Reservation> reservations= resRepository.findByUser(user);
 		ArrayList<ReservationDTO> allInfo = new ArrayList<ReservationDTO>();
 		for(Reservation r: reservations){
-			DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			Date date = null;
 			try {
-				date = format.parse(r.getDate());
+				date = format.parse(r.getDate()+" "+r.getTime());
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -162,10 +202,10 @@ public class ReservationImpl implements ReservationService {
 		ArrayList<Reservation> reservations= resRepository.findByUser(user);
 		ArrayList<ReservationDTO> allInfo = new ArrayList<ReservationDTO>();
 		for(Reservation r: reservations){
-			DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			Date date = null;
 			try {
-				date = format.parse(r.getDate());
+				date = format.parse(r.getDate()+" "+r.getTime());
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

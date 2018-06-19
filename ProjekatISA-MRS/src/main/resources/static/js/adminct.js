@@ -150,6 +150,25 @@ $(document).ready(function() {
     	});	
 });
 
+function loadScale(){
+	$.ajax({
+		url:"http://localhost:8080/api/get_scale",
+		type: "GET",
+		contentType:"application/json",
+		success: function(data){
+			if(data.message == "Success"){
+				$("#bronze_limit").val(data.obj.bronze_limit);
+				$("#silver_limit").val(data.obj.silver_limit);
+				$("#gold_limit").val(data.obj.gold_limit);				
+			}else{
+				$("#bronze_limit").val(0);
+				$("#silver_limit").val(0);
+				$("#gold_limit").val(0);
+			}
+		}
+	});
+}
+
 function createHallsJson(){
 	var hall_list = [];
 	var i = 0;

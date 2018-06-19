@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.DTO.RateDTO;
-import com.project.DTO.ScaleDTO;
 import com.project.domain.CinemaTheatre;
 import com.project.domain.Discount;
 import com.project.repository.CinemaTheatreRepository;

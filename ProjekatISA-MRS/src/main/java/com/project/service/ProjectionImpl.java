@@ -53,6 +53,11 @@ public class ProjectionImpl implements ProjectionService {
 	public ArrayList<Projection> findAll() {
 		return prRepository.findAll();
 	}
+	
+	@Override
+	public ArrayList<Projection> findCinemaProjections() {
+		return prRepository.findAll();
+	}
 
 	@Override
 	public Projection findById(Long id) {

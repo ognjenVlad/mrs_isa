@@ -69,9 +69,9 @@ public class AdminFanController {
 		return new Response(fanZoneService.deleteProp(Long.parseLong(id)),null);
 	}
 
-	@RequestMapping(value = "/update_prop/{id}/{amount}", method = RequestMethod.PUT)
-	public Response updateProp(@PathVariable(value = "id") String id,@PathVariable(value = "amount") String amount){
-		return new Response(fanZoneService.updateProp(Long.parseLong(id),Integer.parseInt(amount)),null);
+	@RequestMapping(value = "/update_prop/{id}/{amount}/{user}", method = RequestMethod.PUT)
+	public Response updateProp(@PathVariable(value = "id") String id,@PathVariable(value = "amount") String amount,@PathVariable(value = "user") String user){
+		return new Response(fanZoneService.updateProp(Long.parseLong(id),Integer.parseInt(amount),user),null);
 	}
 	
 	@RequestMapping(value = "/add_ad_bid/{id}", method = RequestMethod.POST)
@@ -88,5 +88,10 @@ public class AdminFanController {
 	@RequestMapping(value = "/remove_bid/{ad_id}/{id}", method = RequestMethod.PUT)
 	public Response removeBid(@PathVariable(value = "ad_id") String ad_id,@PathVariable(value = "id") String id){
 		return new Response(fanZoneService.deleteBid(Long.parseLong(id),Long.parseLong(id)),null);
+	}
+
+	@RequestMapping(value = "/choose_bid/{ad_id}/{id}", method = RequestMethod.PUT)
+	public Response chooseBid(@PathVariable(value = "ad_id") String ad_id,@PathVariable(value = "id") String id){
+		return new Response(fanZoneService.chooseBid(Long.parseLong(id),Long.parseLong(id)),null);
 	}
 }

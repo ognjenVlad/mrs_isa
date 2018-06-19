@@ -5,34 +5,26 @@ function log_out(){
 }
 $(document).ready(function() {
 	var items;
-//	$.get({
-//		url:"http://localhost:8080/adminct/get_cinemas"
-//		,success:function(data){
-//			
-//			items = data;
-//			console.log(items);
-//			$.each(items, function (i, item) {
-//				console.log(items);
-//			    $('#cinema-select').append($('<option>', { 
-//			        value: item.name,
-//			        text : item.name 
-//			    }));
-//			});
-//			$('#cinema-select').selectpicker('refresh');
-//
-//		}
-//	})
-	$("#signout").on('click',function()
-			{
-			localStorage.removeItem('user');
-			window.location = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080/signin.html";
+	$.ajax({
+		type : 'GET',
+		url : 'http://localhost:8080/load_cinemas',
+		dataType : "json", // data type of response
+		success : function(data) {
+			console.log("AAA");
+			var list = data == null ? []
+			: (data instanceof Array ? data : [ data ]);
+			cinemas = list;
+			$.each(list, function(index, cinema) {
+				$('#cinema-select').append($('<option>', { 
+			        value: cinema.id,
+			        text : cinema.name 
+			    }));
+			});
+			$('#cinema-select').selectpicker('refresh')
+		        
+	}
 	});
-	$('#cinema-select').append($('<option>', { 
-        value: "cinema",
-        text : "cinema" 
-    }));
 
-	$('#cinema-select').selectpicker('refresh');
 	var date_input=$('input[name="date"]'); //our date input has the name "date"
 	
 	date_input.datepicker({
@@ -46,36 +38,49 @@ $(document).ready(function() {
 	$('#cinema-select').on('change',function(){
 		$('#projection-select').empty();
 		//resetSeats();
-		var cinema = $('#cinema-select').find(":selected").text();
-//		var projections;
-//		$.get({
-//			url:"http://localhost:8080/adminct/get_projections"
-//			,data: cinema
-//			,success:function(data){
-//				projections = data;
-//			}
-//		})
-		//
-		var cars;
-		
-		cars =["movie1,movie2"];
-		$.each(cars, function (i, item) {
-			
-			$('#projection-select').append($('<option>', { 
-		        value: item,
-		        text : item 
-		    }));
+		var cinema = $('#cinema-select').find(":selected").val();
+		$.ajax({
+			type : 'GET',
+			url : 'http://localhost:8080/get_projections',
+			dataType : "json",
+			success : function(data){
+				var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
+				$.each(list, function(index, proj){
+					if (cinema == proj.cinthe_id){	
+						$('#projection-select').append($('<option>', { 
+					        value: proj,
+					        text : proj.name 
+					    }));
+					
+					
+					}
+				});
+				$('#projection-select').selectpicker('refresh');
+			}
 		});
-		$('#projection-select').selectpicker('refresh');
-	
-		
+			
 	})
-	$('#date').on('change',function(){
-		//resetSeats();
+	$('#projection-select').on('change',function(){
 		$('#time').empty();
-		var day = $('#date');
-		console.log(day);
-		var projection_starts=['22:40', '21:50'];
+		var projection = $('#projection-select').find(":selected").val();
+		$.each(projection.time, function(index, proj){
+				
+				$('#time').append($('<option>', { 
+			        value: index,
+			        text : proj 
+			    }));
+			
+			
+			
+		})
+		$('#time').selectpicker('refresh');
+	});
+	
+//	$('#date').on('change',function(){
+//		$('#time').empty();
+//		var day = $('#date');
+//		
+//		var projection_starts=['23:46', '21:50'];
 //		$.get({
 //			url:"http://localhost:8080/adminct/get_starts"
 //			,data: day
@@ -83,36 +88,30 @@ $(document).ready(function() {
 //				projection_starts = data;
 //			}
 //		})
-		$.each(projection_starts, function (i, item) {
-			
-			$('#time').append($('<option>', { 
-		        value: item,
-		        text : item 
-		    }));
-		});
-		$('#time').selectpicker('refresh');
-	});
+//		$.each(projection_starts, function (i, item) {
+//			
+//			$('#time').append($('<option>', { 
+//		        value: item,
+//		        text : item 
+//		    }));
+//		});
+//		$('#time').selectpicker('refresh');
+//	});
 	
 	$('#time').on('change',function(){
 		//resetSeats();
 		$('#hall').empty();
-		var time = $('#time');
-		console.log(time);
-		var halls=['1', '2'];
-//		$.get({
-//			url:"http://localhost:8080/adminct/get_halls"
-//			,data: time
-//			,success:function(data){
-//				halls = data;
-//			}
-//		})
-		$.each(halls, function (i, item) {
-			
-			$('#hall').append($('<option>', { 
-		        value: item,
-		        text : item 
-		    }));
-		});
+		var index = $('#time').find(":selected").val();
+		var projection = $('#projection-select').find(":selected").val();
+		console.log(projection);
+
+		
+		var hall = projection.halls[index];
+		$('#hall').append($('<option>', { 
+	        value: hall,
+	        text : hall.hall_id 
+	    }));
+	
 		$('#hall').selectpicker('refresh');
 	});
 	//get friends from user
@@ -242,17 +241,9 @@ $(document).ready(function() {
 	});
 
 	$('#hall').on('change',function(){
-		var hall_info;
-		var time = $('#time').find(":selected").text();
-		var date = $('#date').val();
-		var projection = $('#projection-select').find(":selected").text();
-//		$.get({
-//		url:"http://localhost:8080/adminct/get_hall_info"
-//		,data: time
-//		,success:function(data){
-//			hall_info = data;
-//		}
-	//})
+		
+		var hall = $('#hall-select').find(":selected").val();
+
 		var data =JSON.stringify({"time":time,"date":date,"show":projection});
 		
 		$.post({
@@ -263,8 +254,8 @@ $(document).ready(function() {
 				console.log(data);
 				$("#legends").css("visibility", "visible");
 				seats = $('#seats').flexiSeats({
-				    rows: 8,
-				    columns: 10,
+				    rows: hall.rows1,
+				    columns: hall.columns1,
 				    multiple: false,
 				    booked: data
 				});
@@ -277,10 +268,7 @@ $(document).ready(function() {
 		})
 		
 	});
-//	function resetSeats(){
-//		$("#legends").css("visibility", "hidden");
-//		seats.booked = [];
-//	}
+
 	function getCinemas() {
 		console.log("ready!");
 		$.ajax({

@@ -19,7 +19,8 @@ public interface FanZoneService {
 	public Prop getProp(Long id);
 	public Bid getBid(Long id);
 	public String deleteProp(Long id);
-	public String updateProp(Long id,int amount);
+	public String updateProp(Long id,int amount,String user_email);
 	public String addAdBid(Long ad_id,Bid bid);
 	public String deleteBid(Long ad_id,Long id);
+	public String chooseBid(Long ad_id,Long id);
 }

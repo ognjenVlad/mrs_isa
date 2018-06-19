@@ -12,11 +12,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.project.DTO.FriendsDTO;
-import com.project.DTO.ScaleDTO;
 import com.project.domain.Friends;
 import com.project.domain.MEMBER_LEVEL;
+import com.project.domain.Scale;
 import com.project.domain.User;
 import com.project.repository.FriendsRepository;
+import com.project.repository.ScaleRepository;
 import com.project.repository.UserRepository;
 import com.project.utils.Response;
 @Service
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private FriendsRepository friendsRepository;
+
+	@Autowired
+	private ScaleRepository scaleRepository;
 	
 	@Autowired
 	private JavaMailSender javaMailSender;
@@ -214,11 +218,32 @@ public class UserServiceImpl implements UserService{
 		return new Response("Success",user);
 	}
 	
+	
 	@Override
-	public Response setScale(ScaleDTO scale) {
+	public Response getScale() {
+		ArrayList<Scale> scales = (ArrayList<Scale>) scaleRepository.findAll();
+		if(scales.size() == 0) {
+			return new Response("Scale doesn't exist",null);
+		}
+		return new Response("Success",scales.get(0));
+	}
+	
+	@Override
+	public Response setScale(Scale scale) {
 		if(!(scale.getBronze_limit() < scale.getSilver_limit() && scale.getSilver_limit() < scale.getGold_limit())) {
 			return new Response("Invalid request",null);
 		}
+		
+		ArrayList<Scale> scales = (ArrayList<Scale>) scaleRepository.findAll();
+		if(scales.size() == 0) {
+			scaleRepository.save(scale);
+		}else {
+			scales.get(0).setBronze_limit(scale.getBronze_limit());
+			scales.get(0).setSilver_limit(scale.getSilver_limit());
+			scales.get(0).setGold_limit(scale.getGold_limit());
+			scaleRepository.save(scales.get(0));
+		}
+		
 		
 		ArrayList<User> users = (ArrayList<User>) userRepository.findAll();
 		
