@@ -14,6 +14,7 @@ public interface ProjectionService {
 	public void deleteProjection(Long id);
 	
 	public ArrayList<Projection> findAll();
+	public ArrayList<Projection> findCinemaProjections();
 	
 	public Projection findById(Long id);
 	

@@ -2,7 +2,6 @@
     <script type="text/javascript" src ="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
       <script type="text/javascript" src ="//cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
      
-     
 <script type="text/javascript" src="js/adminct.js"></script>
 <script type="text/javascript" src="js/user_types.js"></script>
 <script type="text/javascript" src="js/home_user.js"></script>
@@ -64,20 +63,48 @@ function renderCinemaTheaters(data) {
 		    
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
-			<li><a href="userProfile.html" class="user"><span class="glyphicon glyphicon-profile"></span> My profile</a></li>
-			<li><a href="reg.html" class="user_not_logged"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-			<li><a href="signin.html" class="user_not_logged"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-			<li><a href="javascript:log_out();" class="user admin_sys admin_fan admin_ct"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+			<li><a href="userProfile.html" ><span class="glyphicon glyphicon-profile"></span> My profile</a></li>
+			<li><a href="javascript:log_out();"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
 		    </ul>
 		  </div>
 		</nav>
 
 	<div class="container">
 
-		
 	
 
-		<div id="modal_add_cinema" class="modal fade" role="dialog">
+
+<div id="reservations" class="modal fade" role="dialog">
+         <div id="reservations1" class="modal-dialog" style="width:950px">
+            <!-- Modal content-->
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Your reservations</h4>
+               </div>
+               <div class="modal-body">
+               	 <table id = "tickets" class="table table-hover" >
+                              <thead>
+						        <tr>
+						            
+						            <th>Show/projection</th>
+						            <th>Time</th>
+						            <th>Date</th>
+						            <th>Place</th>
+						            <th>Friends</th>
+						            <th>Seats</th>
+						            <th>&nbsp</th>
+						        </tr>
+				    </thead>
+                 	<tbody></tbody>
+                 </table>
+               </div>
+               
+               </div>
+	           </div>
+ 	       </div>
+    	</div>
+    	<div id="modal_add_cinema" class="modal fade" role="dialog">
 			<div class="modal-dialog">
 
 				<div class="modal-content">
@@ -118,7 +145,7 @@ function renderCinemaTheaters(data) {
 									type="number" class="form-control" id="cinema_columns" />
 							</div>
 							<button type="button" class="btn btn-primary"
-								id="cinema_hall_add" onclick="cinemaHallAdd()">Add hall</button>
+								id="cinema_hall_add" onclick="cinemaHallAdd('')">Add hall</button>
 							<div class="form-group">
 								<table class="table" id="cinema_halls">
 									<thead>
@@ -220,39 +247,36 @@ function renderCinemaTheaters(data) {
 			</div>
 		</div>
 
-
-</div>
-<div id="reservations" class="modal fade" role="dialog">
-         <div id="reservations1" class="modal-dialog" style="width:950px">
-            <!-- Modal content-->
-            <div class="modal-content">
-               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Your reservations</h4>
-               </div>
-               <div class="modal-body">
-               	 <table id = "tickets" class="table table-hover" >
-                              <thead>
-						        <tr>
-						            
-						            <th>Show/projection</th>
-						            <th>Time</th>
-						            <th>Date</th>
-						            <th>Place</th>
-						            <th>Friends</th>
-						            <th>Seats</th>
-						            
-						        </tr>
-				    </thead>
-                 	<tbody></tbody>
-                 </table>
-               </div>
-               
-               </div>
-	           </div>
- 	       </div>
-    	</div>
-    	
+		<div id="modal_set_scale" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h3>Set scale</h3>
+						<form role="form" id="form_set_scale" method="POST">
+							<div class="form-group">
+								<label for="bronze_limit">Bronze limit</label> <input type="number" min="1"
+									class="form-control" id="bronze_limit" required />
+							</div>
+							<div class="form-group">
+								<label for="silver_limit">Silver limit</label> <input type="number" min="1"
+									class="form-control" id="silver_limit" required />
+							</div>
+							<div class="form-group">
+								<label for="gold_limit">Gold limit</label> <input type="number" min="1"
+									class="form-control" id="gold_limit" required />
+							</div>
+							<button type="submit" class="btn btn btn-primary"
+								id="set_scale_button">Update scale</button>
+						</form>
+							<label id="set_scale_message"></label>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
     	<div id="history" class="modal fade" role="dialog">
          <div class="modal-dialog" style="width:950px">
             <!-- Modal content-->
@@ -272,6 +296,7 @@ function renderCinemaTheaters(data) {
 						            <th>Place</th>
 						            <th>Friends</th>
 						            <th>Seats</th>
+						            
 						            
 						        </tr>
 				    </thead>

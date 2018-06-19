@@ -63,6 +63,13 @@ public class ReservationController {
 		
 		return reservationService.acceptInvite(r);
 	}
+	@RequestMapping(value = "/cancel_reservation",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public boolean cancelReservation(@RequestBody ReservationDTO r){
+		
+		return reservationService.cancel(r);
+	}
 	@RequestMapping(value = "/decline_reservation",method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)

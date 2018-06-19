@@ -11,6 +11,7 @@ public interface ReservationService {
 	boolean makeReservation(ReservationDTO reservation);
 	boolean acceptInvite(ReservationDTO reservation);
 	boolean declineInvite(ReservationDTO reservation);
+	boolean cancel(ReservationDTO reservation);
 	ArrayList<ReservationDTO> getReservations(User u);
 	ArrayList<ReservationDTO> history(User u);
 	ArrayList<String> findBookedSeats(String projection, String date, String time);

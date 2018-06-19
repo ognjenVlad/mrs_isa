@@ -15,7 +15,7 @@ function check_user(){
 		}else if(user.user_type == "sys"){
 			$(".admin_sys").show();
 		}else if(user.user_type == "ct"){
-			$(".admin_ct").hide();
+			$(".admin_ct").show();
 			if (window.location.href.substring(0, 36) == "http://localhost:8080/cinema_profile" ){
 				var reportButton = '<button type="button" class="btn btn-link navbar-btn" data-toggle="modal" data-target="#modal_report">Business report</button>'
 				$("#navbarLeft").append(reportButton);
