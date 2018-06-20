@@ -65,6 +65,7 @@ $(document).ready(function() {
 
 	$("#form_create_prop").submit(function(event) {
 		event.preventDefault();
+		var ct_id = $("#prop_ct_select option:selected").val();
 		var d = JSON.stringify({
 			"title" : $("#prop_title").val(),
 			"description" : $("#prop_description").val(),
@@ -76,12 +77,11 @@ $(document).ready(function() {
 		console.log(d);
 
 		$.post({
-			url : "http://localhost:8080/admin_fan/add_prop",
+			url : "http://localhost:8080/admin_fan/add_prop/" + ct_id,
 			data : d,
 			contentType : "application/json",
 			success : function(data) {
 				$('#modal_create_prop').modal('hide')
-				display_props();
 			}
 		});
 	});
@@ -104,25 +104,28 @@ $(document).ready(function() {
 			data : d,
 			contentType : "application/json",
 			success : function(data) {
-				$('#modal_edit_prop').modal('hide')
-				display_props();
+				if(data.message != "Success"){
+					alert(data.message);
+				}else{
+					$('#modal_edit_prop').modal('hide')
+				}
 			}
 		});
 	});
 
 	$("#form_edit_bid").submit(function(event) {
 		event.preventDefault();
+		var user = JSON.parse(localStorage.getItem('user'));
 		var ad_id = $("#bid_ad_id_edit").val();
 		var d = JSON.stringify({
 			"value" : $("#bid_value_edit").val(),
-			"id" : $("#bid_id_edit").val(),
-			"user" : $("#bid_user_edit").val(),
+			"id" : $("#bid_id_edit").val()
 		})
 
 		console.log(d);
 
 		$.post({
-			url : "http://localhost:8080/admin_fan/add_ad_bid/" + ad_id,
+			url : "http://localhost:8080/admin_fan/add_ad_bid/" + ad_id + "/" + user.email,
 			data : d,
 			contentType : "application/json",
 			success : function(data) {
@@ -132,6 +135,20 @@ $(document).ready(function() {
 		});
 	});
 });
+
+function fillPropPlace(){
+	$("#prop_ct_select").empty();
+	$.ajax({
+		type : 'GET',
+		url : 'http://localhost:8080/load_cinemas',
+		dataType : "json",
+		success : function(data) {
+			$.each(data,function(index,cinema){
+				$("#prop_ct_select").append("<option value=\""+ cinema.id +"\">"+ cinema.name +" , " + cinema.address + "</option>");
+			});
+		}
+	});
+}
 
 function fillHistory(){
 	var user = JSON.parse(localStorage.getItem('user'));
@@ -167,7 +184,6 @@ function get_ad_request() {
 						$("#get_ad_container")
 								.append(
 										"<h3> No pending ad requests </h3><button class=\"btn\" onclick=\"get_ad_request()\">Try again</button>");
-						alert(data.message);
 					}
 				}
 			});
@@ -180,7 +196,7 @@ function update_ad_container(ad) {
 	var COMMENT = ad.description;
 	var TITLE = ad.title;
 
-	html_code = "<div><article class=\"width720\"><div class=\"row\"><div class=\"col-sm-6 col-md-3\"><figure>";
+	html_code = "<div><article><div class=\"row\"><div class=\"col-sm-6 col-md-3\"><figure>";
 	html_code += "<img src=\""+ ad.picture + "\" />";
 	html_code += "</figure></div>";
 	html_code += "<div class=\"col-md-9 col-sm-6\">";
@@ -205,6 +221,7 @@ function update_ad_container(ad) {
 	*/
 	$("#get_ad_container").append(html_code);
 }
+
 
 function send_ad_response(do_publish) {
 	update_ad(do_publish, true);
@@ -354,6 +371,7 @@ function display_ads() {
 }
 
 function accept_bid_offer(ad_id,bid_id){
+	console.log(ad_id);
 	$.ajax({
 		type : "PUT",
 		url : "http://localhost:8080/admin_fan/choose_bid/" + ad_id + "/" + bid_id,
@@ -402,12 +420,12 @@ function display_props() {
 						html_code += "<button class=\"btn pull-right btn-dark\" data-toggle=\"modal\" data-target=\"#modal_edit_prop\" onclick=\"fill_prop_window("+ prop.id +")\">Edit <i class=\"glyphicon glyphicon-pencil\"></i></button>";
 					}
 				}
-				html_code += "<h4>Title: "+ prop.title + "</h4><p class=\"description\"> Description: "+ prop.description + "</p><section><i class=\"glyphicon glyphicon-usd\"></i>" + prop.price;
-				html_code += "<p>Amount : "+ prop.amount + "</p>";
+				html_code += "<h4>Title: "+ prop.title + "</h4><p class=\"description\"> Description: "+ prop.description + "</p><i class=\"glyphicon glyphicon glyphicon-map-marker\"></i>" + prop.ct.name +", " + prop.ct.address;
+				html_code += "<p>Amount : "+ prop.amount + ", Price: <i class=\"glyphicon glyphicon-usd\"></i>" + prop.price+ "</p>";
 				if(user != null){
 					if(user.user_type =="user"){
-						html_code += "<div><button class=\"btn btn-default btn-sm\" onclick=\"reserve_prop("+ prop.id +")\">Reserve</button>";
-						html_code += "<input id=\"prop_amount_"+ prop.id +"\" class=\"\" type=\"number\"/ placeholder=\"Amount\"/></div>";
+						html_code += "<div><input id=\"prop_amount_"+ prop.id +"\" class=\"\" type=\"number\"/ placeholder=\"Amount\"/>";
+						html_code += "<button class=\"btn btn-default btn-sm\" onclick=\"reserve_prop("+ prop.id +")\">Reserve</button></div>";
 					}
 				}
 				html_code += "</section></div></div></article>";
@@ -442,8 +460,8 @@ function reserve_prop(id){
 		url : "http://localhost:8080/admin_fan/update_prop/" + id + "/" + $("#prop_amount_" + id).val() + "/" + user.email,
 		dataType : "json",
 		success : function(data) {
-			if(data.message == "Not enough props"){
-				alert("Not enough props");
+			if(data.message != "Success"){
+				alert(data.message);
 			}
 			display_props();
 		}

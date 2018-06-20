@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.project.domain.Ad;
 import com.project.domain.Bid;
+import com.project.domain.CinemaTheatre;
 import com.project.domain.Prop;
 import com.project.domain.User;
 import com.project.repository.AdRepository;
 import com.project.repository.BidRepository;
+import com.project.repository.CinemaTheatreRepository;
 import com.project.repository.PropRepository;
 import com.project.repository.UserRepository;
 
@@ -24,6 +26,9 @@ public class FanZoneImpl implements FanZoneService {
 	BidRepository bidRepository;
 
 	@Autowired
+	CinemaTheatreRepository ctRepository;
+
+	@Autowired
 	PropRepository propRepository;
 	
 	@Autowired
@@ -31,7 +36,13 @@ public class FanZoneImpl implements FanZoneService {
 	
 	@Override
 	public void addAd(Ad ad,String email) {
-		ad.setUser(userRepository.findByEmail(email));
+		User user = userRepository.findByEmail(email);
+		
+		if(user == null) {
+			return;
+		}
+		
+		ad.setUser(user);
 		adRepository.save(ad);
 	}
 
@@ -80,8 +91,15 @@ public class FanZoneImpl implements FanZoneService {
 	}
 	
 	@Override
-	public void addProp(Prop prop) {
-		propRepository.save(prop);
+	public String addProp(Prop prop,Long id) {
+		CinemaTheatre ct = ctRepository.findById(id);
+		if(ct == null) {
+			return "Cinema doesn't exist";
+		}else {
+			prop.setCt(ct);
+			propRepository.save(prop);
+			return "Success";
+		}
 	}
 
 	@Override
@@ -93,7 +111,7 @@ public class FanZoneImpl implements FanZoneService {
 	public String deleteProp(Long id) {
 		Prop prop;
 		if((prop = propRepository.findOne(id))==null) {
-			return "Id doesn't exist";
+			return "Prop no longer exists";
 		}
 		prop.setDeleted(true);
 		propRepository.save(prop);
@@ -109,15 +127,20 @@ public class FanZoneImpl implements FanZoneService {
 	public String updateProp(Long id, int amount,String user_email) {
 		Prop prop;
 		if((prop = propRepository.findOne(id))==null) {
-			return "Id doesn't exist";
+			return "Prop no longer exists";
 		}
+		
+		if(prop.isDeleted() == true) {
+			return "Prop no longer exists";
+		}
+		
 		System.out.println("\n\n" + prop.getAmount() + "\n\n");
 		if(prop.getAmount() < amount) {
 			return "Not enough props";
 		}else {
 			prop.setAmount(prop.getAmount() - amount);
 			User user = userRepository.findByEmail(user_email);
-			user.getHistory().add("You bought " + Integer.toString(amount) + " items related to post <AHF593SLE" + Long.toString(id)+ ">. You can pick it up at .."); 
+			user.getHistory().add("You bought " + Integer.toString(amount) + " items related to post No. " + Long.toString(id)+ ". You can pick it up at " + prop.getCt().getName() + ", " + prop.getCt().getAddress()); 
 			propRepository.save(prop);
 			userRepository.save(user);
 			return "Success";
@@ -126,12 +149,15 @@ public class FanZoneImpl implements FanZoneService {
 
 	@Override
 	public String addAdBid(Long ad_id, Bid bid,String email) {
-		System.out.println(email + " EMAILEMAILEMAILEMAILEMAILEMAILEMAIL");
 		bid.setUser(userRepository.findByEmail(email));
 		Long bid_id = bid.getId();
 		Ad ad;
 		if((ad = adRepository.findOne(ad_id))== null){
-			return "Invalid request";
+			return "Ad no longer exists";
+		}
+		
+		if(ad.isPublished() == false) {
+			return "Ad no longer exists";
 		}
 		
 		bidRepository.save(bid);
@@ -166,6 +192,10 @@ public class FanZoneImpl implements FanZoneService {
 		}
 		if((bid = bidRepository.findOne(id)) == null) {
 			return "Id doesn't exist";
+		}
+		
+		if(ad.isPublished() == false) {
+			return "Ad no longer exists";
 		}
 		
 		int index = 0;
