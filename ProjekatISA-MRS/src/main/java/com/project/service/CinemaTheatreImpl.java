@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.DTO.RateDTO;
 import com.project.domain.CinemaTheatre;
+import com.project.domain.Discount;
 import com.project.repository.CinemaTheatreRepository;
 import com.project.repository.UserRepository;
 import com.project.utils.Response;
@@ -79,6 +80,14 @@ public class CinemaTheatreImpl implements CinemaTheatreService{
 		HashMap<String, Integer> ratings = ct.getRatings();
 		ratings.put(rate.getUser_id(), rate.getVote());
 		ct.setRatings(ratings);
+		ctRepository.save(ct);
+		return;
+	}
+	
+	@Override
+	public void addDiscount(Discount d){
+		CinemaTheatre ct = ctRepository.findByName(d.getPlace());
+		ct.addDiscount(d);
 		ctRepository.save(ct);
 		return;
 	}

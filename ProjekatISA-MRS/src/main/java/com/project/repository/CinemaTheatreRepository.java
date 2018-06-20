@@ -11,6 +11,8 @@ public interface CinemaTheatreRepository extends JpaRepository<CinemaTheatre,Lon
 	
 	CinemaTheatre findById(Long id);
 	
+	CinemaTheatre findByName(String name);
+	
 	ArrayList<CinemaTheatre> findAll();
 	
 	CinemaTheatre save(CinemaTheatre ct);

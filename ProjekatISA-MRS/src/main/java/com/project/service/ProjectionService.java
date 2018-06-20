@@ -17,6 +17,6 @@ public interface ProjectionService {
 	public ArrayList<Projection> findCinemaProjections();
 	
 	public Projection findById(Long id);
-	
+		
 	public void updateRating(RateDTO rate);
 }

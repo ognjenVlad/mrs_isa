@@ -1,20 +1,19 @@
-function getBase64(file) {
+function getBase64(file, modal_check) {
    var reader = new FileReader();
    reader.readAsDataURL(file);
    reader.onload = function () {
-     console.log(reader.result);
+	   $('#'+modal_check+'poster_src').empty();
+	   $('#'+modal_check+'poster_src').val(reader.result);
    };
-   reader.onerror = function (error) {
-     console.log('Error: ', error);
-   };
-   return reader.result;
 }
+
 
 
 function modify_projection(index){
 	var proj = projections[index];
-	$('#m_id').html(proj.id)
+	$('#m_id').html(proj.id);
 	$('#m_name').val(proj.name);
+	$('#m_actors').empty();
 	for (var i = 0; i < proj.actors.length; i++){
 		$('#m_actors').append('<tr><td id="m_actor'+i+'">'+proj.actors[i]+'</td><button type="button">Remove</button></tr>')
 	}
@@ -23,8 +22,14 @@ function modify_projection(index){
 	$('#m_director').val(proj.director);
 	$('#m_length').val(proj.length);
 	$('#m_description').val(proj.description);
+	$('#m_halls').empty();
 	for (var i = 0; i < proj.halls.length; i++){
 		$('#m_halls').append('<tr><td id="m_hall'+i+'">'+proj.halls[i].hall_id+'</td></tr>')
+		var date_html = '<div class="form-group"><label for="date'+i+'" class="col-form-label">'+
+		'Date of projection:</label><input class="form-control" id="m_date'+i+'"placeholder="DD/MM/YYYY" autocomplete="off" '+
+		'type="text" required/></div>';
+		$('#m_halls').append(date_html);
+		$('#m_date'+i).val(proj.date[i]);
 		var time_html = '<div class="form-group"><label for="time'+i+'" class="col-form-label">'+
 		'Time of projection:</label><input type="time" class="form-control" id="m_time'+i+'"></div>';
 		$('#m_halls').append(time_html);
@@ -41,13 +46,23 @@ function delete_projection(index){
 	$('#deleteModal').modal('show');
 }
 
+function load_poster(modal_check){
+	var file = $('#'+modal_check+'poster')[0].files[0];
+	var poster = getBase64(file, modal_check); // prints the base64 string
+}
+
 $(document).ready(function() {
-	
 	
 	$("#add_projection_form").submit(function(event){
 		event.preventDefault();
 
 		var name = $("#name").val();
+		$.each(projections, function(index, proj){
+			if (name == proj.name && cin_id == proj.cinthe_id){
+				alert("Projection like this already exists in place.");
+				return;
+			}
+		});
 		
 		var actors = []
 		for (var i = 0; i < actors_count; i++){
@@ -58,12 +73,12 @@ $(document).ready(function() {
 		var director = $("#director").val();
 		var length  = $("#length").val();
 		
-		var file = $('#poster')[0].files[0];
-		var poster = getBase64(file); // prints the base64 string
+		var poster = $('#poster_src').val(); // prints the base64 string
 		
 		var description = $("#description").val();
 		
 		var prj_halls = [];
+		var prj_date = [];
 		var prj_time = [];
 		
 		var price = $('#price').val();
@@ -79,7 +94,9 @@ $(document).ready(function() {
 				}
 			}
 			prj_halls.push(hall_to_add);
+			prj_date.push($('#date'+i).val());
 			prj_time.push($('#time'+i).val());
+			
 		}
 			
 		actors_count = 0;
@@ -94,6 +111,7 @@ $(document).ready(function() {
 			"poster": poster,
 			"description":description,
 			"halls":prj_halls,
+			"date": prj_date,
 			"time" : prj_time,
 			"price" : price,
 			"cinthe_id" : cinthe_id,
@@ -119,6 +137,12 @@ $(document).ready(function() {
 
 		var id = $('#m_id').html();
 		var name = $("#m_name").val();
+		$.each(projections, function(index, proj){
+			if (name == proj.name && cin_id == proj.cinthe_id){
+				alert("Projection like this already exists in place.");
+				return;
+			}
+		});
 		
 		var actors = []
 		for (var i = 0; i < actors_count; i++){
@@ -132,11 +156,12 @@ $(document).ready(function() {
 		
 		var file = $('#m_poster')[0].files[0];
 		if (file != null)
-			var poster = getBase64(file); // prints the base64 string
+			var poster = $('#m_poster_src').val(); // prints the base64 string
 		
 		var description = $("#m_description").val();
 		
 		var prj_halls = [];
+		var prj_date = [];
 		var prj_time = [];
 		
 		var price = $('#m_price').val();
@@ -152,6 +177,7 @@ $(document).ready(function() {
 				}
 			}
 			prj_halls.push(hall_to_add);
+			prj_date.push($('#m_date'+i).val());
 			prj_time.push($('#m_time'+i).val());
 		}
 			
@@ -168,6 +194,7 @@ $(document).ready(function() {
 			"poster": poster,
 			"description":description,
 			"halls":prj_halls,
+			"date": prj_date,
 			"time" : prj_time,
 			"price" : price,
 			"cinthe_id" : cinthe_id
