@@ -144,7 +144,9 @@ $(document).ready(function() {
 				if (existing_halls.includes(projection.halls[index].hall_id)){
 					return true;
 				}
-				$('#hall').append($('<option>', { 
+				$('#hall').append($('<option>', {
+					
+					data : projection.halls[index],
 			        value: projection.halls[index].hall_id,
 			        text : projection.halls[index].hall_id
 			    }));
@@ -319,20 +321,26 @@ $(document).ready(function() {
 		setInterval(prices, 1000);
 		
 	});
-	function prices(){
+		function prices(){
 		var projection = $('#projection-select').find(":selected").data();
-		document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length) + " RSD";
+			if(user.member_level=='GOLD'){
+				document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length)*0.7 + " RSD";
+			}
+			else if(user.member_level=='SILVER'){
+				document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length)**0.8 + " RSD";
+			}
+			else if(user.member_level=='BRONZE'){
+				document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length)*0.9 + " RSD";
+			}
+		}
 
-	}
 		function getCinemas() {
 		console.log("ready!");
 		$.ajax({
 			type : 'GET',
 			url : 'http://localhost:8080/load_cinemas',
 			dataType : "json", // data type of response
-			success : function(data){
-				
-			}
-		});
-	}
+			
+			});
+		}
 });

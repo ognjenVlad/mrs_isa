@@ -14,7 +14,7 @@ public interface FanZoneService {
 	public void returnAd(Ad ad);
 	public String updateAd(boolean is_published,boolean is_taken,Long id);
 	public List<Ad> getPublishedAds();
-	public void addProp(Prop prop);
+	public String addProp(Prop prop,Long id);
 	public List<Prop> getProps();
 	public Prop getProp(Long id);
 	public Bid getBid(Long id);

@@ -62,6 +62,7 @@ $(document).ready(function() {
 					reservationsTable.row.add([data[reservation].show,data[reservation].time,
 					               data[reservation].date,
 					               data[reservation].place,
+					               data[reservation].price,
 					               friends,
 					               seats,button
 					               ]);
@@ -135,6 +136,7 @@ $(document).ready(function() {
 					historyTable.row.add([data[reservation].show,data[reservation].time,
 					               data[reservation].date,
 					               data[reservation].place,
+					               data[reservation].price,
 					               friends,
 					               seats
 					               ]);
