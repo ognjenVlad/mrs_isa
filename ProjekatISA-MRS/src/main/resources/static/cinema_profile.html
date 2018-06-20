@@ -189,7 +189,7 @@ function render_cinema(cinema){
 	cin_name = cinema.name;
 	is_cinema = cinema.isCinema;
 	cin_ratings = cinema.ratings;
-	$('#all_details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
+	$('#all_details').append(cinema.name+"<br/><br/>"+cinema.description+"<br/><br/><br/>"+cinema.address);
 	if (cinema.isCinema){
 		$('#image_and_map').append('<img src="resources/images/cinema.jpg" alt="Cinema" style="width:100%; height: 240px">');
 		$("#m_is_cinema").prop('checked', true);
@@ -733,6 +733,8 @@ $(document).ready(function() {
 	    </div>
 	    <ul class="nav navbar-nav" id="navbarLeft"></ul>
 	    <ul class="nav navbar-nav navbar-right" id="navbarRight">
+	    	<li><a href="userProfile.html" ><span class="glyphicon glyphicon-profile"></span> My profile</a></li>
+			<li><a href="javascript:log_out();"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
 	    </ul>
 	  </div>
 	</nav>
@@ -1068,8 +1070,9 @@ $(document).ready(function() {
 					<div class="modal-header"><h3>Business report</h3></div>
 					<div class="modal-body">	
 						<label id="b_cin_rating">User rating for this place is: </label><br/>
-						<label id="b_prj_rating">Average user rating for movies/shows here: </label><br/>
-						<div style="width:850px; height:500px;">
+						<label id="b_prj_rating">Average user rating for movies/shows here: </label><br/></br>
+						<div style="width:850px; height:520px;">
+							<label>Amount of visits throughout last year:</label><br/>
 							<div id="chartdiv"></div>
 							
 						</div>

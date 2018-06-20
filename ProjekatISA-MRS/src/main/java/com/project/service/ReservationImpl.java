@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.omg.CORBA.CTX_RESTRICT_SCOPE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
@@ -20,11 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.project.DTO.ReservationDTO;
+import com.project.domain.CinemaTheatre;
+import com.project.domain.Discount;
 import com.project.domain.Invited;
 import com.project.domain.MEMBER_LEVEL;
 import com.project.domain.Reservation;
 import com.project.domain.Scale;
 import com.project.domain.User;
+import com.project.repository.CinemaTheatreRepository;
 import com.project.repository.InvitedRepository;
 import com.project.repository.ReservationRepository;
 import com.project.repository.ScaleRepository;
@@ -40,6 +44,9 @@ public class ReservationImpl implements ReservationService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private CinemaTheatreRepository ctRepository;
 	
 	@Autowired
 	private InvitedRepository invitedRepository;
@@ -88,7 +95,21 @@ public class ReservationImpl implements ReservationService {
 		}
 		r.setFriends(friends);
 		resRepository.save(r);
-
+		
+		// uklanjanje popusta ako se radi o karti sa popustom
+		CinemaTheatre ct = ctRepository.findByName(r.getPlace());
+		ArrayList<Discount> dis = ct.getDiscounts();
+		for (Discount d : dis){
+			if (d.getDate().equals(r.getDate()) && d.getTime().equals(r.getTime())
+					&& d.getSeat().equals(reservation.getSeats().get(0))){
+				dis.remove(d);
+				break;
+			}
+		}
+		ct.setDiscounts(dis);
+		ctRepository.save(ct);
+		
+		
 		ArrayList<Scale> scales = (ArrayList<Scale>) scaleRepository.findAll();
 		if(scales.size() != 0) {
 			Scale scale = scales.get(0);
