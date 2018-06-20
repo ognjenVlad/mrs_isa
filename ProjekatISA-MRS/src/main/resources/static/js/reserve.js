@@ -47,7 +47,7 @@ $(document).ready(function() {
 				var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
 				$.each(list, function(index, proj){
 					if (cinema == proj.cinthe_id){	
-						
+						console.log(proj);
 						$('#projection-select').append($('<option>', { 
 							data: proj,
 					        text : proj.name 
@@ -62,45 +62,52 @@ $(document).ready(function() {
 		});
 			
 	})
+	var user = JSON.parse(localStorage.getItem('user'));
 	$('#projection-select').on('change',function(){
-		$('#time').empty();
+		$('#date').empty();
 		var projection = $('#projection-select').find(":selected").data();
-		document.getElementById("showPrice").innerHTML = projection.price  + " RSD";;
+		document.getElementById("showPrice").innerHTML = projection.price  + " RSD";
+		if(user.member_level != 'NONE'){
+			if(user.member_level=='GOLD'){
+				document.getElementById("discount").innerHTML = "You have discount of 30% for your "+user.member_level+" rank!";
+			}
+			else if(user.member_level=='SILVER'){
+				document.getElementById("discount").innerHTML = "You have discount of 20% for your "+user.member_level+" rank!";
+			}
+			else if(user.member_level=='BRONZE'){
+				document.getElementById("discount").innerHTML = "You have discount of 10% for your "+user.member_level+" rank!";
+			}
+			
+		}
+		
 		console.log(projection);
-		$.each(projection.time, function(index, proj){
-				
-				$('#time').append($('<option>', { 
-			        value: index,
-			        text : proj 
-			    }));
+		$.each(projection.date, function(index, date){
+			
+			$('#date').append($('<option>', { 
+		        value: date,
+		        text : date 
+		    }));
 			
 			
-			
-		})
-		$('#time').selectpicker('refresh');
+		});
+		$('#date').selectpicker('refresh');
+		
 	});
 	
-//	$('#date').on('change',function(){
-//		$('#time').empty();
-//		var day = $('#date');
-//		
-//		var projection_starts=['23:46', '21:50'];
-//		$.get({
-//			url:"http://localhost:8080/adminct/get_starts"
-//			,data: day
-//			,success:function(data){
-//				projection_starts = data;
-//			}
-//		})
-//		$.each(projection_starts, function (i, item) {
-//			
-//			$('#time').append($('<option>', { 
-//		        value: item,
-//		        text : item 
-//		    }));
-//		});
-//		$('#time').selectpicker('refresh');
-//	});
+	$('#date').on('change',function(){
+		$('#time').empty();
+		var projection = $('#projection-select').find(":selected").data();
+		
+		
+		$.each(projection.time, function (i, item) {
+			
+			$('#time').append($('<option>', { 
+		        value: item,
+		        text : item 
+		    }));
+		});
+		$('#time').selectpicker('refresh');
+	});
 	
 	$('#time').on('change',function(){
 		//resetSeats();
