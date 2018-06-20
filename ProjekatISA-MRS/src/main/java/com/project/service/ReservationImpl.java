@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.omg.CORBA.CTX_RESTRICT_SCOPE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
@@ -20,11 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.project.DTO.ReservationDTO;
+import com.project.domain.CinemaTheatre;
+import com.project.domain.Discount;
 import com.project.domain.Invited;
 import com.project.domain.MEMBER_LEVEL;
 import com.project.domain.Reservation;
 import com.project.domain.Scale;
 import com.project.domain.User;
+import com.project.repository.CinemaTheatreRepository;
 import com.project.repository.InvitedRepository;
 import com.project.repository.ReservationRepository;
 import com.project.repository.ScaleRepository;
@@ -40,6 +44,9 @@ public class ReservationImpl implements ReservationService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private CinemaTheatreRepository ctRepository;
 	
 	@Autowired
 	private InvitedRepository invitedRepository;
@@ -88,7 +95,21 @@ public class ReservationImpl implements ReservationService {
 		}
 		r.setFriends(friends);
 		resRepository.save(r);
-
+		
+		// uklanjanje popusta ako se radi o karti sa popustom
+		CinemaTheatre ct = ctRepository.findByName(r.getPlace());
+		ArrayList<Discount> dis = ct.getDiscounts();
+		for (Discount d : dis){
+			if (d.getDate().equals(r.getDate()) && d.getTime().equals(r.getTime())
+					&& d.getSeat().equals(reservation.getSeats().get(0))){
+				dis.remove(d);
+				break;
+			}
+		}
+		ct.setDiscounts(dis);
+		ctRepository.save(ct);
+		
+		
 		ArrayList<Scale> scales = (ArrayList<Scale>) scaleRepository.findAll();
 		if(scales.size() != 0) {
 			Scale scale = scales.get(0);
@@ -242,11 +263,48 @@ public class ReservationImpl implements ReservationService {
 				}
 				info.getSeats().add(invited.getSeat());
 			}
+			System.out.println("\n\n\n\n\nEVO DODALO SE NESTO"+info.getShow());
 			allInfo.add(info);
 		}
 		
 		return allInfo;
 	}
+	
+	public ArrayList<ReservationDTO> cinHistory(String cinName){
+		ArrayList<Reservation> reservations= resRepository.findByPlace(cinName);
+		System.out.println(reservations);
+		ArrayList<ReservationDTO> allInfo = new ArrayList<ReservationDTO>();
+		for(Reservation r: reservations){
+			System.out.println("\n\n\nUSAO I OVDE");
+			if (r.getPlace().equals(cinName)){
+				DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				Date date = null;
+				try {
+					date = format.parse(r.getDate()+" "+r.getTime());
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Date today = java.util.Calendar.getInstance().getTime();
+				if(date.after(today)){
+					continue;
+				}
+				System.out.println(r.getPrice());
+				ReservationDTO info = new ReservationDTO(r);
+				System.out.println(info.getPrice());
+				ArrayList<Invited> i = invitedRepository.findByReservation(r);
+				for (Invited invited : i) {
+					invited.getUser().setPicture("");
+					info.getFriends().add(invited.getUser());
+					info.getSeats().add(invited.getSeat());
+				}
+				allInfo.add(info);
+			}
+		}
+		
+		return allInfo;
+	}
+	
 	public ArrayList<ReservationDTO> getReservations(User u){
 		User user = userRepository.findByEmail(u.getEmail());
 		ArrayList<Reservation> reservations= resRepository.findByUser(user);

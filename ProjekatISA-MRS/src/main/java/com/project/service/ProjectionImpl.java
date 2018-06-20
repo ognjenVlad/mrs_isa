@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.DTO.RateDTO;
 import com.project.domain.CinemaTheatre;
@@ -17,13 +18,13 @@ public class ProjectionImpl implements ProjectionService {
 	@Autowired
 	ProjectionRepository prRepository;
 	
-	@Override
+	@Transactional
 	public void addProjection(Projection prj) {
 		System.out.println("U POJECTIONIMP JE " + prj.getName() + "\n\n");
 		prRepository.save(prj);
 	}
 	
-	@Override
+	
 	public void modifyProjection(Projection prj){
 		System.out.println("U PROJECTIONIMP JE " + prj.getName() + "\n\n");
 		Projection old_prj = prRepository.findById(prj.getId());
@@ -42,29 +43,29 @@ public class ProjectionImpl implements ProjectionService {
 		prRepository.save(old_prj);
 	}
 	
-	@Override
+	
 	public void deleteProjection(Long id){
 		System.out.println("OVDE JE ID "+id+"\n\n");
 		prRepository.deleteById(id);
 		return;
 	}
 
-	@Override
+	
 	public ArrayList<Projection> findAll() {
 		return prRepository.findAll();
 	}
 	
-	@Override
+	
 	public ArrayList<Projection> findCinemaProjections() {
 		return prRepository.findAll();
 	}
 
-	@Override
+	
 	public Projection findById(Long id) {
 		return prRepository.findById(id);
 	}
 	
-	@Override
+	
 	public void updateRating(RateDTO rate){
 		Projection pr = prRepository.findById(rate.getId());
 		HashMap<String, Integer> ratings = pr.getRatings();
