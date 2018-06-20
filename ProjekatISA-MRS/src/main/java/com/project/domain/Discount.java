@@ -1,12 +1,38 @@
 package com.project.domain;
 
-public class Discount {
+import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Discount implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	
+	@Column(nullable = false)
 	private String place;
+	
+	@Column(nullable = false)
 	private String time;
+	
+	@Column(nullable = false)
 	private String date;
+
+	@Column(nullable = false)
 	private String projection;
+	
+	@Column(nullable = false)
 	private boolean isCinema;
+	
+	@Column(nullable = false)
 	private String seat;
 	
 	public Discount() {
