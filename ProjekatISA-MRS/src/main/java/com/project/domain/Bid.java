@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Bid implements Serializable{
@@ -18,9 +19,9 @@ public class Bid implements Serializable{
 	
 	@Column(nullable = false)
 	private int value;
-	
-	@Column(nullable = false)
-	private String user;
+		
+	@ManyToOne(optional = false)
+	private User user;
 	
 	/*
 	@Column
@@ -28,7 +29,7 @@ public class Bid implements Serializable{
 	*/
 	public Bid() {}
 	
-	public Bid(Long id, int value, String user) {
+	public Bid(Long id, int value, User user) {
 		super();
 		this.id = id;
 		this.value = value;
@@ -51,11 +52,11 @@ public class Bid implements Serializable{
 		this.value = value;
 	}
 
-	public String getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUser(String user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 

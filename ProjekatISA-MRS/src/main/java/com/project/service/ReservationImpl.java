@@ -21,10 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.project.DTO.ReservationDTO;
 import com.project.domain.Invited;
+import com.project.domain.MEMBER_LEVEL;
 import com.project.domain.Reservation;
+import com.project.domain.Scale;
 import com.project.domain.User;
 import com.project.repository.InvitedRepository;
 import com.project.repository.ReservationRepository;
+import com.project.repository.ScaleRepository;
 import com.project.repository.UserRepository;
 
 import io.jsonwebtoken.JwtBuilder;
@@ -45,6 +48,9 @@ public class ReservationImpl implements ReservationService {
 	private Environment env;
 	@Autowired
 	private JavaMailSender javaMailSender;
+	
+	@Autowired
+	private ScaleRepository scaleRepository;
 	
 	@Transactional
 	public boolean makeReservation(ReservationDTO reservation){
@@ -81,6 +87,28 @@ public class ReservationImpl implements ReservationService {
 		}
 		r.setFriends(friends);
 		resRepository.save(r);
+
+		ArrayList<Scale> scales = (ArrayList<Scale>) scaleRepository.findAll();
+		if(scales.size() != 0) {
+			Scale scale = scales.get(0);
+			try {
+				r.getUser().setNo_of_visits(r.getUser().getNo_of_visits() + 1);
+				if(r.getUser().getNo_of_visits() > scale.getGold_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.GOLD);
+				}else if(r.getUser().getNo_of_visits() > scale.getSilver_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.SILVER);
+				}else if(r.getUser().getNo_of_visits() > scale.getBronze_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.BRONZE);
+				}else{
+					r.getUser().setMember_level(MEMBER_LEVEL.NONE);
+				}
+			}catch(Exception e){
+				r.getUser().setNo_of_visits(1);
+			}
+			userRepository.save(r.getUser());
+		}
+
+		
 		return true;
 	}
 	public boolean acceptInvite(ReservationDTO r){
@@ -161,6 +189,26 @@ public class ReservationImpl implements ReservationService {
 				resRepository.delete(res);
 			}
 			
+		}
+
+		ArrayList<Scale> scales = (ArrayList<Scale>) scaleRepository.findAll();
+		if(scales.size() != 0) {
+			Scale scale = scales.get(0);
+			try {
+				r.getUser().setNo_of_visits(r.getUser().getNo_of_visits() - 1);
+				if(r.getUser().getNo_of_visits() > scale.getGold_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.GOLD);
+				}else if(r.getUser().getNo_of_visits() > scale.getSilver_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.SILVER);
+				}else if(r.getUser().getNo_of_visits() > scale.getBronze_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.BRONZE);
+				}else{
+					r.getUser().setMember_level(MEMBER_LEVEL.NONE);
+				}
+			}catch(Exception e){
+				r.getUser().setNo_of_visits(1);
+			}
+			userRepository.save(r.getUser());
 		}
 		
 		return true;

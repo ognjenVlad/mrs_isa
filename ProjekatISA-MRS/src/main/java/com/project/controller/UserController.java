@@ -42,7 +42,7 @@ public class UserController {
 		return userService.login(u.getEmail(),u.getPassword());
 	}
 
-	@RequestMapping(value = "/activate_admin/{email}/{pw}",method = RequestMethod.POST,
+	@RequestMapping(value = "/activate_admin/{email:.+}/{pw}",method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response login(@PathVariable("email") String email,@PathVariable("pw") String pw){

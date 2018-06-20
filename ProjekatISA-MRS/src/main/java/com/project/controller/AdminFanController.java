@@ -1,5 +1,7 @@
 package com.project.controller;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,9 +21,9 @@ public class AdminFanController {
 	@Autowired
 	private FanZoneImpl fanZoneService;
 
-	@RequestMapping(value = "/add_ad", method = RequestMethod.POST)
-	public String addAd(@RequestBody Ad ad) {
-		fanZoneService.addAd(ad);
+	@RequestMapping(value = "/add_ad/{email:.+}", method = RequestMethod.POST)
+	public String addAd(@PathVariable("email") String email,@RequestBody Ad ad) {
+		fanZoneService.addAd(ad,email);
 		return "success";
 	}
 
@@ -74,10 +76,10 @@ public class AdminFanController {
 		return new Response(fanZoneService.updateProp(Long.parseLong(id),Integer.parseInt(amount),user),null);
 	}
 	
-	@RequestMapping(value = "/add_ad_bid/{id}", method = RequestMethod.POST)
-	public Response addAdBid(@PathVariable(value = "id") String ad_id,@RequestBody Bid bid) {
+	@RequestMapping(value = "/add_ad_bid/{id}/{email:.+}", method = RequestMethod.POST)
+	public Response addAdBid(@PathVariable(value = "id") String ad_id,@PathVariable(value = "email") String email,@RequestBody Bid bid) {
 		System.out.println(bid + " <-----------------" );
-		return new Response(fanZoneService.addAdBid(Long.parseLong(ad_id),bid),null);
+		return new Response(fanZoneService.addAdBid(Long.parseLong(ad_id),bid,email),null);
 	}
 
 	@RequestMapping(value = "/get_bid/{id}", method = RequestMethod.GET)
@@ -93,5 +95,10 @@ public class AdminFanController {
 	@RequestMapping(value = "/choose_bid/{ad_id}/{id}", method = RequestMethod.PUT)
 	public Response chooseBid(@PathVariable(value = "ad_id") String ad_id,@PathVariable(value = "id") String id){
 		return new Response(fanZoneService.chooseBid(Long.parseLong(id),Long.parseLong(id)),null);
+	}
+
+	@RequestMapping(value = "/get_user_history/{email:.+}", method = RequestMethod.GET)
+	public Response getUserHistory(@PathVariable(value = "email") String email) {
+		return new Response("Success",fanZoneService.getUserHistory(email));
 	}
 }
