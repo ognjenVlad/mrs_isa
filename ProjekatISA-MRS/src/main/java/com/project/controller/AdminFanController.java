@@ -1,6 +1,6 @@
 package com.project.controller;
 
-import javax.websocket.server.PathParam;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +27,7 @@ public class AdminFanController {
 		return "success";
 	}
 
+	@Transactional
 	@RequestMapping(value = "/get_next_ad", method = RequestMethod.GET)
 	public Response getNextAd() {
 		Ad ad = fanZoneService.getNextAd();
@@ -39,6 +40,7 @@ public class AdminFanController {
 		return res;
 	}
 
+	@Transactional
 	@RequestMapping(value = "/update_ad/{is_published}/{is_taken}/{id}", method = RequestMethod.GET)
 	public Response updateAd(@PathVariable(value = "is_published") String is_published,
 			@PathVariable(value = "is_taken") String is_taken, @PathVariable(value = "id") String id) {
@@ -60,10 +62,9 @@ public class AdminFanController {
 		return new Response("Success",fanZoneService.getProp(Long.parseLong(id)));
 	}
 
-	@RequestMapping(value = "/add_prop", method = RequestMethod.POST)
-	public Response propAd(@RequestBody Prop prop) {
-		fanZoneService.addProp(prop);
-		return new Response("Success",null);
+	@RequestMapping(value = "/add_prop/{id}", method = RequestMethod.POST)
+	public Response propAd(@PathVariable(value = "id") Long id,@RequestBody Prop prop) {
+		return new Response(fanZoneService.addProp(prop,id),null);
 	}
 
 	@RequestMapping(value = "/remove_prop/{id}", method = RequestMethod.PUT)
@@ -71,7 +72,7 @@ public class AdminFanController {
 		return new Response(fanZoneService.deleteProp(Long.parseLong(id)),null);
 	}
 
-	@RequestMapping(value = "/update_prop/{id}/{amount}/{user}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/update_prop/{id}/{amount}/{user:.+}", method = RequestMethod.PUT)
 	public Response updateProp(@PathVariable(value = "id") String id,@PathVariable(value = "amount") String amount,@PathVariable(value = "user") String user){
 		return new Response(fanZoneService.updateProp(Long.parseLong(id),Integer.parseInt(amount),user),null);
 	}
@@ -92,9 +93,10 @@ public class AdminFanController {
 		return new Response(fanZoneService.deleteBid(Long.parseLong(id),Long.parseLong(id)),null);
 	}
 
+	@Transactional
 	@RequestMapping(value = "/choose_bid/{ad_id}/{id}", method = RequestMethod.PUT)
 	public Response chooseBid(@PathVariable(value = "ad_id") String ad_id,@PathVariable(value = "id") String id){
-		return new Response(fanZoneService.chooseBid(Long.parseLong(id),Long.parseLong(id)),null);
+		return new Response(fanZoneService.chooseBid(Long.parseLong(ad_id),Long.parseLong(id)),null);
 	}
 
 	@RequestMapping(value = "/get_user_history/{email:.+}", method = RequestMethod.GET)

@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 
 @Entity
 public class User implements Serializable{
@@ -52,8 +55,10 @@ public class User implements Serializable{
 	@Column
 	private int no_of_visits;
 	
-	@Column
-	private ArrayList<String> history;
+	@ElementCollection
+	@CollectionTable(name="user_notifications", joinColumns=@JoinColumn(name="user_id"))
+	@Column(name ="notification")
+	private List<String> history;
 	
 	public User() {
 		super();
@@ -93,7 +98,7 @@ public class User implements Serializable{
 		this.phone = phone;
 	}
 
-	public ArrayList<String> getHistory() {
+	public List<String> getHistory() {
 		return history;
 	}
 

@@ -29,7 +29,7 @@
 				<li></li>
 			</ul>
 			<ul class="nav navbar-nav" id="navbarLeft_fan">
-				<li><button class="btn btn-link navbar-btn admin_fan" data-toggle="modal" data-target="#modal_create_prop">Create prop</button></li>
+				<li><button class="btn btn-link navbar-btn admin_fan" data-toggle="modal" data-target="#modal_create_prop" onclick="fillPropPlace()">Create prop</button></li>
 				<li><button class="btn btn-link navbar-btn user" data-toggle="modal" data-target="#modal_send_ad">Send ad request</button></li>
 				<li><button class="btn btn-link navbar-btn admin_fan" data-toggle="modal" data-target="#modal_get_ad" onclick="get_ad_request()">Get pending ad</button></li>
 			</ul>
@@ -117,6 +117,11 @@
 							<div class="form-group">
 								<label for="prop_file">Prop picture</label> <input type="file"
 									class="form-control-file" id="prop_file" required>
+							</div>
+							<div class="form-group">
+								<label for="prop_ct_select">Place of selling:</label>
+								<select class="form-control" id="prop_ct_select" required>
+								</select>
 							</div>
 							<button type="submit" class="btn btn btn-primary"
 								id="prop_create">Create prop</button>

@@ -1,12 +1,11 @@
 package com.project.domain;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Prop {
@@ -37,6 +36,9 @@ public class Prop {
 	@Column
 	private boolean isDeleted = false;
 	
+	@ManyToOne(optional = false)
+	private CinemaTheatre ct;
+
 	Prop(){}
 	
 	public Prop(Long id, String title, String description, Double price, String picture, User reserved_by) {
@@ -117,6 +119,12 @@ public class Prop {
 		this.amount = amount;
 	}
 
-	
+	public CinemaTheatre getCt() {
+		return ct;
+	}
+
+	public void setCt(CinemaTheatre ct) {
+		this.ct = ct;
+	}	
 	
 }
