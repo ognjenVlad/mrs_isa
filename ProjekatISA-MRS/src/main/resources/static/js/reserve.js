@@ -34,9 +34,12 @@ $(document).ready(function() {
 	})
 	
 	
-	
 	$('#cinema-select').on('change',function(){
 		$('#projection-select').empty();
+		$('#date').empty();
+		$('#time').empty();
+		$('#hall').empty();
+		$('#friends').empty();
 		//resetSeats();
 		var cinema = $('#cinema-select').find(":selected").val();
 		$.ajax({
@@ -48,6 +51,7 @@ $(document).ready(function() {
 				$.each(list, function(index, proj){
 					if (cinema == proj.cinthe_id){	
 						
+						console.log(proj);
 						$('#projection-select').append($('<option>', { 
 							data: proj,
 					        text : proj.name 
@@ -62,60 +66,94 @@ $(document).ready(function() {
 		});
 			
 	})
+	var user = JSON.parse(localStorage.getItem('user'));
 	$('#projection-select').on('change',function(){
+		$('#date').empty();
 		$('#time').empty();
+		$('#hall').empty();
+		$('#friends').empty();
 		var projection = $('#projection-select').find(":selected").data();
-		document.getElementById("showPrice").innerHTML = projection.price  + " RSD";;
+		document.getElementById("showPrice").innerHTML = projection.price  + " RSD";
+		if(user.member_level != 'NONE'){
+			if(user.member_level=='GOLD'){
+				document.getElementById("discount").innerHTML = "You have discount of 30% for your "+user.member_level+" rank!";
+			}
+			else if(user.member_level=='SILVER'){
+				document.getElementById("discount").innerHTML = "You have discount of 20% for your "+user.member_level+" rank!";
+			}
+			else if(user.member_level=='BRONZE'){
+				document.getElementById("discount").innerHTML = "You have discount of 10% for your "+user.member_level+" rank!";
+			}
+			
+		}
+		
 		console.log(projection);
-		$.each(projection.time, function(index, proj){
-				
-				$('#time').append($('<option>', { 
-			        value: index,
-			        text : proj 
-			    }));
+		$.each(projection.date, function(index, date){
+			
+			$('#date').append($('<option>', { 
+		        value: date,
+		        text : date 
+		    }));
 			
 			
-			
-		})
-		$('#time').selectpicker('refresh');
+		});
+		$('#date').selectpicker('refresh');
+		
 	});
 	
-//	$('#date').on('change',function(){
-//		$('#time').empty();
-//		var day = $('#date');
-//		
-//		var projection_starts=['23:46', '21:50'];
-//		$.get({
-//			url:"http://localhost:8080/adminct/get_starts"
-//			,data: day
-//			,success:function(data){
-//				projection_starts = data;
-//			}
-//		})
-//		$.each(projection_starts, function (i, item) {
-//			
-//			$('#time').append($('<option>', { 
-//		        value: item,
-//		        text : item 
-//		    }));
-//		});
-//		$('#time').selectpicker('refresh');
-//	});
+	$('#date').on('change',function(){
+		$('#time').empty();
+		$('#hall').empty();
+		$('#friends').empty();
+		var projection = $('#projection-select').find(":selected").data();
+
+		var existing_times = [];
+		
+		$.each(projection.date, function(index, date){
+			if (date == $('#date').val()){
+				if (existing_times.includes(projection.time[index])){
+					return true;
+				}
+				
+				$('#time').append($('<option>', { 
+			        value: projection.time[index],
+			        text : projection.time[index]
+			    }));
+				existing_times.push(projection.time[index]);
+			}	
+		});
+		$('#time').selectpicker('refresh');
+		$('#hall').selectpicker('refresh');
+	});
 	
 	$('#time').on('change',function(){
 		//resetSeats();
 		$('#hall').empty();
+		$('#friends').empty();
+		var time;
+		var hall;
+		var existing_halls = [];
 		var index = $('#time').find(":selected").val();
 		var projection = $('#projection-select').find(":selected").data();
 		console.log(projection);
 
-		
 		var hall = projection.halls[index];
-		$('#hall').append($('<option>', { 
-	        data: hall,
-	        text : hall.hall_id 
-	    }));
-	
+		
+		$.each(projection.time, function(index, time){
+			if (time == $('#time').val()){
+				if (existing_halls.includes(projection.halls[index].hall_id)){
+					return true;
+				}
+				$('#hall').append($('<option>', {
+					
+					data : projection.halls[index],
+			        value: projection.halls[index].hall_id,
+			        text : projection.halls[index].hall_id
+			    }));
+				existing_halls.push(projection.halls[index].hall_id);
+			}	
+		});
+		
 		$('#hall').selectpicker('refresh');
 	});
 	//get friends from user
@@ -283,20 +321,26 @@ $(document).ready(function() {
 		setInterval(prices, 1000);
 		
 	});
-	function prices(){
+		function prices(){
 		var projection = $('#projection-select').find(":selected").data();
-		document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length) + " RSD";
+			if(user.member_level=='GOLD'){
+				document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length)*0.7 + " RSD";
+			}
+			else if(user.member_level=='SILVER'){
+				document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length)**0.8 + " RSD";
+			}
+			else if(user.member_level=='BRONZE'){
+				document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length)*0.9 + " RSD";
+			}
+		}
 
-	}
 		function getCinemas() {
 		console.log("ready!");
 		$.ajax({
 			type : 'GET',
 			url : 'http://localhost:8080/load_cinemas',
 			dataType : "json", // data type of response
-			success : function(data){
-				
-			}
-		});
-	}
+			
+			});
+		}
 });

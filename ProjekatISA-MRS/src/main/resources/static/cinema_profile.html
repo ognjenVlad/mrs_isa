@@ -6,11 +6,6 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<<<<<<< HEAD
-=======
-<ling rel="stylesheet" src="css/ratings.css">
-
->>>>>>> refs/remotes/origin/Login
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing&key=AIzaSyAro0psoaV4dA4AkTSUm7TXt_bO9Nf1sB4"></script>
@@ -76,8 +71,8 @@
 				
 				success : function(data){
 					if(data.results[0] == null){
-						var lat = 1000;
-						var lng = 1000;
+						var lat = 48.864716;
+						var lng = 2.349014;
 					}else{
 						
 					var lat = data.results[0].geometry.location.lat;
@@ -92,6 +87,7 @@
 	}
 	
 	function render_cinema(cinema){
+		console.log(cinema);
 		halls = cinema.halls;
 		cin_id = cinema.id;
 		cin_name = cinema.name;
@@ -117,6 +113,9 @@
 			tr_code += "<td> <button type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"deleteHall(\'m_\',\'"+ hall.hall_id +"\')\">Remove</button></td></tr>";
 			$("#m_cinema_hall_body").append(tr_code);
 		});
+		
+		render_discounts(cinema.discounts);
+		
 		$('#cin_rating').append('<p>'+cinema.rating+' average based on '+Object.keys(cinema.ratings).length+' reviews.</p>')
 		$('#m_cinema_name').val(cinema.name);
 		$('#m_cinema_address').val(cinema.address);
@@ -140,8 +139,8 @@
 	function render_projections(data){
 		var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
 		$.each(list, function(index, proj){
+			projections.push(proj);
 			if (cin_id == proj.cinthe_id){
-				projections.push(proj);
 				var proj_html = '<div id="proj_'+index+'" style="border:1px solid grey"><img id="proj_'+index+'_poster" src="'+
 					proj.poster+'" alt="Projection_image" style="width: 100px; height: 100px; float: right"><b id="proj_'+index+
 					'_name">'+proj.name+'</b><p id="proj_'+index+'_description">'+proj.description+'</p><b id="proj_'+index+
@@ -172,6 +171,20 @@
 			url : 'http://localhost:8080/get_projections',
 			dataType : "json",
 			success : render_projections,
+		});
+	}
+	
+	function render_discounts(discounts){
+		$.each(discounts, function(index, disc){
+			discounts.push(disc);
+			
+			var disc_html = '<div id="disc_'+index+'" style="border:1px solid grey"><b id="disc_'+index+
+				'_name">'+disc.projection+'</b><p id="disc_'+index+'_date">'+disc.date+'</p><b id="disc_'+index+
+				'_time">'+disc.time+'</b>,<p id="proj_'+index+'_price">'+disc.price+'</p><br/>'
+				disc_html +='<div class="float-right"><button type="button" class="btn btn-primary" onclick="quick_reserve('+
+				index+')">Reserve</button></div></div>';
+			$('#discounts').append(disc_html);
+			
 		});
 	}
 	
@@ -317,6 +330,8 @@
 				existing_dates.push(date);
 				
 			});
+			$('#discount_old_price').empty();
+			$('#discount_old_price').append("Current price is " + disc_proj.price + " RSD.");
 			$('#discount_date').selectpicker('refresh');
 			$('#discount_time').selectpicker('refresh');
 			$('#discount_hall').selectpicker('refresh');
@@ -327,6 +342,7 @@
 			$('#discount_hall').empty();
 			var disc_date;
 			var disc_time;
+			var existing_times = [];
 			$.each(projections, function(index, proj){
 				if (proj.name == $('#discount_proj').val()){
 					disc_date = proj.date;
@@ -335,11 +351,15 @@
 			});
 			$.each(disc_date, function(index, date){
 				if (date == $('#discount_date').val()){
-						
+					if (existing_times.includes(disc_time[index])){
+						return true;
+					}
+					
 					$('#discount_time').append($('<option>', { 
 				        value: disc_time[index],
 				        text : disc_time[index]
 				    }));
+					existing_times.push(disc_time[index]);
 				}	
 			});
 			$('#discount_time').selectpicker('refresh');
@@ -350,6 +370,7 @@
 			$('#discount_hall').empty();
 			var disc_time;
 			var disc_hall;
+			var existing_halls = [];
 			$.each(projections, function(index, proj){
 				if (proj.name == $('#discount_proj').val()){
 					disc_time = proj.time;
@@ -358,11 +379,14 @@
 			});
 			$.each(disc_time, function(index, time){
 				if (time == $('#discount_time').val()){
-						
+					if (existing_halls.includes(disc_hall[index].hall_id)){
+						return true;
+					}
 					$('#discount_hall').append($('<option>', { 
 				        value: disc_hall[index].hall_id,
 				        text : disc_hall[index].hall_id
 				    }));
+					existing_halls.push(disc_hall[index].hall_id);
 				}	
 			});
 			$('#discount_hall').selectpicker('refresh');
@@ -398,25 +422,26 @@
 			});
 		});
 		
-		$('#add_discount_form').on('click',function(){
+		$('#add_discount_form').on('submit',function(){
 			
 			var length = seats.getSelected().length
-			if(length > 1){
-					alert("You can only reserve one seat with discount ticket!");
-					return;
+			if(length > 1 || length == 0){
+				alert("You need to pick one seat");
+				return;
 			}
 			
 			var time = $('#discount_time').find(":selected").text();
 			var date = $('#discount_date').find(":selected").text();
 			var projection = $('#discount_proj').find(":selected").text();
 			var hall = $('#discount_hall').find(":selected").text();
+			var price = $('#discount_price').val();
 			var seat;
 			var items = seats.getSelected()
 			jQuery.each(items, function(index, item) {
 				seat = item;
 			});
-			var data =JSON.stringify({"place":cin_name,"time":time,"date":date,"show":projection
-				,"isCinema":is_cinema,"seat":seat});
+			var data =JSON.stringify({"place":cin_name,"time":time,"date":date,"projection":projection
+				,"isCinema":is_cinema,"seat":seat.id, "price":price});
 			console.log(data);
 			$.post({
 				url:'http://localhost:8080/adminct/add_discount',
@@ -425,7 +450,7 @@
 				
 			})
 			
-			location.reload();
+			window.location = "http://localhost:8080/cinema_profile?"+cin_id;
 			
 		});
 	});
@@ -587,7 +612,7 @@
 	          </div>
 	          <div class="form-group">
 	            <label for="length" class="col-form-label">Length (hours):</label>
-	            <input type="number" class="form-control" id="m_length" required>
+	            <input type="number" class="form-control" id="m_length" min="0" required>
 	          </div>
 	          <div class="form-group">
 	            <label for="poster">Projection poster</label> 
@@ -613,7 +638,7 @@
 			  </div>
 			  <div class="form-group">
 	            <label for="price" class="col-form-label">Price (RSD):</label>
-	            <input type="number" class="form-control" id="m_price" required>
+	            <input type="number" class="form-control" id="m_price" min="0" required>
 	          </div>
 	          <input type="text" id='m_id' hidden />
 	          <button class="btn btn-primary">Confirm</button>
@@ -752,6 +777,11 @@
 				  <label for="disc_legBooked"> Selected</label>
 				</div>
 				
+				<div class="form-group">
+				  <label id="discount_old_price"></label>
+	              <label for="price" class="col-form-label">Price (RSD):</label>
+	              <input type="number" class="form-control" id="discount_price" min="0" required>
+	            </div>
 	          <button class="btn btn-primary">Confirm</button>
 	          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	        </form>

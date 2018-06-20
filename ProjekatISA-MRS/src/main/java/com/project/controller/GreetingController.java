@@ -54,6 +54,10 @@ public class GreetingController {
     @RequestMapping(value = "/get_projections", method = RequestMethod.GET)
     public ArrayList<Projection> getProjections(){
     	ArrayList<Projection> projections = prService.findAll();
+    	for(Projection p : projections){
+    		System.out.println("DATE"+p.getDate());
+    	}
+    	
     	return projections;
     }
     @RequestMapping(value = "/get_cin_projections", method = RequestMethod.POST,

@@ -87,7 +87,9 @@ public class CinemaTheatreImpl implements CinemaTheatreService{
 	@Override
 	public void addDiscount(Discount d){
 		CinemaTheatre ct = ctRepository.findByName(d.getPlace());
-		ct.addDiscount(d);
+		ArrayList<Discount> dc = ct.getDiscounts();
+		dc.add(d);
+		ct.setDiscounts(dc);
 		ctRepository.save(ct);
 		return;
 	}

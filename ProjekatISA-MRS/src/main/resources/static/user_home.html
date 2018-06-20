@@ -11,41 +11,41 @@
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
      
 <script>
-function renderCinemaTheaters(data) {
-		// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
-		var list = data == null ? []
-				: (data instanceof Array ? data : [ data ]);
-		cinemas = list;
-		$.each(list, function(index, cinema) {
-			var ind = index + 1;
-			var html_string = '<div class="panel panel-default"><div class="panel-heading">'+
-						'<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+ind+'">'+cinema.name+
-						'</a></h4></div><div id="collapse'+ind+'" class="panel-collapse collapse"><div class="panel-body">'+
-						'<a href="cinema_profile.html?'+cinema.id+'" style="float:right">Visit profile</a>'+cinema.description+
-						'<br/>'+cinema.address;
+// function renderCinemaTheaters(data) {
+// 		// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
+// 		var list = data == null ? []
+// 				: (data instanceof Array ? data : [ data ]);
+// 		cinemas = list;
+// 		$.each(list, function(index, cinema) {
+// 			var ind = index + 1;
+// 			var html_string = '<div class="panel panel-default"><div class="panel-heading">'+
+// 						'<h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+ind+'">'+cinema.name+
+// 						'</a></h4></div><div id="collapse'+ind+'" class="panel-collapse collapse"><div class="panel-body">'+
+// 						'<a href="cinema_profile.html?'+cinema.id+'" style="float:right">Visit profile</a>'+cinema.description+
+// 						'<br/>'+cinema.address;
 				
-			if(cinema.isCinema == true){
-				$('#cinemas_list').append(html_string);
-			}else{
-				$('#theatres_list').append(html_string);
-			}
+// 			if(cinema.isCinema == true){
+// 				$('#cinemas_list').append(html_string);
+// 			}else{
+// 				$('#theatres_list').append(html_string);
+// 			}
 	        
-		});
+// 		});
 		
-	}
+// 	}
 
-	function getCinemas() {
-		console.log("ready!");
-		$.ajax({
-			type : 'GET',
-			url : 'http://localhost:8080/load_cinemas',
-			dataType : "json", // data type of response
-			success : renderCinemaTheaters,
-		});
-	}
+// 	function getCinemas() {
+// 		console.log("ready!");
+// 		$.ajax({
+// 			type : 'GET',
+// 			url : 'http://localhost:8080/load_cinemas',
+// 			dataType : "json", // data type of response
+// 			success : renderCinemaTheaters,
+// 		});
+// 	}
 	
 
-	getCinemas();
+// 	getCinemas();
 </script>
 <body>
 		<nav class="navbar navbar-inverse">
@@ -58,8 +58,13 @@ function renderCinemaTheaters(data) {
 			</ul>
 		   
 		    <ul class="nav navbar-nav" id="navbarLeft">
+<<<<<<< HEAD
 		    <li><button type="button" class="btn btn-link navbar-btn admin_sys" data-toggle="modal" data-target="#modal_add_cinema">Add Cinema/Theatre</button></li>
 			<li><button type="button" class="btn btn-link navbar-btn admin_sys" data-toggle="modal" data-target="#modal_add_admin">Add admin</button></li>    
+=======
+		    <li><button type="button" class="btn btn-link navbar-btn admin_ct admin_sys" data-toggle="modal" data-target="#modal_add_cinema">Add Cinema/Theatre</button></li>
+			<li><button type="button" class="btn btn-link navbar-btn admin_sys admin_sys" data-toggle="modal" data-target="#modal_add_admin">Add admin</button></li>    
+>>>>>>> branch 'Login' of https://github.com/ognjenVlad/mrs_isa.git
 		    
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right" id="navbarRight">

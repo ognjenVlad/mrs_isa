@@ -39,7 +39,7 @@ public class CinemaTheatre implements Serializable{
 	@Column(nullable = true)
 	private HashMap<String, Integer> ratings;
 	
-	@Column(nullable = true)
+	@Column
 	private ArrayList<Discount> discounts;
 	
 	private double rating;
@@ -140,10 +140,6 @@ public class CinemaTheatre implements Serializable{
 		this.discounts = discounts;
 	}
 	
-	public void addDiscount(Discount d){
-		this.discounts.add(d);
-		return;
-	}
 
 	public double getRating(){
 		if (this.ratings.size() == 0){
