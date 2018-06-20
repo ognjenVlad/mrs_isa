@@ -242,11 +242,48 @@ public class ReservationImpl implements ReservationService {
 				}
 				info.getSeats().add(invited.getSeat());
 			}
+			System.out.println("\n\n\n\n\nEVO DODALO SE NESTO"+info.getShow());
 			allInfo.add(info);
 		}
 		
 		return allInfo;
 	}
+	
+	public ArrayList<ReservationDTO> cinHistory(String cinName){
+		ArrayList<Reservation> reservations= resRepository.findByPlace(cinName);
+		System.out.println(reservations);
+		ArrayList<ReservationDTO> allInfo = new ArrayList<ReservationDTO>();
+		for(Reservation r: reservations){
+			System.out.println("\n\n\nUSAO I OVDE");
+			if (r.getPlace().equals(cinName)){
+				DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				Date date = null;
+				try {
+					date = format.parse(r.getDate()+" "+r.getTime());
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Date today = java.util.Calendar.getInstance().getTime();
+				if(date.after(today)){
+					continue;
+				}
+				System.out.println(r.getPrice());
+				ReservationDTO info = new ReservationDTO(r);
+				System.out.println(info.getPrice());
+				ArrayList<Invited> i = invitedRepository.findByReservation(r);
+				for (Invited invited : i) {
+					invited.getUser().setPicture("");
+					info.getFriends().add(invited.getUser());
+					info.getSeats().add(invited.getSeat());
+				}
+				allInfo.add(info);
+			}
+		}
+		
+		return allInfo;
+	}
+	
 	public ArrayList<ReservationDTO> getReservations(User u){
 		User user = userRepository.findByEmail(u.getEmail());
 		ArrayList<Reservation> reservations= resRepository.findByUser(user);

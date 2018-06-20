@@ -29,6 +29,14 @@
 <script src="js/user_types.js"></script>
 <script src="resources/js/adminct.js"></script>
 <script src="js/projection_add.js"></script>
+
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script src="https://www.amcharts.com/lib/3/serial.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+
 <style>
 .fa {
     font-size: 25px;
@@ -41,418 +49,600 @@
 .activeClass{
     background: #F00; 
   }
+
+#chartdiv {
+	width	: 100%;
+	height	: 500px;
+}																	
 </style>
-<script type="text/javascript">
 
-	var halls = [];
-	var cin_id = -1;
-	var cin_name;
-	var is_cinema;
-	var projections = [];
-	var actors_count = 0;
-	var halls_count = 0;
-	var cin_ratings = null;
-	var current_rating_choice = 0;
-	
-	function fill_map(div_id, lat, lng){
-		var mapCanvas = document.getElementById(div_id);
-	    var mapOptions = {
-	        center: new google.maps.LatLng(lat, lng),
-	        zoom: 15
-	    };
-	    var map = new google.maps.Map(mapCanvas, mapOptions);
-	}
-	
-	function getMap(div_id, loc){
-	
-	    $.ajax({
-				type : 'GET',
-				url : 'https://maps.googleapis.com/maps/api/geocode/json?address=' + loc,
-				
-				success : function(data){
-					if(data.results[0] == null){
-						var lat = 48.864716;
-						var lng = 2.349014;
-					}else{
-						
-					var lat = data.results[0].geometry.location.lat;
-					var lng = data.results[0].geometry.location.lng;
-					}
-	        	fill_map(div_id, lat, lng);
-				},
-				error : function(XMLHttpRequest, textStatus, errorThrown){
-					alert("AJAX ERROR: " + errorThrown);
-				}
-			});
-	}
-	
-	function render_cinema(cinema){
-		halls = cinema.halls;
-		cin_id = cinema.id;
-		cin_name = cinema.name;
-		is_cinema = cinema.isCinema;
-		cin_ratings = cinema.ratings;
-		$('#all_details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
-		if (cinema.isCinema){
-			$('#image_and_map').append('<img src="resources/images/cinema.jpg" alt="Cinema" style="width:100%; height: 240px">');
-			document.getElementById("m_is_cinema").checked = true;
-		}else{
-			$('#image_and_map').append('<img src="resources/images/theatre.jpg" alt="Theatre" style="width:100%; height: 240px">');
-			
-			document.getElementById("m_is_theatre").checked = true;
-		}
-		var html_string = '<div id="map" style="width:100%;height:250px;"></div>';
-		$('#image_and_map').append(html_string);
-		getMap("map", cinema.address);
-		
-		$.each(cinema.halls, function(index, hall){
-			$('#sel1').append('<option>'+hall.hall_id+'</option>');
-			$('#m_sel1').append('<option>'+hall.hall_id+'</option>');
-			var tr_code = "<tr id=\"m_table_row_"+ hall.hall_id +"\"> <td> "+ hall.rows +" </td> <td> "+ hall.columns +" </td> ";
-			tr_code += "<td> <button type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"deleteHall(\'m_\',\'"+ hall.hall_id +"\')\">Remove</button></td></tr>";
-			$("#m_cinema_hall_body").append(tr_code);
-		});
-		
-		render_discounts(cinema.discounts);
-		
-		$('#cin_rating').append('<p>'+cinema.rating+' average based on '+Object.keys(cinema.ratings).length+' reviews.</p>')
-		$('#m_cinema_name').val(cinema.name);
-		$('#m_cinema_address').val(cinema.address);
-		$('#m_cinema_description').val(cinema.description);
-		ratingChoice(cinema.rating, -1);
-		
-	}
+<!-- Chart code -->
+<script>
 
-	function get_cinema_data(){
-		var id = window.location.search.substring(1);
-		
-		$.ajax({
+
+var halls = [];
+var cin_id = -1;
+var cin_name;
+var is_cinema;
+var projections = [];
+var actors_count = 0;
+var halls_count = 0;
+var cin_ratings = null;
+var current_rating_choice = 0;
+
+function fill_map(div_id, lat, lng){
+	var mapCanvas = document.getElementById(div_id);
+    var mapOptions = {
+        center: new google.maps.LatLng(lat, lng),
+        zoom: 15
+    };
+    var map = new google.maps.Map(mapCanvas, mapOptions);
+}
+
+function getMap(div_id, loc){
+
+    $.ajax({
 			type : 'GET',
-			url : 'http://localhost:8080/get_cinema?id=' + id,
+			url : 'https://maps.googleapis.com/maps/api/geocode/json?address=' + loc,
 			
-			dataType : "json", // data type of response
-			success : render_cinema
-		});
-	}
-	
-	function render_projections(data){
-		var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
-		$.each(list, function(index, proj){
-			projections.push(proj);
-			if (cin_id == proj.cinthe_id){
-				var proj_html = '<div id="proj_'+index+'" style="border:1px solid grey"><img id="proj_'+index+'_poster" src="'+
-					proj.poster+'" alt="Projection_image" style="width: 100px; height: 100px; float: right"><b id="proj_'+index+
-					'_name">'+proj.name+'</b><p id="proj_'+index+'_description">'+proj.description+'</p><b id="proj_'+index+
-					'_genre">'+proj.genre+'</b>,<p id="proj_'+index+'_director">'+proj.director+'</p><br/>'+proj.price
-				proj_html += '<div><span class="heading">User Rating</span>'+
-					'<a href="javascript:ratingChoice(1,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_1"></span></a>'+
-					'<a href="javascript:ratingChoice(2,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_2"></span></a>'+
-					'<a href="javascript:ratingChoice(3,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_3"></span></a>'+
-					'<a href="javascript:ratingChoice(4,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_4"></span></a>'+
-					'<a href="javascript:ratingChoice(5,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_5"></span></a>'+
-					'<button type="button" class="btn" onclick="ratingVote('+proj.id+')">Vote</button>'+
-					'<p>'+proj.rating+' average based on '+Object.keys(proj.ratings).length+' reviews.</p></div>';
-				proj_html +='<div class="float-right"><button type="button" class="btn btn-primary" onclick="modify_projection('+
-					index+')">Modify</button><button type="button" class="btn btn-primary" onclick="delete_projection('+index+
-					')">Delete</button></div></div>';
-				$('#repertoire').append(proj_html);
-				ratingChoice(proj.rating, index);
-			}
-		});
-		render_discount_form();
-
-		
-	}
-	
-	function get_projections(){
-		$.ajax({
-			type : 'GET',
-			url : 'http://localhost:8080/get_projections',
-			dataType : "json",
-			success : render_projections,
-		});
-	}
-	
-	function render_discounts(discounts){
-		$.each(discounts, function(index, disc){
-			discounts.push(disc);
-			
-			var disc_html = '<div id="disc_'+index+'" style="border:1px solid grey"><b id="disc_'+index+
-				'_name">'+disc.projection+'</b><p id="disc_'+index+'_date">'+disc.date+'</p><b id="disc_'+index+
-				'_time">'+disc.time+'</b>,<p id="proj_'+index+'_price">'+disc.price+'</p><br/>'
-				disc_html +='<div class="float-right"><button type="button" class="btn btn-primary" onclick="quick_reserve('+
-				index+')">Reserve</button></div></div>';
-			$('#discounts').append(disc_html);
-			
-		});
-	}
-	
-	function render_discount_form(){
-		var tommorow = new Date();
-		tommorow.setDate(tommorow.getDate() + 1);
-		$('#discount_date').datepicker({
-			format: 'dd/mm/yyyy',
-			autoclose: true,
-			startDate: tommorow,
-		});
-		
-		
-		$.each(projections, function(index, proj){
-			if (cin_id == proj.cinthe_id){
-				$('#discount_proj').append($('<option>', { 
-			        value: proj.name,
-			        text : proj.name 
-			    }));
-
-			}
-		});
-		$('#discount_proj').selectpicker('refresh');
-	}
-	
-	
-	function actorsAdd(modal_check){
-		var actor_name = $('#'+modal_check+'actor').val();
-		$('#'+modal_check+'actors').append('<tr><td id="'+modal_check+'actor'+actors_count+'">'+actor_name+'</td><button type="button" class="btn">Remove</button></tr>');
-		actors_count++;
-	}
-	
-	function hallsAdd(modal_check){
-		var hall = $('#'+modal_check+'sel1').val();
-		$('#'+modal_check+'halls').append('<tr><td id="'+modal_check+'hall'+halls_count+'">'+hall+'</td></tr>');
-		
-		var date_html = '<div class="form-group"><label for="date'+halls_count+'" class="col-form-label">Date of projection:</label>'+
-					'<input class="form-control" id="'+modal_check+'date'+halls_count+'" name="date" placeholder="DD/MM/YYYY" autocomplete="off" '+
-					'type="text" required/></div>';
-		$('#'+modal_check+'halls').append(date_html);
-		
-		var tommorow = new Date();
-		tommorow.setDate(tommorow.getDate() + 1);
-		$('#'+modal_check+'date'+halls_count).datepicker({
-			format: 'dd/mm/yyyy',
-			autoclose: true,
-			startDate: tommorow,
-		})
-		
-		var time_html = '<div class="form-group"><label for="time'+halls_count+'" class="col-form-label">'+
-					'Time of projection:</label><input type="time" class="form-control" id="'+modal_check+'time'+halls_count+'"></div>';
-		$('#'+modal_check+'halls').append(time_html);
-		halls_count++;
-	}
-	
-	function ratingChoice(stars, target){
-		for (var i = 1; i <= 5; i++){
-			if (i <= stars)
-				if (target == -1)
-					document.getElementById("cin_star_"+i).classList.add("checked");
-				else
-					document.getElementById("prj"+target+"_star_"+i).classList.add("checked");
-			else
-				if (target == -1)
-					document.getElementById("cin_star_"+i).classList.remove("checked");
-				else
-					document.getElementById("prj"+target+"_star_"+i).classList.remove("checked");
-		}
-		current_rating_choice = stars;
-	}
-	
-	function ratingVote(target){
-		if (current_rating_choice == 0)
-			return;
-		
-		if (target == -1){
-			var json_data =  JSON.stringify({
-				"user_id": user.email,
-				"id": cin_id,
-				"vote": current_rating_choice
-			});
-			
-			$.post({
-				url : 'http://localhost:8080/rate_cinthe',
-				contentType : 'application/json',
-				dataType : "json",
-				data : json_data,
-				success: function(data){
-					alert("Vote registered.");
-					location.reload();
-				},
-			});
-		}else{
-			var json_data =  JSON.stringify({
-				"user_id": user.email,
-				"id": target,
-				"vote": current_rating_choice
-			});
-			
-			$.post({
-				url : 'http://localhost:8080/rate_proj',
-				contentType : 'application/json',
-				dataType : "json",
-				data : json_data,
-				success: function(data){
-					alert("Vote registered.");
-					location.reload();
-				},
-			});
-		}
-	
-		
-	}
-	
-	get_cinema_data();
-	get_projections();
-	check_user();
-	
-	$(document).ready(function() {
-		
-		var seats;
-		
-		$('#discount_proj').on('change', function(){
-			$('#discount_date').empty();
-			$('#discount_time').empty();
-			$('#discount_hall').empty();
-			var disc_proj;
-			var existing_dates = [];
-			$.each(projections, function(index, proj){
-				if (proj.name == $('#discount_proj').val()){
-					disc_proj = proj;
+			success : function(data){
+				if(data.results[0] == null){
+					var lat = 48.864716;
+					var lng = 2.349014;
+				}else{
 					
+				var lat = data.results[0].geometry.location.lat;
+				var lng = data.results[0].geometry.location.lng;
 				}
-			});
-			$.each(disc_proj.date, function(index, date){
-				if (existing_dates.includes(date)){
+        	fill_map(div_id, lat, lng);
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown){
+				alert("AJAX ERROR: " + errorThrown);
+			}
+		});
+}
+
+function render_cinema(cinema){
+	halls = cinema.halls;
+	cin_id = cinema.id;
+	cin_name = cinema.name;
+	is_cinema = cinema.isCinema;
+	cin_ratings = cinema.ratings;
+	$('#all_details').append(cinema.name+"<br/>"+cinema.description+"<br/>"+cinema.address);
+	if (cinema.isCinema){
+		$('#image_and_map').append('<img src="resources/images/cinema.jpg" alt="Cinema" style="width:100%; height: 240px">');
+		$("#m_is_cinema").prop('checked', true);
+	}else{
+		$('#image_and_map').append('<img src="resources/images/theatre.jpg" alt="Theatre" style="width:100%; height: 240px">');
+		
+		$("#m_is_theatre").prop('checked', true);
+	}
+	var html_string = '<div id="map" style="width:100%;height:250px;"></div>';
+	$('#image_and_map').append(html_string);
+	getMap("map", cinema.address);
+	
+	$.each(cinema.halls, function(index, hall){
+		$('#sel1').append('<option>'+hall.hall_id+'</option>');
+		$('#m_sel1').append('<option>'+hall.hall_id+'</option>');
+		var tr_code = "<tr id=\"m_table_row_"+ hall.hall_id +"\"> <td> "+ hall.rows +" </td> <td> "+ hall.columns +" </td> ";
+		tr_code += "<td> <button type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"deleteHall(\'m_\',\'"+ hall.hall_id +"\')\">Remove</button></td></tr>";
+		$("#m_cinema_hall_body").append(tr_code);
+	});
+	
+	render_discounts(cinema.discounts);
+	
+	$('#cin_rating').append('<p>'+cinema.rating+' average based on '+Object.keys(cinema.ratings).length+' reviews.</p>')
+	$('#b_cin_rating').append(cinema.rating+' average based on '+Object.keys(cinema.ratings).length+' reviews.');
+	$('#m_cinema_name').val(cinema.name);
+	$('#m_cinema_address').val(cinema.address);
+	$('#m_cinema_description').val(cinema.description);
+	ratingChoice(cinema.rating, -1);
+	
+}
+
+function get_cinema_data(){
+	var id = window.location.search.substring(1);
+	
+	$.ajax({
+		type : 'GET',
+		url : 'http://localhost:8080/get_cinema?id=' + id,
+		
+		dataType : "json", // data type of response
+		success : render_cinema
+	});
+}
+
+function render_projections(data){
+	var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
+	var total_rating = 0.0;
+	var num_of_ratings = 0;
+	$.each(list, function(index, proj){
+		projections.push(proj);
+		if (cin_id == proj.cinthe_id){
+			var proj_html = '<div id="proj_'+index+'" style="border:1px solid grey"><img id="proj_'+index+'_poster" src="'+
+				proj.poster+'" alt="Projection_image" style="width: 100px; height: 100px; float: right"><b id="proj_'+index+
+				'_name">'+proj.name+'</b><p id="proj_'+index+'_description">'+proj.description+'</p><b id="proj_'+index+
+				'_genre">'+proj.genre+'</b>,<p id="proj_'+index+'_director">'+proj.director+'</p><br/>'+proj.price
+			proj_html += '<div><span class="heading">User Rating</span>'+
+				'<a href="javascript:ratingChoice(1,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_1"></span></a>'+
+				'<a href="javascript:ratingChoice(2,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_2"></span></a>'+
+				'<a href="javascript:ratingChoice(3,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_3"></span></a>'+
+				'<a href="javascript:ratingChoice(4,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_4"></span></a>'+
+				'<a href="javascript:ratingChoice(5,'+index+')"><span class="fa fa-star" id="prj'+index+'_star_5"></span></a>'+
+				'<button type="button" class="btn" onclick="ratingVote('+proj.id+')">Vote</button>'+
+				'<p>'+proj.rating+' average based on '+Object.keys(proj.ratings).length+' reviews.</p></div>';
+			proj_html +='<div class="float-right"><button type="button" class="btn btn-primary" onclick="modify_projection('+
+				index+')">Modify</button><button type="button" class="btn btn-primary" onclick="delete_projection('+index+
+				')">Delete</button></div></div>';
+			$('#repertoire').append(proj_html);
+			ratingChoice(proj.rating, index);
+			total_rating += proj.rating;
+			num_of_ratings += Object.keys(proj.ratings).length;
+		}
+	});
+	total_rating = total_rating / list.length;
+	$('#b_prj_rating').append(total_rating +' based on '+num_of_ratings+' total reviews.');
+
+	render_discount_form();
+
+	
+}
+
+function get_projections(){
+	$.ajax({
+		type : 'GET',
+		url : 'http://localhost:8080/get_projections',
+		dataType : "json",
+		success : render_projections,
+	});
+}
+
+function render_discounts(discounts){
+	$.each(discounts, function(index, disc){
+		discounts.push(disc);
+		
+		var disc_html = '<div id="disc_'+index+'" style="border:1px solid grey"><table><tr>'+
+		'<td>Movie/Show:</td><td><input type="text" id="disc_'+index+'_name" value="'+disc.projection+
+		'" readonly></td></tr><tr><td>Movie/Show:</td><td><input type="text" id="disc_'+index+'_date" value="'+disc.date+
+		'" readonly></td></tr><tr><td>Time:</td><td><input type="text" id="disc_'+index+'_time" value="'+disc.time+
+		'" readonly></td></tr><tr><td>Price:</td><td><input type="number" id="disc_'+index+'_price" value="'+disc.price+
+		'" readonly></td></tr><tr><td>Seat:</td><td><input type="text" id="disc_'+index+'_seat" value="'+disc.seat+
+		'" readonly></td></tr></table>'
+		disc_html +='<div class="float-right"><button type="button" class="btn btn-primary" onclick="quick_reserve('+
+			index+')">Reserve</button></div></div>';
+		$('#discounts').append(disc_html);
+		
+	});
+}
+
+function render_discount_form(){
+	var tommorow = new Date();
+	tommorow.setDate(tommorow.getDate() + 1);
+	$('#discount_date').datepicker({
+		format: 'dd/mm/yyyy',
+		autoclose: true,
+		startDate: tommorow,
+	});
+	
+	
+	$.each(projections, function(index, proj){
+		if (cin_id == proj.cinthe_id){
+			$('#discount_proj').append($('<option>', { 
+		        value: proj.name,
+		        text : proj.name 
+		    }));
+
+		}
+	});
+	$('#discount_proj').selectpicker('refresh');
+}
+
+
+function actorsAdd(modal_check){
+	var actor_name = $('#'+modal_check+'actor').val();
+	$('#'+modal_check+'actors').append('<tr><td id="'+modal_check+'actor'+actors_count+'">'+actor_name+'</td><button type="button" class="btn">Remove</button></tr>');
+	actors_count++;
+}
+
+function hallsAdd(modal_check){
+	var hall = $('#'+modal_check+'sel1').val();
+	$('#'+modal_check+'halls').append('<tr><td id="'+modal_check+'hall'+halls_count+'">'+hall+'</td></tr>');
+	
+	var date_html = '<div class="form-group"><label for="date'+halls_count+'" class="col-form-label">Date of projection:</label>'+
+				'<input class="form-control" id="'+modal_check+'date'+halls_count+'" name="date" placeholder="DD/MM/YYYY" autocomplete="off" '+
+				'type="text" required/></div>';
+	$('#'+modal_check+'halls').append(date_html);
+	
+	var tommorow = new Date();
+	tommorow.setDate(tommorow.getDate() + 1);
+	$('#'+modal_check+'date'+halls_count).datepicker({
+		format: 'dd/mm/yyyy',
+		autoclose: true,
+		startDate: tommorow,
+	})
+	
+	var time_html = '<div class="form-group"><label for="time'+halls_count+'" class="col-form-label">'+
+				'Time of projection:</label><input type="time" class="form-control" id="'+modal_check+'time'+halls_count+'"></div>';
+	$('#'+modal_check+'halls').append(time_html);
+	halls_count++;
+}
+
+function ratingChoice(stars, target){
+	for (var i = 1; i <= 5; i++){
+		if (i <= stars)
+			if (target == -1)
+				document.getElementById("cin_star_"+i).classList.add("checked");
+			else
+				document.getElementById("prj"+target+"_star_"+i).classList.add("checked");
+		else
+			if (target == -1)
+				document.getElementById("cin_star_"+i).classList.remove("checked");
+			else
+				document.getElementById("prj"+target+"_star_"+i).classList.remove("checked");
+	}
+	current_rating_choice = stars;
+}
+
+function ratingVote(target){
+	if (current_rating_choice == 0)
+		return;
+	
+	if (target == -1){
+		var json_data =  JSON.stringify({
+			"user_id": user.email,
+			"id": cin_id,
+			"vote": current_rating_choice
+		});
+		
+		$.post({
+			url : 'http://localhost:8080/rate_cinthe',
+			contentType : 'application/json',
+			dataType : "json",
+			data : json_data,
+			success: function(data){
+				alert("Vote registered.");
+				location.reload();
+			},
+		});
+	}else{
+		var json_data =  JSON.stringify({
+			"user_id": user.email,
+			"id": target,
+			"vote": current_rating_choice
+		});
+		
+		$.post({
+			url : 'http://localhost:8080/rate_proj',
+			contentType : 'application/json',
+			dataType : "json",
+			data : json_data,
+			success: function(data){
+				alert("Vote registered.");
+				location.reload();
+			},
+		});
+	}
+
+	
+}
+
+function quick_reserve(index){
+	var cinema = cin_name;
+	var res_user = JSON.parse(localStorage.getItem('user'));
+	var time = $('#disc_'+index+'_time').val();
+	var price = $('#disc_'+index+'_price').val() + " RSD";
+	var date = $('#disc_'+index+'_date').val();;
+	var proj = $('#disc_'+index+'_name').val();;
+	var seat = $('#disc_'+index+'_seat').val();;
+	var booked = [];
+	var invited = [];
+	booked.push(seat);
+	var data =JSON.stringify({"user":res_user,"place":cinema,"time":time,"date":date,"show":proj
+		,"friends":invited,"isCinema":is_cinema,"seats":booked,"price":price});
+	console.log(data);
+	$.post({
+		url:'http://localhost:8080/api/make_reservation',
+		contentType: "application/json",
+		data: data,
+		success: function(data){
+			console.log(data);
+			alert("Reservation successful!");
+			window.location="http://localhost:8080/";
+		}
+		
+	})
+}
+
+function make_graph(cinema){
+	var chartData = generateChartData(cinema);
+	var chart = AmCharts.makeChart("chartdiv", {
+	    "type": "serial",
+	    "theme": "light",
+	    "marginRight": 80,
+	    "autoMarginOffset": 20,
+	    "marginTop": 7,
+	    "dataProvider": chartData,
+	    "valueAxes": [{
+	        "axisAlpha": 0.2,
+	        "dashLength": 1,
+	        "position": "left"
+	    }],
+	    "mouseWheelZoomEnabled": true,
+	    "graphs": [{
+	        "id": "g1",
+	        "balloonText": "[[value]]",
+	        "bullet": "round",
+	        "bulletBorderAlpha": 1,
+	        "bulletColor": "#FFFFFF",
+	        "hideBulletsCount": 50,
+	        "title": "red line",
+	        "valueField": "visits",
+	        "useLineColorForBulletBorder": true,
+	        "balloon":{
+	            "drop":true
+	        }
+	    }],
+	    "chartScrollbar": {
+	        "autoGridCount": true,
+	        "graph": "g1",
+	        "scrollbarHeight": 40
+	    },
+	    "chartCursor": {
+	       "limitToGraph":"g1"
+	    },
+	    "categoryField": "date",
+	    "categoryAxis": {
+	        "parseDates": true,
+	        "axisColor": "#DADADA",
+	        "dashLength": 1,
+	        "minorGridEnabled": true
+	    },
+	    "export": {
+	        "enabled": true
+	    }
+	});
+	
+	chart.addListener("rendered", zoomChart);
+	zoomChart();
+	
+	// this method is called when chart is first inited as we listen for "rendered" event
+	function zoomChart() {
+	    // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+	    chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
+	}
+	
+	
+	// generate some random data, quite different range
+	
+	// generate some random data, quite different range
+	function generateChartData(cinema) {
+	    var chartData = [];
+	    var firstDate = new Date();
+	    firstDate.setDate(firstDate.getDate() - 365);
+	    var visits = 0;
+	    
+	    
+	    
+	    for (var i = 0; i < 365; i++) {
+	        // we create date objects here. In your data, you can have date strings
+	        // and then set format of your dates using chart.dataDateFormat property,
+	        // however when possible, use date objects, as this will speed up chart rendering.
+	        
+	        var newDate = new Date(firstDate);
+	        
+	        newDate.setDate(newDate.getDate() + i);
+	        
+	        var day = newDate.getDate();
+	        if(day < 10){
+	        	day = '0'+day;
+	        }
+	        var month = newDate.getMonth() + 1;
+	        if(month < 10){
+	        	month = '0'+month;
+	        }
+	        var year = newDate.getFullYear();
+	        visits = 0;
+			for (var j = 0; j < cinema.length; j++){
+				var cmpDate = day+"/"+month+"/"+year;
+				var cmpDate2 = cinema[j].date;
+				if (cmpDate.localeCompare(cmpDate2) == 0){
+		    		visits += 1 + cinema[j].friends.length;
+		    	}
+		    }
+			
+	        chartData.push({
+	            date: newDate,
+	            visits: visits
+	        });
+	    }
+	    return chartData;
+	}
+}
+
+
+function check_cinema_history(){
+	$.post({
+		url : 'http://localhost:8080/api/getCintheHistory',
+		dataType : "json",
+		contentType: "text/plain",
+		data: cin_name,
+		success : make_graph,
+	});
+}
+
+get_cinema_data();
+get_projections();
+check_user();
+
+
+$(document).ready(function() {
+	
+	check_cinema_history();
+
+	var seats;
+	
+	$('#discount_proj').on('change', function(){
+		$('#discount_date').empty();
+		$('#discount_time').empty();
+		$('#discount_hall').empty();
+		var disc_proj;
+		var existing_dates = [];
+		$.each(projections, function(index, proj){
+			if (proj.name == $('#discount_proj').val()){
+				disc_proj = proj;
+				
+			}
+		});
+		$.each(disc_proj.date, function(index, date){
+			if (existing_dates.includes(date)){
+				return true;
+			}
+			$('#discount_date').append($('<option>', { 
+		        value: date,
+		        text : date 
+		    }));
+			existing_dates.push(date);
+			
+		});
+		$('#discount_old_price').empty();
+		$('#discount_old_price').append("Current price is " + disc_proj.price + " RSD.");
+		$('#discount_date').selectpicker('refresh');
+		$('#discount_time').selectpicker('refresh');
+		$('#discount_hall').selectpicker('refresh');
+	});
+	
+	$('#discount_date').on('change', function(){
+		$('#discount_time').empty();
+		$('#discount_hall').empty();
+		var disc_date;
+		var disc_time;
+		var existing_times = [];
+		$.each(projections, function(index, proj){
+			if (proj.name == $('#discount_proj').val()){
+				disc_date = proj.date;
+				disc_time = proj.time;
+			}
+		});
+		$.each(disc_date, function(index, date){
+			if (date == $('#discount_date').val()){
+				if (existing_times.includes(disc_time[index])){
 					return true;
 				}
-				$('#discount_date').append($('<option>', { 
-			        value: date,
-			        text : date 
+				
+				$('#discount_time').append($('<option>', { 
+			        value: disc_time[index],
+			        text : disc_time[index]
 			    }));
-				existing_dates.push(date);
-				
-			});
-			$('#discount_old_price').empty();
-			$('#discount_old_price').append("Current price is " + disc_proj.price + " RSD.");
-			$('#discount_date').selectpicker('refresh');
-			$('#discount_time').selectpicker('refresh');
-			$('#discount_hall').selectpicker('refresh');
+				existing_times.push(disc_time[index]);
+			}	
 		});
-		
-		$('#discount_date').on('change', function(){
-			$('#discount_time').empty();
-			$('#discount_hall').empty();
-			var disc_date;
-			var disc_time;
-			var existing_times = [];
-			$.each(projections, function(index, proj){
-				if (proj.name == $('#discount_proj').val()){
-					disc_date = proj.date;
-					disc_time = proj.time;
+		$('#discount_time').selectpicker('refresh');
+		$('#discount_hall').selectpicker('refresh');
+	});
+	
+	$('#discount_time').on('change', function(){
+		$('#discount_hall').empty();
+		var disc_time;
+		var disc_hall;
+		var existing_halls = [];
+		$.each(projections, function(index, proj){
+			if (proj.name == $('#discount_proj').val()){
+				disc_time = proj.time;
+				disc_hall = proj.halls;
+			}
+		});
+		$.each(disc_time, function(index, time){
+			if (time == $('#discount_time').val()){
+				if (existing_halls.includes(disc_hall[index].hall_id)){
+					return true;
 				}
-			});
-			$.each(disc_date, function(index, date){
-				if (date == $('#discount_date').val()){
-					if (existing_times.includes(disc_time[index])){
-						return true;
+				$('#discount_hall').append($('<option>', { 
+			        value: disc_hall[index].hall_id,
+			        text : disc_hall[index].hall_id
+			    }));
+				existing_halls.push(disc_hall[index].hall_id);
+			}	
+		});
+		$('#discount_hall').selectpicker('refresh');
+	});
+	
+	$('#discount_hall').on('change',function(){
+		var hall_info = $('#discount_hall').val();
+		$.each(projections, function(index, proj){
+			if (proj.name == $('#discount_proj').val()){
+				$.each(proj.halls, function(index, hall){
+					if (hall_info == hall.hall_id){
+						hall_info = hall;
+						return;
 					}
-					
-					$('#discount_time').append($('<option>', { 
-				        value: disc_time[index],
-				        text : disc_time[index]
-				    }));
-					existing_times.push(disc_time[index]);
-				}	
-			});
-			$('#discount_time').selectpicker('refresh');
-			$('#discount_hall').selectpicker('refresh');
-		});
-		
-		$('#discount_time').on('change', function(){
-			$('#discount_hall').empty();
-			var disc_time;
-			var disc_hall;
-			var existing_halls = [];
-			$.each(projections, function(index, proj){
-				if (proj.name == $('#discount_proj').val()){
-					disc_time = proj.time;
-					disc_hall = proj.halls;
-				}
-			});
-			$.each(disc_time, function(index, time){
-				if (time == $('#discount_time').val()){
-					if (existing_halls.includes(disc_hall[index].hall_id)){
-						return true;
-					}
-					$('#discount_hall').append($('<option>', { 
-				        value: disc_hall[index].hall_id,
-				        text : disc_hall[index].hall_id
-				    }));
-					existing_halls.push(disc_hall[index].hall_id);
-				}	
-			});
-			$('#discount_hall').selectpicker('refresh');
-		});
-		
-		$('#discount_hall').on('change',function(){
-			var hall_info;
-			var time = $('#discount_time').find(":selected").text();
-			var date = $('#discount_date').find(":selected").text();
-			var projection = $('#discount_proj').find(":selected").text();
-
-			var data =JSON.stringify({"time":time,"date":date,"show":projection});
-			
-			$.post({
-				url : "http://localhost:8080/api/get_seats",
-				data : data,
-				contentType: "application/json",
-				success: function(data){
-					console.log(data);
-					$("#disc_legends").css("visibility", "visible");
-					seats = $('#disc_seats').flexiSeats({
-					    rows: 8,
-					    columns: 10,
-					    multiple: false,
-					    booked: data
-					});
-					console.log(seats.getAvailable());
-					console.log(seats);
-
-				
-				}
-			
-			});
-		});
-		
-		$('#add_discount_form').on('submit',function(){
-			
-			var length = seats.getSelected().length
-			if(length > 1 || length == 0){
-				alert("You need to pick one seat");
+				});
 				return;
 			}
+		});
+		var time = $('#discount_time').find(":selected").text();
+		var date = $('#discount_date').find(":selected").text();
+		var projection = $('#discount_proj').find(":selected").text();
+
+		var data =JSON.stringify({"time":time,"date":date,"show":projection});
+		
+		$.post({
+			url : "http://localhost:8080/api/get_seats",
+			data : data,
+			contentType: "application/json",
+			success: function(data){
+				console.log(data);
+				$("#disc_legends").css("visibility", "visible");
+				seats = $('#disc_seats').flexiSeats({
+				    rows: hall_info.rows,
+				    columns: hall_info.columns,
+				    multiple: false,
+				    booked: data
+				});
+				console.log(seats.getAvailable());
+				console.log(seats);
+
 			
-			var time = $('#discount_time').find(":selected").text();
-			var date = $('#discount_date').find(":selected").text();
-			var projection = $('#discount_proj').find(":selected").text();
-			var hall = $('#discount_hall').find(":selected").text();
-			var price = $('#discount_price').val();
-			var seat;
-			var items = seats.getSelected()
-			jQuery.each(items, function(index, item) {
-				seat = item;
-			});
-			var data =JSON.stringify({"place":cin_name,"time":time,"date":date,"projection":projection
-				,"isCinema":is_cinema,"seat":seat.id, "price":price});
-			console.log(data);
-			$.post({
-				url:'http://localhost:8080/adminct/add_discount',
-				contentType: "application/json",
-				data: data
-				
-			})
-			
-			window.location = "http://localhost:8080/cinema_profile?"+cin_id;
-			
+			}
+		
 		});
 	});
+	
+	$('#add_discount_form').on('submit',function(){
+		
+		var length = seats.getSelected().length
+		if(length > 1 || length == 0){
+			alert("You need to pick one seat");
+			return;
+		}
+		
+		var time = $('#discount_time').find(":selected").text();
+		var date = $('#discount_date').find(":selected").text();
+		var projection = $('#discount_proj').find(":selected").text();
+		var hall = $('#discount_hall').find(":selected").text();
+		var price = $('#discount_price').val();
+		var seat;
+		var items = seats.getSelected()
+		jQuery.each(items, function(index, item) {
+			seat = item;
+		});
+		var data =JSON.stringify({"place":cin_name,"time":time,"date":date,"projection":projection
+			,"isCinema":is_cinema,"seat":seat.id, "price":price});
+		console.log(data);
+		$.post({
+			url:'http://localhost:8080/adminct/add_discount',
+			contentType: "application/json",
+			data: data
+			
+		})
+		
+		window.location = "http://localhost:8080/cinema_profile?"+cin_id;
+		
+	});
+	
+	
+});
+
+
 </script>
 <body>
 	<nav class="navbar navbar-inverse">
@@ -499,6 +689,7 @@
 			</div>
 		</div>
 	</div>
+	
 	
 	<div class="modal fade" id="addProjectionModal" tabindex="-1" role="dialog" aria-labelledby="addProjectionModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
@@ -777,7 +968,7 @@
 				</div>
 				
 				<div class="form-group">
-				  <label id="discount_old_price"></label>
+				  <label id="discount_old_price"></label><br/>
 	              <label for="price" class="col-form-label">Price (RSD):</label>
 	              <input type="number" class="form-control" id="discount_price" min="0" required>
 	            </div>
@@ -791,17 +982,21 @@
 	
 	
 	<div id="modal_report" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-				<div class="modal-body">
-					<h3>Business report</h3>
-					
+					<div class="modal-header"><h3>Business report</h3></div>
+					<div class="modal-body">	
+						<label id="b_cin_rating">User rating for this place is: </label><br/>
+						<label id="b_prj_rating">Average user rating for movies/shows here: </label><br/>
+						<div style="width:850px; height:500px;">
+							<div id="chartdiv"></div>
+							
+						</div>
+					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default"
 							data-dismiss="modal">Close</button>
 					</div>
-				</div>
 			</div>
 		</div>
 	</div>

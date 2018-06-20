@@ -90,9 +90,14 @@ public class ReservationController {
 		
 		return reservationService.history(r);
 	}
-	@RequestMapping(value = "/get_seats",method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
+	@RequestMapping(value = "/getCintheHistory",method = RequestMethod.POST,
+			consumes = MediaType.TEXT_PLAIN_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<ReservationDTO> cintheHistory(@RequestBody String cinName){
+		System.out.println("\n\nPROSAO CIN NAME "+ cinName);
+		return reservationService.cinHistory(cinName);
+	}
+	@RequestMapping(value = "/get_seats",method = RequestMethod.POST)
 	public ArrayList<String> getSeats(@RequestBody ReservationDTO r){
 		
 		return reservationService.findBookedSeats(r.getShow(), r.getDate(), r.getTime());
