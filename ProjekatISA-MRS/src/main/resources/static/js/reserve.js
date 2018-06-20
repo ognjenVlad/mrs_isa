@@ -34,9 +34,12 @@ $(document).ready(function() {
 	})
 	
 	
-	
 	$('#cinema-select').on('change',function(){
 		$('#projection-select').empty();
+		$('#date').empty();
+		$('#time').empty();
+		$('#hall').empty();
+		$('#friends').empty();
 		//resetSeats();
 		var cinema = $('#cinema-select').find(":selected").val();
 		$.ajax({
@@ -47,6 +50,7 @@ $(document).ready(function() {
 				var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
 				$.each(list, function(index, proj){
 					if (cinema == proj.cinthe_id){	
+						
 						console.log(proj);
 						$('#projection-select').append($('<option>', { 
 							data: proj,
@@ -65,6 +69,9 @@ $(document).ready(function() {
 	var user = JSON.parse(localStorage.getItem('user'));
 	$('#projection-select').on('change',function(){
 		$('#date').empty();
+		$('#time').empty();
+		$('#hall').empty();
+		$('#friends').empty();
 		var projection = $('#projection-select').find(":selected").data();
 		document.getElementById("showPrice").innerHTML = projection.price  + " RSD";
 		if(user.member_level != 'NONE'){
@@ -96,33 +103,55 @@ $(document).ready(function() {
 	
 	$('#date').on('change',function(){
 		$('#time').empty();
+		$('#hall').empty();
+		$('#friends').empty();
 		var projection = $('#projection-select').find(":selected").data();
+
+		var existing_times = [];
 		
-		
-		$.each(projection.time, function (i, item) {
-			
-			$('#time').append($('<option>', { 
-		        value: item,
-		        text : item 
-		    }));
+		$.each(projection.date, function(index, date){
+			if (date == $('#date').val()){
+				if (existing_times.includes(projection.time[index])){
+					return true;
+				}
+				
+				$('#time').append($('<option>', { 
+			        value: projection.time[index],
+			        text : projection.time[index]
+			    }));
+				existing_times.push(projection.time[index]);
+			}	
 		});
 		$('#time').selectpicker('refresh');
+		$('#hall').selectpicker('refresh');
 	});
 	
 	$('#time').on('change',function(){
 		//resetSeats();
 		$('#hall').empty();
+		$('#friends').empty();
+		var time;
+		var hall;
+		var existing_halls = [];
 		var index = $('#time').find(":selected").val();
 		var projection = $('#projection-select').find(":selected").data();
 		console.log(projection);
 
-		
 		var hall = projection.halls[index];
-		$('#hall').append($('<option>', { 
-	        data: hall,
-	        text : hall.hall_id 
-	    }));
-	
+		
+		$.each(projection.time, function(index, time){
+			if (time == $('#time').val()){
+				if (existing_halls.includes(projection.halls[index].hall_id)){
+					return true;
+				}
+				$('#hall').append($('<option>', { 
+			        value: projection.halls[index].hall_id,
+			        text : projection.halls[index].hall_id
+			    }));
+				existing_halls.push(projection.halls[index].hall_id);
+			}	
+		});
+		
 		$('#hall').selectpicker('refresh');
 	});
 	//get friends from user
