@@ -63,74 +63,68 @@ $(document).ready(function() {
 			
 	})
 	var user = JSON.parse(localStorage.getItem('user'));
-	$('#projection-select').on('change',function(){
+	$('#projection-select').on('change', function(){
 		$('#date').empty();
-		var projection = $('#projection-select').find(":selected").data();
-		document.getElementById("showPrice").innerHTML = projection.price  + " RSD";
-		if(user.member_level != 'NONE'){
-			if(user.member_level=='GOLD'){
-				document.getElementById("discount").innerHTML = "You have discount of 30% for your "+user.member_level+" rank!";
-			}
-			else if(user.member_level=='SILVER'){
-				document.getElementById("discount").innerHTML = "You have discount of 20% for your "+user.member_level+" rank!";
-			}
-			else if(user.member_level=='BRONZE'){
-				document.getElementById("discount").innerHTML = "You have discount of 10% for your "+user.member_level+" rank!";
-			}
-			
-		}
+		$('#time').empty();
+		$('#hall').empty();
+		var disc_proj;
+		var existing_dates = [];
 		
-		console.log(projection);
-		$.each(projection.date, function(index, date){
-			
+		disc_proj = $('#projection-select').data();
+		$.each(disc_proj.date, function(index, date){
+			if (existing_dates.includes(date)){
+				return true;
+			}
 			$('#date').append($('<option>', { 
 		        value: date,
 		        text : date 
 		    }));
-			
+			existing_dates.push(date);
 			
 		});
 		$('#date').selectpicker('refresh');
-		
-	});
-	
-	$('#date').on('change',function(){
-		$('#time').empty();
-		var projection = $('#projection-select').find(":selected").data();
-		
-		
-		$.each(projection.time, function (i, item) {
-			
-			$('#time').append($('<option>', { 
-		        value: item,
-		        text : item 
-		    }));
-		});
 		$('#time').selectpicker('refresh');
-	});
-	
-	$('#time').on('change',function(){
-		//resetSeats();
-		$('#hall').empty();
-		var index = $('#time').find(":selected").val();
-		var projection = $('#projection-select').find(":selected").data();
-		console.log(projection);
-
-		
-		var hall = projection.halls[index];
-		$('#hall').append($('<option>', { 
-	        data: hall,
-	        text : hall.hall_id 
-	    }));
-	
 		$('#hall').selectpicker('refresh');
 	});
-	//get friends from user
-	var noobs = [];
+	
+	$('#date').on('change', function(){
+		$('#time').empty();
+		$('#hall').empty();
+		var disc_date = $('#projection-select').data().date;
+		var disc_time= $('#projection-select').data().time;;
+		$.each(disc_date, function(index, date){
+			if (date == $('#date').val()){
+					
+				$('#time').append($('<option>', { 
+			        value: disc_time[index],
+			        text : disc_time[index]
+			    }));
+			}	
+		});
+		$('#time').selectpicker('refresh');
+		$('#hall').selectpicker('refresh');
+	});
+	
+	$('#time').on('change', function(){
+		$('#hall').empty();
+		var disc_time = $('#projection-select').data().time;
+		var disc_hall = $('#projection-select').data().halls;
+		
+		$.each(disc_time, function(index, time){
+			if (time == $('#time').val()){
+					
+				$('#hall').append($('<option>', { 
+			        value: disc_hall[index].hall_id,
+			        text : disc_hall[index].hall_id
+			    }));
+			}	
+		});
+		$('#hall').selectpicker('refresh');
+	});
 	
 	$('#hall').on('change',function(){
-		$('#friends').empty();
-
+		var hall_info;
+	
 		$.post({
 			url : "http://localhost:8080/api/getFriends",
 			data : localStorage.getItem('user'),
@@ -147,7 +141,94 @@ $(document).ready(function() {
 				$('#friends').selectpicker('refresh');
 			}
 		})
-	})
+	});
+
+//	$('#projection-select').on('change',function(){
+//		$('#date').empty();
+//		var projection = $('#projection-select').find(":selected").data();
+//		if(user.member_level != 'NONE'){
+//			if(user.member_level=='GOLD'){
+//				document.getElementById("discount").innerHTML = "You have discount of 30% for your "+user.member_level+" rank!";
+//			}
+//			else if(user.member_level=='SILVER'){
+//				document.getElementById("discount").innerHTML = "You have discount of 20% for your "+user.member_level+" rank!";
+//			}
+//			else if(user.member_level=='BRONZE'){
+//				document.getElementById("discount").innerHTML = "You have discount of 10% for your "+user.member_level+" rank!";
+//			}
+//			
+//		}
+//		
+//		console.log(projection);
+//		$.each(projection.date, function(index, date){
+//			
+//			$('#date').append($('<option>', { 
+//		        value: index,
+//		        text : date 
+//		    }));
+//			
+//			
+//		});
+//		$('#date').selectpicker('refresh');
+//		
+//	});
+//	
+//	$('#date').on('change',function(){
+//		$('#time').empty();
+//		var projection = $('#projection-select').find(":selected").data();
+//		
+//		
+//		$.each(projection.time, function (i, item) {
+//			
+//			$('#time').append($('<option>', { 
+//		        value: i,
+//		        text : item 
+//		    }));
+//		});
+//		$('#time').selectpicker('refresh');
+//	});
+//	
+//	$('#time').on('change',function(){
+//		//resetSeats();
+//		$('#hall').empty();
+//		var index = $('#time').find(":selected").val();
+//		var projection = $('#projection-select').find(":selected").data();
+//		console.log(projection.halls);
+//
+//		
+//		var hall = projection.halls[index];
+//		$.each(projection.time, function (i, item) {
+//			$('#hall').append($('<option>', { 
+//		        data: hall,
+//		        text : hall.hall_id 
+//		    }));
+//		});
+//	
+//		$('#hall').selectpicker('refresh');
+//	});
+//	//get friends from user
+//	var noobs = [];
+//	
+//	$('#hall').on('change',function(){
+//		$('#friends').empty();
+//
+//		$.post({
+//			url : "http://localhost:8080/api/getFriends",
+//			data : localStorage.getItem('user'),
+//			contentType : "application/json",
+//			success : function(data) {
+//				
+//				$.each(data, function (i, item) {
+//					noobs.push(item.name+" " +item.surname);
+//					$('#friends').append($('<option>', { 
+//				        value: item.name +" " + item.surname+" " +item.email,
+//				        text : item.name +" " + item.surname +" " +item.email
+//				    }));
+//				});
+//				$('#friends').selectpicker('refresh');
+//			}
+//		})
+//	})
 	function selectFriends(){
 		$('#friends').empty();
 		
@@ -292,7 +373,16 @@ $(document).ready(function() {
 	});
 	function prices(){
 		var projection = $('#projection-select').find(":selected").data();
-		document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length) + " RSD";
+		if(user.member_level=='GOLD'){
+			document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length)*0.7 + " RSD";
+		}
+		else if(user.member_level=='SILVER'){
+			document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length)**0.8 + " RSD";
+		}
+		else if(user.member_level=='BRONZE'){
+			document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length)*0.9 + " RSD";
+		}
+		
 
 	}
 		function getCinemas() {
