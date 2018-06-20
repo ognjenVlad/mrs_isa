@@ -4,7 +4,7 @@
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" />
-
+<script type="text/javascript" src="js/user_types.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
@@ -17,23 +17,25 @@
 
 
 </head>
-<body style="padding-top:70px" >
+<body >
 
- 	<nav class="navbar navbar-inverse navbar-fixed-top">
+ 	<nav class="navbar navbar-inverse">
 		  <div class="container-fluid">
 		    <div class="navbar-header">
-		      <a class="navbar-brand" href="/">Movies and cinemas</a>
+		      <a class="navbar-brand" href="/">Cinemas and Theaters</a>
 		    </div>
-		    <ul class="nav navbar-nav">
-		     
-		      <li class="active"><a href="reserve.html"><span class="glyphicon glyphicon-floppy-disk"></span> Make reservation</a></li>
-		 
-		    </ul>
-		    <ul class="nav navbar-nav navbar-right">
-		      
-			    <li><a href="userProfile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-		    	<li><a href="javascript:log_out();"><span class="glyphicon glyphicon-user"></span>Log out</a></li>
+			<ul class="nav navbar-nav"> <li><a class="nav-link" href="fan_page.html">Fan Zone</a></li>
+			 <li><a href="reserve.html"><span class="glyphicon glyphicon-floppy-disk"></span> Make reservation</a></li>
+			</ul>
+		   
+		    <ul class="nav navbar-nav" id="navbarLeft">
+		    <li><button type="button" class="btn btn-link navbar-btn admin_ct" data-toggle="modal" data-target="#modal_add_cinema">Add Cinema/Theatre</button></li>
+			<li><button type="button" class="btn btn-link navbar-btn admin_sys" data-toggle="modal" data-target="#modal_add_admin">Add admin</button></li>    
 		    
+		    </ul>
+		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
+			<li><a href="userProfile.html" ><span class="glyphicon glyphicon-profile"></span> My profile</a></li>
+			<li><a href="javascript:log_out();"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
 		    </ul>
 		  </div>
 		</nav>
@@ -113,7 +115,14 @@
 			  </tbody>
 		 </table>
 		</div>
-		<button style="margin-top:10px"type="button" class="btn btn btn-primary" id="make-reservation">
+		<div>
+		<div class="form-group">
+				<label style="margin-top:5px">Price: </label>
+				<span id="showPrice"></span>
+				</div>
+		
+		</div>
+		<button style="margin-top:10px"type="button" action="javascript:makeReservations" class="btn btn btn-primary" id="make-reservation">
 				Make reservation</button>
 		</form>
 </div>
@@ -152,5 +161,8 @@
 	           </div>
  	       </div>
 </div>
+<script type="text/javascript">
+	check_user();
+</script>
 </body>
 </html>

@@ -36,6 +36,7 @@ $(document).ready(function() {
 	readReservations();
 	readHistory();
 	readCinemas();
+	
 	function readReservations(){
 		var reservations = [];
 		//$('#friends-table').empty();

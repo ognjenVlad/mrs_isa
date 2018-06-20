@@ -14,7 +14,6 @@ import com.project.repository.AdRepository;
 import com.project.repository.BidRepository;
 import com.project.repository.PropRepository;
 import com.project.repository.UserRepository;
-import com.project.utils.Response;
 
 @Service
 public class FanZoneImpl implements FanZoneService {
@@ -31,7 +30,8 @@ public class FanZoneImpl implements FanZoneService {
 	UserRepository userRepository;
 	
 	@Override
-	public void addAd(Ad ad) {
+	public void addAd(Ad ad,String email) {
+		ad.setUser(userRepository.findByEmail(email));
 		adRepository.save(ad);
 	}
 
@@ -125,7 +125,9 @@ public class FanZoneImpl implements FanZoneService {
 	}
 
 	@Override
-	public String addAdBid(Long ad_id, Bid bid) {
+	public String addAdBid(Long ad_id, Bid bid,String email) {
+		System.out.println(email + " EMAILEMAILEMAILEMAILEMAILEMAILEMAIL");
+		bid.setUser(userRepository.findByEmail(email));
 		Long bid_id = bid.getId();
 		Ad ad;
 		if((ad = adRepository.findOne(ad_id))== null){
@@ -174,9 +176,7 @@ public class FanZoneImpl implements FanZoneService {
 			}
 		}
 		ad.getBids().remove(index);
-		
 		adRepository.save(ad);
-		bidRepository.delete(bid);
 		return "Success";
 	}
 
@@ -186,24 +186,46 @@ public class FanZoneImpl implements FanZoneService {
 		if(ad == null) {
 			return "Ad doesn't exist anymore";
 		}
+		if(ad.isPublished() == false) {
+			return "Ad doesn't exist anymore";
+		}
 		User user;
 		for(Bid bid : ad.getBids()) {
-			user = userRepository.findByEmail(bid.getUser());
+			user = userRepository.findByEmail(bid.getUser().getEmail());
 			if(user == null) {
 				System.out.println("User wasn't found , error.");
 				continue;
 			}
+			if(user.getHistory() == null) {
+				user.setHistory(new ArrayList<String>());
+			}
+			System.out.println("BEFORE " + user.getHistory().size());
 			if(bid.getId() == id) {
 				user.getHistory().add("Your bid has been accepted on ad : " + ad.getTitle() +".");
 			}else {
 				user.getHistory().add("Your bid has been rejected on ad : " + ad.getTitle() +".");
 			}
 			userRepository.save(user);
+			System.out.println("AFTER " +user.getHistory().size());
 		}
-				
-		adRepository.delete(ad);
+		
+		ad.setPublished(false);
+		ad.setTaken(true);
+		
+		adRepository.save(ad);
 
 		return "Success";
+	}
+
+	@Override
+	public List<String> getUserHistory(String email) {
+		User user = userRepository.findByEmail(email);
+		
+		if(user == null) {
+			return null;
+		}else {
+			return user.getHistory();
+		}
 	}
 
 }

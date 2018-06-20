@@ -21,10 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.project.DTO.ReservationDTO;
 import com.project.domain.Invited;
+import com.project.domain.MEMBER_LEVEL;
 import com.project.domain.Reservation;
+import com.project.domain.Scale;
 import com.project.domain.User;
 import com.project.repository.InvitedRepository;
 import com.project.repository.ReservationRepository;
+import com.project.repository.ScaleRepository;
 import com.project.repository.UserRepository;
 
 import io.jsonwebtoken.JwtBuilder;
@@ -46,11 +49,15 @@ public class ReservationImpl implements ReservationService {
 	@Autowired
 	private JavaMailSender javaMailSender;
 	
+	@Autowired
+	private ScaleRepository scaleRepository;
+	
 	@Transactional
 	public boolean makeReservation(ReservationDTO reservation){
 		User u = userRepository.findByEmail(reservation.getUser().getEmail());
 		
 		Reservation r = new Reservation();
+		r.setPrice(reservation.getPrice());
 		r.setUser(u);
 		r.setDate(reservation.getDate());
 		r.setTime(reservation.getTime());
@@ -81,6 +88,28 @@ public class ReservationImpl implements ReservationService {
 		}
 		r.setFriends(friends);
 		resRepository.save(r);
+
+		ArrayList<Scale> scales = (ArrayList<Scale>) scaleRepository.findAll();
+		if(scales.size() != 0) {
+			Scale scale = scales.get(0);
+			try {
+				r.getUser().setNo_of_visits(r.getUser().getNo_of_visits() + 1);
+				if(r.getUser().getNo_of_visits() > scale.getGold_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.GOLD);
+				}else if(r.getUser().getNo_of_visits() > scale.getSilver_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.SILVER);
+				}else if(r.getUser().getNo_of_visits() > scale.getBronze_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.BRONZE);
+				}else{
+					r.getUser().setMember_level(MEMBER_LEVEL.NONE);
+				}
+			}catch(Exception e){
+				r.getUser().setNo_of_visits(1);
+			}
+			userRepository.save(r.getUser());
+		}
+
+		
 		return true;
 	}
 	public boolean acceptInvite(ReservationDTO r){
@@ -162,6 +191,26 @@ public class ReservationImpl implements ReservationService {
 			}
 			
 		}
+
+		ArrayList<Scale> scales = (ArrayList<Scale>) scaleRepository.findAll();
+		if(scales.size() != 0) {
+			Scale scale = scales.get(0);
+			try {
+				r.getUser().setNo_of_visits(r.getUser().getNo_of_visits() - 1);
+				if(r.getUser().getNo_of_visits() > scale.getGold_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.GOLD);
+				}else if(r.getUser().getNo_of_visits() > scale.getSilver_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.SILVER);
+				}else if(r.getUser().getNo_of_visits() > scale.getBronze_limit()) {
+					r.getUser().setMember_level(MEMBER_LEVEL.BRONZE);
+				}else{
+					r.getUser().setMember_level(MEMBER_LEVEL.NONE);
+				}
+			}catch(Exception e){
+				r.getUser().setNo_of_visits(1);
+			}
+			userRepository.save(r.getUser());
+		}
 		
 		return true;
 	}
@@ -182,8 +231,9 @@ public class ReservationImpl implements ReservationService {
 			if(date.after(today)){
 				continue;
 			}
+			System.out.println(r.getPrice());
 			ReservationDTO info = new ReservationDTO(r);
-			
+			System.out.println(info.getPrice());
 			ArrayList<Invited> i = invitedRepository.findByReservation(r);
 			for (Invited invited : i) {
 				invited.getUser().setPicture("");
@@ -214,7 +264,9 @@ public class ReservationImpl implements ReservationService {
 			if(date.before(today)){
 				continue;
 			}
+			System.out.println(r.getPrice());
 			ReservationDTO info = new ReservationDTO(r);
+			System.out.println(info.getPrice());
 			
 			ArrayList<Invited> i = invitedRepository.findByReservation(r);
 			for (Invited invited : i) {
@@ -239,6 +291,23 @@ public class ReservationImpl implements ReservationService {
 			}
 		}
 		return seats;
+	}
+	public ArrayList<ReservationDTO> getInvites(User u){
+		ArrayList<Invited> tickets = invitedRepository.findByUser(u);
+		ArrayList<ReservationDTO> invites = new ArrayList<ReservationDTO>();
+		for(Invited r: tickets){
+			if(!r.getReservation().getUser().getEmail().equals(u.getEmail())){
+				if(r.isAccepted()){
+					System.out.println(r.getReservation().getUser());
+					ReservationDTO rr = new ReservationDTO(r.getReservation());
+					rr.setUser(r.getReservation().getUser());
+					invites.add(rr);
+					System.out.println(rr.getUser());
+				}
+			}
+			
+		}
+		return invites;
 	}
 	@Async
 	public void sendInvitation(ReservationDTO reservation, String jwtToken) throws MailException, InterruptedException {
@@ -302,7 +371,7 @@ public class ReservationImpl implements ReservationService {
 		mail.setFrom(env.getProperty("spring.mail.username"));
 		mail.setSubject("Your reservation data");
 		mail.setText("Hello, " + reservation.getUser().getName() + ", your reservation:\n "+
-		"\nPlay: "+reservation.getShow()+"\n\nDate: "+reservation.getDate()+"\n\nTime: "+ reservation.getTime()+ 
+		"\nPlay: "+reservation.getShow()+"\n\nDate: "+reservation.getDate()+"\n\nPrice: "+reservation.getPrice()+"\n\nTime: "+ reservation.getTime()+ 
 				"\n\n"+type+":"+  reservation.getPlace()+"\n"+friends);
 		javaMailSender.send(mail);
 

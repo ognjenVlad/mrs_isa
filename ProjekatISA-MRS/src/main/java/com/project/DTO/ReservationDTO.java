@@ -20,6 +20,8 @@ public class ReservationDTO {
 	
 	private String time;
 	
+	private String price;
+	
 	private ArrayList<User> friends;
 	
 	private ArrayList<String> seats;
@@ -32,6 +34,7 @@ public class ReservationDTO {
 		super();
 		this.user = r.user;
 		this.place = r.place;
+		this.price = r.price;
 		this.show = r.show;
 		this.isCinema = r.isCinema;
 		this.date = r.date;
@@ -42,6 +45,7 @@ public class ReservationDTO {
 	public ReservationDTO(Reservation r) {
 		super();
 		this.user = null;
+		this.price = r.getPrice();
 		this.place = r.getPlace();
 		this.show = r.getProjection();
 		this.isCinema = r.isCinema();
@@ -125,6 +129,14 @@ public class ReservationDTO {
 
 	public void setSeats(ArrayList<String> seats) {
 		this.seats = seats;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
 	}
 
 	

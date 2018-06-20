@@ -1,3 +1,9 @@
+function log_out(){
+
+		localStorage.removeItem('user');
+		location.replace("http://localhost:8080/");
+}
+
 $(document).ready(function() {
 
 $("#log").click(
@@ -29,7 +35,7 @@ $("#log").click(
 					localStorage.setItem('user',JSON.stringify(data));
 				
 					
-					window.location.replace("http://localhost:8080/userProfile.html");
+					window.location.replace("http://localhost:8080/");
 				}
 			});
 		});

@@ -37,7 +37,37 @@ $(document).ready(function() {
                                     ],
                                     "aaSorting": []
 	});
+	var invitesTable = $('#invites-table').DataTable({
+		"paging":   false,
+
+        "info":     false,
+      
+	});
 	console.log(user);
+	function invites(){
+		invitesTable.clear();
+		$.post({
+			url : "http://localhost:8080/api/getInvites",
+			data : localStorage.getItem('user'),
+			contentType : "application/json",
+			success : function(data) {
+				console.log(data);
+				
+				for(reservation in data){
+					invitesTable.row.add([data[reservation].show,data[reservation].time,
+					               data[reservation].date,
+					               data[reservation].place,
+					               data[reservation].price,
+					               data[reservation].user.name +" " + data[reservation].user.surname
+					               ]);
+					invitesTable.draw();
+				}
+				
+			     
+		        
+			}})
+		
+	}
 	function fillTable(){
 		
 		var friends = [];
@@ -93,6 +123,7 @@ $(document).ready(function() {
         
     });
 	fillTable();
+	invites();
 	
 	function fillRequests(){
 		

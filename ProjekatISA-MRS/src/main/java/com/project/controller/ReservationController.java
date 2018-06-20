@@ -60,7 +60,6 @@ public class ReservationController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public boolean accept(@RequestBody ReservationDTO r){
-		
 		return reservationService.acceptInvite(r);
 	}
 	@RequestMapping(value = "/cancel_reservation",method = RequestMethod.POST,
@@ -98,5 +97,11 @@ public class ReservationController {
 		
 		return reservationService.findBookedSeats(r.getShow(), r.getDate(), r.getTime());
 	}
-	
+	@RequestMapping(value = "/getInvites",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<ReservationDTO> getInvites(@RequestBody User r){
+		
+		return reservationService.getInvites(r);
+	}
 }
