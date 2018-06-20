@@ -36,10 +36,10 @@ $(document).ready(function() {
 	readReservations();
 	readHistory();
 	readCinemas();
-
+	
 	function readReservations(){
 		var reservations = [];
-	
+		//$('#friends-table').empty();
 		reservationsTable.clear();
 		$.post({
 			url : "http://localhost:8080/api/getReservation",
@@ -62,7 +62,6 @@ $(document).ready(function() {
 					reservationsTable.row.add([data[reservation].show,data[reservation].time,
 					               data[reservation].date,
 					               data[reservation].place,
-					               data[reservation].price,
 					               friends,
 					               seats,button
 					               ]);
@@ -115,7 +114,6 @@ $(document).ready(function() {
     });
 	function readHistory(){
 		var reservations = [];
-
 		//$('#friends-table').empty();
 		historyTable.clear();
 		$.post({
@@ -137,7 +135,6 @@ $(document).ready(function() {
 					historyTable.row.add([data[reservation].show,data[reservation].time,
 					               data[reservation].date,
 					               data[reservation].place,
-					               data[reservation].price,
 					               friends,
 					               seats
 					               ]);
@@ -151,7 +148,6 @@ $(document).ready(function() {
 	}
 	var user = JSON.parse(localStorage.getItem('user'));
 	function readCinemas(){
-		
 		cinemaTable.clear();
 		theatersTable.clear();
 			$.ajax({
@@ -163,7 +159,6 @@ $(document).ready(function() {
 					var list = data == null ? []
 					: (data instanceof Array ? data : [ data ]);
 					cinemas = list;
-					console.log(data);
 					$.each(list, function(index, cinema) {
 						var ind = index + 1;
 						

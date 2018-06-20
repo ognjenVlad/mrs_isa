@@ -1,5 +1,6 @@
 package com.project.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,7 +16,6 @@ import com.project.domain.Discount;
 import com.project.domain.Projection;
 import com.project.service.CinemaTheatreImpl;
 import com.project.service.ProjectionImpl;
-import com.project.utils.Response;
 
 @RestController
 @RequestMapping(value = "/adminct")
@@ -31,7 +31,9 @@ public class AdminCTConroller {
 		HashMap<String, Integer> rt = new HashMap<String, Integer>();
 		//rt.put("a@aa", 4);
 		ct.setRatings(rt);
-		
+		ArrayList<Discount> dc = new ArrayList<Discount>();
+		ct.setDiscounts(dc);
+		System.out.println("discounts >>>>>>>>" + ct.getDiscounts());
 		ctService.addCinemaTheatre(ct);
 		return "success";
 	}
@@ -76,6 +78,7 @@ public class AdminCTConroller {
 	
 	@RequestMapping(value = "/add_discount", method = RequestMethod.POST)
 	public String addDiscount(@RequestBody Discount dc){
+		System.out.println("PROJ NAME IS" + dc.getProjection());
 		ctService.addDiscount(dc);
 		return "success";
 	}

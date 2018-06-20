@@ -57,12 +57,15 @@ $(document).ready(function() {
 		event.preventDefault();
 
 		var name = $("#name").val();
+		var proj_exists = false;
 		$.each(projections, function(index, proj){
 			if (name == proj.name && cin_id == proj.cinthe_id){
 				alert("Projection like this already exists in place.");
-				return;
+				proj_exists = true;
 			}
 		});
+		if(proj_exists)
+			return;
 		
 		var actors = []
 		for (var i = 0; i < actors_count; i++){
@@ -93,6 +96,13 @@ $(document).ready(function() {
 					hall_to_add = halls[j];
 				}
 			}
+			for (var k = 0; k < prj_halls.length; k++){
+				if (prj_halls[k] == hall_to_add && prj_date[k] == $('#date'+i).val() && prj_time[k] == $('#time'+i).val()){
+					alert("You can not add multiple projection times that are indentical");
+					return;
+				}
+			}
+			
 			prj_halls.push(hall_to_add);
 			prj_date.push($('#date'+i).val());
 			prj_time.push($('#time'+i).val());
