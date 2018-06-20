@@ -35,10 +35,13 @@ public class Discount implements Serializable{
 	@Column(nullable = false)
 	private String seat;
 	
+	@Column(nullable = false)
+	private Double price;
+	
 	public Discount() {
 		super();
 	}
-	public Discount(String place, String time, String date, String projection, boolean isCinema, String seat) {
+	public Discount(String place, String time, String date, String projection, boolean isCinema, String seat, double price) {
 		super();
 		this.place = place;
 		this.time = time;
@@ -46,6 +49,7 @@ public class Discount implements Serializable{
 		this.projection = projection;
 		this.isCinema = isCinema;
 		this.seat = seat;
+		this.price = price;
 	}
 	public String getPlace() {
 		return place;
@@ -83,6 +87,22 @@ public class Discount implements Serializable{
 	public void setSeat(String seat) {
 		this.seat = seat;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public Double getPrice() {
+		return price;
+	}
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
 	
 	
 }
