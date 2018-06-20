@@ -29,8 +29,6 @@
 			</ul>
 		   
 		    <ul class="nav navbar-nav" id="navbarLeft">
-		    <li><button type="button" class="btn btn-link navbar-btn admin_ct" data-toggle="modal" data-target="#modal_add_cinema">Add Cinema/Theatre</button></li>
-			<li><button type="button" class="btn btn-link navbar-btn admin_sys" data-toggle="modal" data-target="#modal_add_admin">Add admin</button></li>    
 		    
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right" id="navbarRight">
@@ -74,8 +72,8 @@
 			
 			<div class="form-group">
 				<label style="margin-top:5px" for="d">Date:</label>
-		        <input class="form-control" id="date" name="date" placeholder="DD/MM/YYYY" type="text" required/>
-		    	
+		        	<select class="selectpicker" data-live-search="true" id="date"  title="Choose one of the following..." required></select>
+		
 		    </div>
 			<div class="form-group" style="margin-top:5px">
 				<label for="time">Select time:</label>
@@ -120,6 +118,12 @@
 				<label style="margin-top:5px">Price: </label>
 				<span id="showPrice"></span>
 				</div>
+		
+		</div>
+		<div class="form-group">
+				<label  id="discount" style="margin-top:5px"></label>
+				
+		
 		
 		</div>
 		<button style="margin-top:10px"type="button" action="javascript:makeReservations" class="btn btn btn-primary" id="make-reservation">
