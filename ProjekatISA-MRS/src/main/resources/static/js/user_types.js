@@ -10,6 +10,9 @@ function check_user(){
 	if (user == null){
 		hide_all();
 		$(".user_not_logged").show();
+		if (window.location.href.substring(0, 36) == "http://localhost:8080/cinema_profile" ){
+			$("#navbarRight").empty();
+		}
 	}else{
 		hide_all();
 		if(user.user_type == "user"){
