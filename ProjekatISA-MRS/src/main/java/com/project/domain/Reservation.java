@@ -42,6 +42,9 @@ public class Reservation implements Serializable {
 	@Column(nullable = false)
 	private String time;
 	
+	@Column(nullable = false)
+	private String price;
+	
 	@OneToMany(cascade = CascadeType.ALL,orphanRemoval=true, mappedBy = "reservation")
 	private Set<Invited> friends;
 
@@ -115,6 +118,14 @@ public class Reservation implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
 	}
 	
 }

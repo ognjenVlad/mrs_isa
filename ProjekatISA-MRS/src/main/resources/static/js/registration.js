@@ -1,3 +1,9 @@
+function log_out(){
+
+		localStorage.removeItem('user');
+		location.replace("http://localhost:8080/");
+}
+
 $(document).ready(function() {
 	$("#form").submit(function(event){
 		if ($('#password').val() != $('#r-password').val()){

@@ -98,5 +98,11 @@ public class ReservationController {
 		
 		return reservationService.findBookedSeats(r.getShow(), r.getDate(), r.getTime());
 	}
-	
+	@RequestMapping(value = "/getInvites",method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<ReservationDTO> getInvites(@RequestBody User r){
+		
+		return reservationService.getInvites(r);
+	}
 }

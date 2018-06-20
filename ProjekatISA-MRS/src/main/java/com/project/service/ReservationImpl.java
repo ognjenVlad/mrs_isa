@@ -51,6 +51,7 @@ public class ReservationImpl implements ReservationService {
 		User u = userRepository.findByEmail(reservation.getUser().getEmail());
 		
 		Reservation r = new Reservation();
+		r.setPrice(reservation.getPrice());
 		r.setUser(u);
 		r.setDate(reservation.getDate());
 		r.setTime(reservation.getTime());
@@ -182,8 +183,9 @@ public class ReservationImpl implements ReservationService {
 			if(date.after(today)){
 				continue;
 			}
+			System.out.println(r.getPrice());
 			ReservationDTO info = new ReservationDTO(r);
-			
+			System.out.println(info.getPrice());
 			ArrayList<Invited> i = invitedRepository.findByReservation(r);
 			for (Invited invited : i) {
 				invited.getUser().setPicture("");
@@ -214,7 +216,9 @@ public class ReservationImpl implements ReservationService {
 			if(date.before(today)){
 				continue;
 			}
+			System.out.println(r.getPrice());
 			ReservationDTO info = new ReservationDTO(r);
+			System.out.println(info.getPrice());
 			
 			ArrayList<Invited> i = invitedRepository.findByReservation(r);
 			for (Invited invited : i) {
@@ -239,6 +243,23 @@ public class ReservationImpl implements ReservationService {
 			}
 		}
 		return seats;
+	}
+	public ArrayList<ReservationDTO> getInvites(User u){
+		ArrayList<Invited> tickets = invitedRepository.findByUser(u);
+		ArrayList<ReservationDTO> invites = new ArrayList<ReservationDTO>();
+		for(Invited r: tickets){
+			if(!r.getReservation().getUser().getEmail().equals(u.getEmail())){
+				if(r.isAccepted()){
+					System.out.println(r.getReservation().getUser());
+					ReservationDTO rr = new ReservationDTO(r.getReservation());
+					rr.setUser(r.getReservation().getUser());
+					invites.add(rr);
+					System.out.println(rr.getUser());
+				}
+			}
+			
+		}
+		return invites;
 	}
 	@Async
 	public void sendInvitation(ReservationDTO reservation, String jwtToken) throws MailException, InterruptedException {
@@ -302,7 +323,7 @@ public class ReservationImpl implements ReservationService {
 		mail.setFrom(env.getProperty("spring.mail.username"));
 		mail.setSubject("Your reservation data");
 		mail.setText("Hello, " + reservation.getUser().getName() + ", your reservation:\n "+
-		"\nPlay: "+reservation.getShow()+"\n\nDate: "+reservation.getDate()+"\n\nTime: "+ reservation.getTime()+ 
+		"\nPlay: "+reservation.getShow()+"\n\nDate: "+reservation.getDate()+"\n\nPrice: "+reservation.getPrice()+"\n\nTime: "+ reservation.getTime()+ 
 				"\n\n"+type+":"+  reservation.getPlace()+"\n"+friends);
 		javaMailSender.send(mail);
 

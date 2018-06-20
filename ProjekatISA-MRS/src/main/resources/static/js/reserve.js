@@ -47,22 +47,26 @@ $(document).ready(function() {
 				var list = data == null ? [] : (data instanceof Array ? data : [ data ]);
 				$.each(list, function(index, proj){
 					if (cinema == proj.cinthe_id){	
+						
 						$('#projection-select').append($('<option>', { 
-					        value: proj,
+							data: proj,
 					        text : proj.name 
 					    }));
-					
+						
 					
 					}
 				});
 				$('#projection-select').selectpicker('refresh');
+				
 			}
 		});
 			
 	})
 	$('#projection-select').on('change',function(){
 		$('#time').empty();
-		var projection = $('#projection-select').find(":selected").val();
+		var projection = $('#projection-select').find(":selected").data();
+		document.getElementById("showPrice").innerHTML = projection.price  + " RSD";;
+		console.log(projection);
 		$.each(projection.time, function(index, proj){
 				
 				$('#time').append($('<option>', { 
@@ -102,13 +106,13 @@ $(document).ready(function() {
 		//resetSeats();
 		$('#hall').empty();
 		var index = $('#time').find(":selected").val();
-		var projection = $('#projection-select').find(":selected").val();
+		var projection = $('#projection-select').find(":selected").data();
 		console.log(projection);
 
 		
 		var hall = projection.halls[index];
 		$('#hall').append($('<option>', { 
-	        value: hall,
+	        data: hall,
 	        text : hall.hall_id 
 	    }));
 	
@@ -198,17 +202,20 @@ $(document).ready(function() {
     });
 	console.log(seats);
 	$('#make-reservation').on('click',function(){
-		
-	length = seats.getSelected().length
+		if(!$('#form')[0].checkValidity()){
+			return;
+		}
+		length = seats.getSelected().length
 		var rowCount = $('#friends-table tr').length;
-	console.log(length);
-	if(length <rowCount){
+		console.log(length);
+		if(length <rowCount){
 			alert("You invited more friends than you have reserved seats, please reserve more seats or delete invites!");
 			return;
 		}
-	var cinema = $('#cinema-select').find(":selected").text();
+		var cinema = $('#cinema-select').find(":selected").text();
 		var user = JSON.parse(localStorage.getItem('user'));
 		var time = $('#time').find(":selected").text();
+		var price = $('#showPrice').text();
 		var date = $('#date').val();
 		var projection = $('#projection-select').find(":selected").text();
 		var hall = $('#hall').find(":selected").text();
@@ -227,23 +234,30 @@ $(document).ready(function() {
 			booked.push(item.id);
 		});
 		var data =JSON.stringify({"user":user,"place":cinema,"time":time,"date":date,"show":projection
-			,"friends":invited,"isCinema":true,"seats":booked});
+			,"friends":invited,"isCinema":true,"seats":booked,"price":price});
 		console.log(data);
 		$.post({
 			url:'http://localhost:8080/api/make_reservation',
 			contentType: "application/json",
-			data: data
+			data: data,
+			success: function(data){
+				console.log(data);
+				alert("Reservation successful!");
+				window.location="http://localhost:8080/";
+			}
 			
 		})
-		
-		window.location="http://localhost:8080/userProfile.html";
-		return;
 	});
+	
 
 	$('#hall').on('change',function(){
 		
-		var hall = $('#hall-select').find(":selected").val();
-
+		var hall = $('#hall').find(":selected").data();
+		console.log(hall);
+		var projection = $('#projection-select').find(":selected").val();
+		var date = $('#date').text();
+		var time = $('#time').find(":selected").val();
+		console.log(date);
 		var data =JSON.stringify({"time":time,"date":date,"show":projection});
 		
 		$.post({
@@ -254,8 +268,8 @@ $(document).ready(function() {
 				console.log(data);
 				$("#legends").css("visibility", "visible");
 				seats = $('#seats').flexiSeats({
-				    rows: hall.rows1,
-				    columns: hall.columns1,
+				    rows: hall.rows,
+				    columns: hall.columns,
 				    multiple: false,
 				    booked: data
 				});
@@ -266,10 +280,15 @@ $(document).ready(function() {
 			}
 		
 		})
+		setInterval(prices, 1000);
 		
 	});
+	function prices(){
+		var projection = $('#projection-select').find(":selected").data();
+		document.getElementById("showPrice").innerHTML = projection.price*(seats.getSelected().length) + " RSD";
 
-	function getCinemas() {
+	}
+		function getCinemas() {
 		console.log("ready!");
 		$.ajax({
 			type : 'GET',
