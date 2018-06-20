@@ -1,10 +1,12 @@
+var user;
+
 function log_out(){
 	localStorage.removeItem('user');
 	location.reload();
 }
 
 function check_user(){
-	var user = JSON.parse(localStorage.getItem('user'));
+	user = JSON.parse(localStorage.getItem('user'));
 	if (user == null){
 		hide_all();
 		$(".user_not_logged").show();

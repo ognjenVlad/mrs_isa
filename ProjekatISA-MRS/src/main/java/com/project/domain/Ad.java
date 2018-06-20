@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -32,6 +33,9 @@ public class Ad implements Serializable{
 	@JsonFormat(pattern="MM/dd/yyyy")
 	@Column(nullable = false)
 	private Date exp_date;
+	
+	@ManyToOne(optional = false)
+	private User user;
 
 	@Column
 	private String picture;
@@ -44,19 +48,26 @@ public class Ad implements Serializable{
 	
 	@Column
     @OneToMany(
-            cascade = CascadeType.ALL, 
+            cascade = CascadeType.REMOVE, 
             orphanRemoval = true)
 	private List<Bid> bids = new ArrayList<Bid>();
 
 	Ad(){}
 
-	public Ad(Long id, String title, String description, Date exp_date, String picture) {
+	public Ad(Long id, String title, String description, Date exp_date, String picture,User user) {
 		super();
 		this.id = id;
+		this.user = user;
 		this.title = title;
 		this.description = description;
 		this.exp_date = exp_date;
 		this.picture = picture;
+	}
+	
+	
+
+	public String getTitle() {
+		return title;
 	}
 
 	public Long getId() {
@@ -66,9 +77,13 @@ public class Ad implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public User getUser() {
+		return user;
+	}
 
-	public String getTitle() {
-		return title;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public void setTitle(String title) {

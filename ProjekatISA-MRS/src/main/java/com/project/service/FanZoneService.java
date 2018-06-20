@@ -9,7 +9,7 @@ import com.project.utils.Response;
 
 public interface FanZoneService {
 
-	public void addAd(Ad ad);
+	public void addAd(Ad ad,String email);
 	public Ad getNextAd();
 	public void returnAd(Ad ad);
 	public String updateAd(boolean is_published,boolean is_taken,Long id);
@@ -19,7 +19,9 @@ public interface FanZoneService {
 	public Prop getProp(Long id);
 	public Bid getBid(Long id);
 	public String deleteProp(Long id);
-	public String updateProp(Long id,int amount);
-	public String addAdBid(Long ad_id,Bid bid);
+	public String updateProp(Long id,int amount,String user_email);
+	public String addAdBid(Long ad_id,Bid bid,String email);
 	public String deleteBid(Long ad_id,Long id);
+	public String chooseBid(Long ad_id,Long id);
+	public List<String> getUserHistory(String email);
 }
