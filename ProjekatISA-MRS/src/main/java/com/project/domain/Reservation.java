@@ -52,6 +52,17 @@ public class Reservation implements Serializable {
 		super();
 	}
 
+	public Reservation( String place, String projection, boolean isCinema, String date, String time,
+			String price) {
+		super();
+		this.place = place;
+		this.projection = projection;
+		this.isCinema = isCinema;
+		this.date = date;
+		this.time = time;
+		this.price = price;
+	}
+
 	public Long getId() {
 		return id;
 	}

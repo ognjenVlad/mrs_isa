@@ -3,7 +3,6 @@ package com.project.service;
 import java.util.ArrayList;
 
 import com.project.DTO.ReservationDTO;
-import com.project.domain.Reservation;
 import com.project.domain.User;
 
 public interface ReservationService {
@@ -17,4 +16,6 @@ public interface ReservationService {
 	ArrayList<ReservationDTO> cinHistory(String cinName);
 	ArrayList<ReservationDTO> getInvites(User u);
 	ArrayList<String> findBookedSeats(String projection, String date, String time);
+	
+
 }
